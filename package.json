@@ -1,0 +1,21 @@
+{
+  "name": "hwr-app",
+  "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "start": "corepack pnpm --filter @hwr/server start",
+    "package:win": "node tools/package/package-win.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "turbo": "^2.3.3",
+    "typescript": "~5.7.2"
+  }
+}

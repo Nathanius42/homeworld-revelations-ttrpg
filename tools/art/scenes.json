@@ -1,0 +1,295 @@
+{
+  "style": "Homeworld Remastered cinematic, in-game screenshot, detailed industrial starship hull plating with panel lines and tiny running lights, white engine trails, volumetric nebula, vast scale, realistic lighting, sharp focus, highly detailed",
+  "plateStyle": "deep space matte painting in the style of Homeworld Remastered, volumetric nebula, vast scale, empty space, sharp focus",
+  "negative": "text, letters, watermark, logo, signature, frame, border, lowres, blurry, jpeg artefacts, deformed, cartoon, anime, toy, plastic, oversaturated, duplicate, photo collage",
+  "scenes": [
+    {
+      "key": "scenes/title",
+      "w": 1536,
+      "h": 640,
+      "plate": {
+        "prompt": "deep space starfield, the vast glowing Great Nebula in amber, rose and deep blue, dark dust lanes, thousands of distant stars, empty black space, no planets",
+        "space": true,
+        "band": 0.45,
+        "fresh": true
+      },
+      "ships": [
+        {
+          "render": "mothership-hero",
+          "x": 0.6,
+          "y": 0.5,
+          "height": 1.08,
+          "rotate": -8,
+          "glow": [
+            255,
+            200,
+            140
+          ]
+        },
+        {
+          "render": "carrier",
+          "x": 0.17,
+          "y": 0.72,
+          "scale": 0.15,
+          "haze": 0.15,
+          "depth": 1
+        },
+        {
+          "render": "ion-frigate",
+          "x": 0.86,
+          "y": 0.66,
+          "scale": 0.1,
+          "haze": 0.1
+        },
+        {
+          "render": "assault-frigate",
+          "x": 0.78,
+          "y": 0.24,
+          "scale": 0.06,
+          "haze": 0.35,
+          "depth": 2
+        },
+        {
+          "render": "interceptor",
+          "x": 0.3,
+          "y": 0.22,
+          "scale": 0.03,
+          "haze": 0.3,
+          "depth": 2
+        },
+        {
+          "render": "interceptor",
+          "x": 0.34,
+          "y": 0.27,
+          "scale": 0.025,
+          "haze": 0.35,
+          "depth": 2
+        }
+      ],
+      "prompt": "the towering Kushan Mothership in deep space at the start of the Exodus, escorted by a carrier, frigates and fighters, glowing engine trails, nebula light on the hull",
+      "refs": [
+        "mothership-nebula",
+        "mothership-battle"
+      ],
+      "denoise": 0.45,
+      "control": 0.65
+    },
+    {
+      "key": "scenes/debris-ring",
+      "w": 1536,
+      "h": 640,
+      "plate": {
+        "prompt": "deep space starfield, a dense field of drifting ice asteroids and dark rocks of every size floating in zero gravity, a huge banded orange gas giant planet in the background, warm sunlight glinting on the ice",
+        "space": true
+      },
+      "ships": [
+        {
+          "render": "corvette-hero",
+          "x": 0.46,
+          "y": 0.52,
+          "scale": 0.36,
+          "glow": [
+            120,
+            200,
+            255
+          ]
+        }
+      ],
+      "prompt": "a small grey Kushan heavy corvette threading carefully through the ice rings of a gas giant, blue engine glow, ice boulders tumbling around it",
+      "refs": [
+        "kushan-frigate-sky",
+        "kushan-frigate",
+        "fleet-battle"
+      ],
+      "denoise": 0.48,
+      "control": 0.6
+    },
+    {
+      "key": "scenes/derelict-exterior",
+      "w": 1536,
+      "h": 640,
+      "plate": {
+        "prompt": "deep space starfield, a thin band of drifting ice dust and small floating asteroids crossing the frame, a dark violet and blue nebula, cold starlight, eerie and empty",
+        "space": true
+      },
+      "ships": [
+        {
+          "render": "ghost-hero",
+          "x": 0.55,
+          "y": 0.5,
+          "scale": 0.6,
+          "glow": [
+            120,
+            180,
+            255
+          ]
+        },
+        {
+          "render": "turanic-carrier",
+          "x": 0.9,
+          "y": 0.62,
+          "scale": 0.13,
+          "haze": 0.2,
+          "depth": 1
+        },
+        {
+          "render": "corvette-hero",
+          "x": 0.16,
+          "y": 0.72,
+          "scale": 0.1
+        }
+      ],
+      "prompt": "an immense ancient derelict ghost ship drifting dead in a planetary ring, dark windows, a faint blue beacon pulsing from its heart, a rusty raider ship clamped to its hull in the distance, a tiny corvette approaching",
+      "refs": [
+        "derelict-hull",
+        "derelict-sky",
+        "raider-ship"
+      ],
+      "denoise": 0.48,
+      "control": 0.6
+    },
+    {
+      "key": "scenes/escape",
+      "w": 1536,
+      "h": 640,
+      "plate": {
+        "prompt": "deep space, a gigantic white and orange spherical explosion shockwave on the left side, burning debris and asteroid fragments flying outward through space, dark starfield on the right",
+        "space": true
+      },
+      "ships": [
+        {
+          "render": "ghost-hero",
+          "x": 0.26,
+          "y": 0.45,
+          "scale": 0.46,
+          "haze": 0.45,
+          "rotate": 8,
+          "depth": 1
+        },
+        {
+          "render": "corvette-flee",
+          "x": 0.7,
+          "y": 0.6,
+          "scale": 0.3,
+          "glow": [
+            255,
+            190,
+            120
+          ]
+        }
+      ],
+      "prompt": "a Kushan corvette fleeing at full burn, engines blazing, as an ancient derelict ship explodes behind it in a white shockwave, debris and fire, desperate escape",
+      "refs": [
+        "fighter-chase",
+        "fleet-battle",
+        "mothership-battle"
+      ],
+      "denoise": 0.52,
+      "control": 0.5
+    },
+    {
+      "key": "scenes/ion-storm",
+      "w": 1536,
+      "h": 640,
+      "plate": {
+        "prompt": "deep space, a vast violet and electric blue ion storm with branching lightning between drifting dark asteroids, glowing storm clouds, ominous",
+        "space": true
+      },
+      "ships": [
+        {
+          "render": "corvette-hero",
+          "x": 0.42,
+          "y": 0.55,
+          "scale": 0.34,
+          "glow": [
+            150,
+            140,
+            255
+          ]
+        }
+      ],
+      "prompt": "a small grey Kushan heavy corvette flying into a violet ion storm, lightning crawling over its hull, dark asteroids all around",
+      "refs": [
+        "kushan-frigate-sky",
+        "fleet-battle"
+      ],
+      "denoise": 0.48,
+      "control": 0.6
+    },
+    {
+      "key": "scenes/refinery-exterior",
+      "w": 1536,
+      "h": 640,
+      "plate": {
+        "prompt": "deep space inside an asteroid field lit by a distant violet ion storm, dark tumbling asteroids, faint lightning glow, cold and lonely",
+        "space": true
+      },
+      "ships": [
+        {
+          "render": "refinery-hero",
+          "x": 0.5,
+          "y": 0.5,
+          "scale": 0.62,
+          "glow": [
+            255,
+            210,
+            150
+          ]
+        },
+        {
+          "render": "tai-corvette",
+          "x": 0.8,
+          "y": 0.62,
+          "scale": 0.12,
+          "depth": 0
+        }
+      ],
+      "prompt": "a large dark Kushan mining refinery ship anchored among asteroids, navigation strobes blinking, a sleek red and black Taiidan corvette clamped to its side, violet storm light",
+      "refs": [
+        "kushan-carrier",
+        "raider-ship",
+        "fleet-battle"
+      ],
+      "denoise": 0.48,
+      "control": 0.6
+    },
+    {
+      "key": "scenes/taiidan-destroyer",
+      "w": 1536,
+      "h": 640,
+      "plate": {
+        "prompt": "deep space at the edge of a violet ion storm, the storm wall on the left, open starfield and a red nebula on the right",
+        "space": true
+      },
+      "ships": [
+        {
+          "render": "tai-destroyer-hero",
+          "x": 0.6,
+          "y": 0.45,
+          "scale": 0.62,
+          "glow": [
+            255,
+            120,
+            100
+          ]
+        },
+        {
+          "render": "corvette-flee",
+          "x": 0.2,
+          "y": 0.7,
+          "scale": 0.14,
+          "flip": true
+        }
+      ],
+      "prompt": "a huge menacing red and black Taiidan destroyer warship looming out of the darkness with its guns turning, a tiny Kushan corvette fleeing towards a violet storm",
+      "refs": [
+        "raider-ship",
+        "mothership-battle",
+        "fleet-battle"
+      ],
+      "denoise": 0.48,
+      "control": 0.6
+    }
+  ],
+  "spaceNegative": "landscape, ground, terrain, surface, floor, ice sheet, snow field, frozen lake, mountains, cliffs, horizon, desert, rocky ground, water, reflection"
+}

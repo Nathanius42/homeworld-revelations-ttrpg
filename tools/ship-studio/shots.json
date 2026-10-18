@@ -1,0 +1,116 @@
+[
+  {
+    "name": "mothership-hero",
+    "ship": "kus_mothership",
+    "yaw": 30,
+    "pitch": 6,
+    "roll": 0,
+    "w": 1024,
+    "h": 2048,
+    "zoom": 1.0
+  },
+  {
+    "name": "carrier",
+    "ship": "kus_carrier",
+    "yaw": 25,
+    "pitch": 12,
+    "w": 1024,
+    "h": 640
+  },
+  {
+    "name": "ion-frigate",
+    "ship": "kus_ioncannonfrigate",
+    "yaw": 30,
+    "pitch": 14,
+    "w": 1024,
+    "h": 640
+  },
+  {
+    "name": "assault-frigate",
+    "ship": "kus_assaultfrigate",
+    "yaw": -25,
+    "pitch": 12,
+    "w": 1024,
+    "h": 640
+  },
+  {
+    "name": "interceptor",
+    "ship": "kus_interceptor",
+    "yaw": 30,
+    "pitch": 20,
+    "w": 768,
+    "h": 512
+  },
+  {
+    "name": "corvette-hero",
+    "ship": "kus_heavycorvette",
+    "yaw": 28,
+    "pitch": 14,
+    "roll": -6,
+    "w": 1600,
+    "h": 900
+  },
+  {
+    "name": "corvette-flee",
+    "ship": "kus_heavycorvette",
+    "yaw": 150,
+    "pitch": 10,
+    "roll": 8,
+    "w": 1600,
+    "h": 900
+  },
+  {
+    "name": "ghost-hero",
+    "ship": "der_ghostship",
+    "yaw": -28,
+    "pitch": 12,
+    "roll": 4,
+    "w": 2048,
+    "h": 1024
+  },
+  {
+    "name": "turanic-carrier",
+    "ship": "tur_p1mothership",
+    "yaw": 35,
+    "pitch": 12,
+    "w": 1600,
+    "h": 900,
+    "light": "nebula"
+  },
+  {
+    "name": "turanic-corvette",
+    "ship": "tur_standardcorvette",
+    "yaw": 30,
+    "pitch": 15,
+    "w": 1024,
+    "h": 640,
+    "light": "nebula"
+  },
+  {
+    "name": "refinery-hero",
+    "ship": "kus_resourcecontroller",
+    "yaw": 28,
+    "pitch": 14,
+    "w": 1600,
+    "h": 900
+  },
+  {
+    "name": "tai-destroyer-hero",
+    "ship": "tai_destroyer",
+    "yaw": -30,
+    "pitch": 10,
+    "w": 2048,
+    "h": 1024,
+    "team": "9a2222",
+    "light": "nebula"
+  },
+  {
+    "name": "tai-corvette",
+    "ship": "tai_heavycorvette",
+    "yaw": 40,
+    "pitch": 15,
+    "w": 1024,
+    "h": 640,
+    "team": "9a2222"
+  }
+]

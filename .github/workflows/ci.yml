@@ -1,0 +1,30 @@
+# Typecheck, unit tests (including the simulated playthroughs) and the web build on every push and pull request.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm turbo run typecheck
+
+      - name: Unit tests and simulated playthroughs
+        run: pnpm turbo run test
+
+      - name: Build web app
+        run: pnpm --filter @hwr/web build

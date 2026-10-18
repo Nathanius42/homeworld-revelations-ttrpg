@@ -1,0 +1,211 @@
+{
+  "style": "epic science fiction concept art painting, 1980s sci-fi paperback cover style, painterly brushwork, vast scale, muted ochre and teal palette, soft volumetric light, deep space, highly detailed",
+  "portraitStyle": "science fiction character portrait, digital painting, painterly concept art, head and shoulders, dramatic rim light, dark starship interior background, muted teal and ochre palette, detailed face, looking at viewer",
+  "negative": "text, letters, watermark, logo, signature, frame, border, lowres, blurry, jpeg artefacts, deformed, extra limbs, extra fingers, bad anatomy, cartoon, anime, cute, oversaturated, photo collage",
+  "images": [
+    {
+      "key": "scenes/title",
+      "w": 1536,
+      "h": 640,
+      "prompt": "a colossal ancient mothership starship, long and slender like a cathedral spine, leading a fleet of small frigates and fighters across a glowing orange and blue nebula, tiny engine trails, sense of exodus and hope"
+    },
+    {
+      "key": "scenes/mothership-briefing",
+      "w": 1536,
+      "h": 640,
+      "prompt": "interior of a starship command deck, officers in desert-coloured flight suits standing around a glowing cyan holographic tactical map of a gas giant and its rings, dim amber lights, huge curved windows onto space"
+    },
+    {
+      "key": "scenes/debris-ring",
+      "w": 1536,
+      "h": 640,
+      "prompt": "a small angular corvette starship threading through the rings of a banded gas giant, tumbling ice boulders and rock all around, sunlight glinting on ice, the giant planet filling half the sky"
+    },
+    {
+      "key": "scenes/derelict-exterior",
+      "w": 1536,
+      "h": 640,
+      "prompt": "an immense ancient derelict starship of pale ribbed alloy, kilometres long, half-buried among ice in a planetary ring, faint blue beacon light pulsing from its heart, a tiny corvette approaching"
+    },
+    {
+      "key": "scenes/derelict-interior",
+      "w": 1536,
+      "h": 640,
+      "prompt": "inside an ancient derelict starship, a long dark ribbed corridor like the spine of a whale, floating dust in zero gravity, beams of helmet torches, faint blue glow at the far end, alien glyphs on the walls"
+    },
+    {
+      "key": "scenes/raider-ambush",
+      "w": 1536,
+      "h": 640,
+      "prompt": "space pirates in patchwork armour and scavenged rifles emerging from behind huge curved hull ribs inside an ancient starship, blue glow behind them, tense standoff, cinematic"
+    },
+    {
+      "key": "scenes/data-core",
+      "w": 1536,
+      "h": 640,
+      "prompt": "a tall pillar of crystal and ancient metal glowing with blue star charts inside a circular vault, holographic stars swirling around it, red warning glyphs on the walls, sense of wonder and danger"
+    },
+    {
+      "key": "scenes/escape",
+      "w": 1536,
+      "h": 640,
+      "prompt": "a small corvette starship fleeing at full burn through planetary rings as a huge ancient derelict explodes behind it in a blinding white shockwave, debris flying, desperate escape"
+    },
+    {
+      "key": "scenes/mothership-hangar",
+      "w": 1536,
+      "h": 640,
+      "prompt": "a vast starship hangar bay, a battered small corvette landing among rows of fighters, crew in flight suits running to meet it, warm hangar lights, scale and relief"
+    },
+    {
+      "key": "ui/starfield",
+      "w": 1536,
+      "h": 864,
+      "prompt": "deep space background, faint dark nebula clouds in teal and rust, scattered stars, very dark, subtle, empty space, no planets, no ships"
+    },
+    {
+      "key": "portraits/saiyuun-paktu",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a weathered woman starship captain in her forties, dark olive skin, short greying black hair, calm stern eyes, high-collared sand-coloured command uniform with teal trim"
+    },
+    {
+      "key": "portraits/jaal-manaan",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a grinning roguish male starship pilot in his thirties, brown skin, tousled dark hair, stubble, battered flight jacket with orange patches, flight headset around his neck"
+    },
+    {
+      "key": "portraits/teyra-sjet",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a young woman scholar and researcher, light brown skin, long black braided hair, curious bright eyes, simple grey scientist robes with a glowing data tablet"
+    },
+    {
+      "key": "portraits/druun-somtaaw",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a broad quiet male engineer in his fifties, dark skin, shaved head, thick beard, grease-stained heavy work overalls, welding goggles on his forehead, prayer beads"
+    },
+    {
+      "key": "portraits/kesh-soban",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a tough female soldier security officer, tan skin, shaved sides with black crest of hair, scar over one eyebrow, dark armoured combat suit with a red armband"
+    },
+    {
+      "key": "portraits/mira-naabal",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a kind middle-aged female field medic, olive skin, dark curly hair tied back, tired warm eyes, white and teal medical uniform with a stethoscope-like scanner"
+    },
+    {
+      "key": "portraits/varek",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a menacing space pirate captain, gaunt pale man with a cybernetic eye, long coat patched together from many different coloured uniforms, gold teeth, red lighting"
+    },
+    {
+      "key": "portraits/raider",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a space pirate raider in scavenged mismatched armour and a cracked helmet visor, face partially hidden, red and rust colours, holding a rifle"
+    },
+    {
+      "key": "scenes/refinery-interior",
+      "w": 1536,
+      "h": 640,
+      "prompt": "an empty control deck of an industrial mining starship, nobody present, frost on the consoles and windows, dim emergency lighting, one life-support panel glowing amber, abandoned chairs, cold blue and amber light, asteroids outside the window"
+    },
+    {
+      "key": "scenes/ore-hold",
+      "w": 1536,
+      "h": 640,
+      "prompt": "inside a starship mining refinery, a heavy sealed bulkhead door with a small frosted window, exhausted miners huddled together behind it in emergency red light, failing air, pipes and valves, frost"
+    },
+    {
+      "key": "scenes/taiidan-standoff",
+      "w": 1536,
+      "h": 640,
+      "prompt": "tense standoff on the ore deck of a mining starship, soldiers in red and black armour with rifles among stacked ore crates, a young woman officer with her helmet off at the centre, steam and cold light"
+    },
+    {
+      "key": "portraits/vaal",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a young woman, a military officer of an authoritarian space empire, pale skin, short dark red hair, tired grey eyes, tense expression, black and crimson armoured uniform with a high collar, helmet under her arm"
+    },
+    {
+      "key": "portraits/taiidan-marine",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a soldier in sealed red and black powered armour with a full faceless helmet and a narrow glowing red visor, menacing, holding a rifle across the chest"
+    },
+    {
+      "key": "portraits/gallery-1",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a young male starship gunner with short-cropped black hair, olive skin, a confident half smile, dark green flight suit with orange shoulder flashes"
+    },
+    {
+      "key": "portraits/gallery-2",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "an older woman navigator with silver braided hair, deep brown skin, sharp intelligent eyes, high-collared grey officer's coat"
+    },
+    {
+      "key": "portraits/gallery-3",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a lean male scout pilot in his twenties, tan skin, shaved head with a tattooed line above one ear, headset and visor pushed up"
+    },
+    {
+      "key": "portraits/gallery-4",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a stern middle-aged male officer, light brown skin, a neat grey beard, ochre and teal dress uniform with a kiith sash"
+    },
+    {
+      "key": "portraits/gallery-5",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a cheerful young woman technician, warm brown skin, curly hair tied up under a bandana, grease on her cheek, work overalls"
+    },
+    {
+      "key": "portraits/gallery-6",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a quiet woman marine in her thirties, pale olive skin, black hair in a tight bun, a thin scar on her lip, dark armoured vest"
+    },
+    {
+      "key": "portraits/gallery-7",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "an elderly male scholar, very dark skin, white close beard, round spectacles, layered sand-coloured robes with a data slate"
+    },
+    {
+      "key": "portraits/gallery-8",
+      "w": 896,
+      "h": 1152,
+      "portrait": true,
+      "prompt": "a young non-binary communications officer, light olive skin, asymmetric dark haircut, earpiece, crisp teal uniform"
+    }
+  ]
+}

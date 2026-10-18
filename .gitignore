@@ -1,0 +1,42 @@
+# Licensed source material - kept locally only, never committed
+reference/
+*.pdf
+
+# Build output
+bin/
+obj/
+build/
+dist/
+out/
+
+# Dependencies
+node_modules/
+/packages/*.nupkg
+.venv/
+__pycache__/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+*.user
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Runtime data
+apps/server/data/
+.turbo/
+*.tsbuildinfo
+
+# Playwright output
+tests/e2e/test-results/
+tests/e2e/playwright-report/

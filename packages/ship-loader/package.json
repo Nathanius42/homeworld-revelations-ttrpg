@@ -1,0 +1,10 @@
+{
+  "name": "@hwr/ship-loader",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p tsconfig.json" },
+  "peerDependencies": { "three": "0.170.0" },
+  "devDependencies": { "three": "0.170.0", "@types/three": "0.170.0", "typescript": "~5.7.2" }
+}
