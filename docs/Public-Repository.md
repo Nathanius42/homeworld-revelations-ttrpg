@@ -14,7 +14,7 @@ Everything committed here, except:
 | `.claude/`, `CLAUDE.md`, `azure-pipelines.yml` | Internal workflow and notes about this PC; GitHub gets its own CI |
 | `README.md`, `.gitattributes` | Replaced by public versions (no Git LFS there) |
 
-Links from the remaining docs to left-out pages become plain text. The public copy gets its own README, a licence (MIT for the code, with the Homeworld and Revelations rights and the fan art set apart), and a GitHub Actions workflow that typechecks, tests and builds.
+Links from the remaining docs to left-out pages become plain text. The public copy gets its own README, a plain MIT licence for the code, a NOTICE setting the Homeworld and Revelations rights and the fan art apart, and a GitHub Actions workflow that typechecks, tests and builds.
 
 The `reference/` folder is never committed, so it can't be exported.
 
@@ -38,7 +38,7 @@ Each release can carry a portable build made without the private folder:
 corepack pnpm package:win --no-private
 ```
 
-Run it in the public copy, after installing there (`corepack pnpm install`), so the download matches the tagged code. It adds `LICENSE.txt`, `THIRD-PARTY-NOTICES.txt` and `Start without launcher.cmd`. Zip `dist\HWR-App` and attach it to the release with its SHA-256. The export keeps the public copy's `node_modules` and `dist`, so exporting again doesn't delete a build waiting to be uploaded.
+Run it in the public copy, after installing there (`corepack pnpm install`), so the download matches the tagged code. It adds `LICENSE.txt`, `NOTICE.txt`, `THIRD-PARTY-NOTICES.txt` and `Start without launcher.cmd`. Zip `dist\HWR-App` and attach it to the release with its SHA-256. The export keeps the public copy's `node_modules` and `dist`, so exporting again doesn't delete a build waiting to be uploaded.
 
 The launcher is unsigned and starts a hidden server process, so antivirus such as Norton can flag a freshly compiled `HWR-App.exe` as a generic threat. The README and the release notes say so, and the start script is the way round it.
 
@@ -47,4 +47,4 @@ The launcher is unsigned and starts a hidden server process, so antivirus such a
 | Piece | File |
 |---|---|
 | The export and its exclude list | `tools/public/export.mjs` |
-| Public README, licence, CI, Git attributes | `tools/public/` |
+| Public README, licence, notice, CI, Git attributes | `tools/public/` |

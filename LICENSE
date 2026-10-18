@@ -1,4 +1,4 @@
-MIT License (source code)
+MIT License
 
 Copyright (c) 2026 Nathan Molla
 
@@ -19,20 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-What this licence does not cover
-
-This is an unofficial, non-commercial fan project. It is not affiliated with or
-endorsed by Gearbox Software, Blackbird Interactive or Modiphius Entertainment.
-
-Homeworld and its names, factions, ships and setting belong to Gearbox
-Software. Homeworld: Revelations and its rules belong to Modiphius
-Entertainment. The MIT licence above covers the source code written for this
-project only. It grants no rights in those works.
-
-The paintings in apps/web/public/art and the screenshots in docs/images are fan
-art of Homeworld, generated for this project. They are shared for
-non-commercial viewing alongside the code and are not covered by the MIT
-licence.

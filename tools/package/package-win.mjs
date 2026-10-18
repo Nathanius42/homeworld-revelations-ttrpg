@@ -14,7 +14,7 @@
  *   private/           ships, portraits, music, sfx, missions and tts from reference/ (unless --no-private)
  *   README.txt
  *   Start without launcher.cmd   the same start as a readable script, for PCs that block the unsigned launcher
- *   LICENSE.txt, THIRD-PARTY-NOTICES.txt   (--no-private builds, which may be shared)
+ *   LICENSE.txt, NOTICE.txt, THIRD-PARTY-NOTICES.txt   (--no-private builds, which may be shared)
  */
 import { execFileSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync, readdirSync } from "node:fs";
@@ -140,8 +140,10 @@ if (noPrivate) {
   step("Leaving out the private folder (--no-private)");
   // A build that may be shared carries its licences: the project's own (the public repository's
   // LICENSE, kept in tools/public here) and a note for the software bundled with it.
-  const license = [join(root, "LICENSE"), join(root, "tools", "public", "LICENSE")].find((f) => existsSync(f));
-  if (license) cpSync(license, join(out, "LICENSE.txt"));
+  for (const [name, saveAs] of [["LICENSE", "LICENSE.txt"], ["NOTICE.md", "NOTICE.txt"]]) {
+    const src = [join(root, name), join(root, "tools", "public", name)].find((f) => existsSync(f));
+    if (src) cpSync(src, join(out, saveAs));
+  }
   writeFileSync(
     join(out, "THIRD-PARTY-NOTICES.txt"),
     [
@@ -159,8 +161,8 @@ if (noPrivate) {
       "  Bundled open-source libraries including React, three.js, Fastify, ws and the Anthropic SDK,",
       "  each under its own licence (MIT unless stated otherwise in the source repository's lockfile).",
       "",
-      "HWR-App's own code is MIT licensed (LICENSE.txt). Homeworld and Homeworld: Revelations belong",
-      "to Gearbox Software and Modiphius Entertainment; this is an unofficial, non-commercial fan project.",
+      "HWR-App's own code is MIT licensed (LICENSE.txt); NOTICE.txt covers the Homeworld and Revelations",
+      "rights and the fan art. This is an unofficial, non-commercial fan project.",
       "",
     ].join("\r\n"),
   );

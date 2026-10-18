@@ -4,7 +4,7 @@ A browser-based digital table for **Homeworld: Revelations**, the tabletop role-
 
 It began as campaigns played with Claude as the GM and grew into an app my family plays on game nights.
 
-> An unofficial, non-commercial fan project, not affiliated with Gearbox Software, Blackbird Interactive or Modiphius Entertainment. See [LICENSE](LICENSE).
+> An unofficial, non-commercial fan project, not affiliated with Gearbox Software, Blackbird Interactive or Modiphius Entertainment. The code is [MIT licensed](LICENSE); the Homeworld setting, the Revelations rules and the fan art are not (see [NOTICE](NOTICE.md)).
 
 ![A fight at the table: the roll builder, combat log and crew](docs/images/screens/07-combat.png)
 
