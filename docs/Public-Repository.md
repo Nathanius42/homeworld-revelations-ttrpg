@@ -30,6 +30,18 @@ The `reference/` folder is never committed, so it can't be exported.
    The export stops if it finds anything that looks like an API key, a personal email, an LFS pointer instead of an image, or a file over 5 MB.
 3. In the public copy, look over the changes, then commit with the version and tag it. For example: `git commit -m "HWR-App v1.1.0"`, then `git tag v1.1.0`, then `git push --follow-tags`.
 
+## The Windows download
+
+Each release can carry a portable build made without the private folder:
+
+```bash
+corepack pnpm package:win --no-private
+```
+
+Run it in the public copy, after installing there (`corepack pnpm install`), so the download matches the tagged code. It adds `LICENSE.txt`, `THIRD-PARTY-NOTICES.txt` and `Start without launcher.cmd`. Zip `dist\HWR-App` and attach it to the release with its SHA-256. The export keeps the public copy's `node_modules` and `dist`, so exporting again doesn't delete a build waiting to be uploaded.
+
+The launcher is unsigned and starts a hidden server process, so antivirus such as Norton can flag a freshly compiled `HWR-App.exe` as a generic threat. The README and the release notes say so, and the start script is the way round it.
+
 ## Where to look
 
 | Piece | File |

@@ -13,6 +13,8 @@
  *   app/node_modules/  the Kokoro voice engine (native, so it can't be bundled)
  *   private/           ships, portraits, music, sfx, missions and tts from reference/ (unless --no-private)
  *   README.txt
+ *   Start without launcher.cmd   the same start as a readable script, for PCs that block the unsigned launcher
+ *   LICENSE.txt, THIRD-PARTY-NOTICES.txt   (--no-private builds, which may be shared)
  */
 import { execFileSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync, readdirSync } from "node:fs";
@@ -136,6 +138,32 @@ execFileSync(
 
 if (noPrivate) {
   step("Leaving out the private folder (--no-private)");
+  // A build that may be shared carries its licences: the project's own (the public repository's
+  // LICENSE, kept in tools/public here) and a note for the software bundled with it.
+  const license = [join(root, "LICENSE"), join(root, "tools", "public", "LICENSE")].find((f) => existsSync(f));
+  if (license) cpSync(license, join(out, "LICENSE.txt"));
+  writeFileSync(
+    join(out, "THIRD-PARTY-NOTICES.txt"),
+    [
+      "Third-party software in this download",
+      "",
+      "runtime/node.exe",
+      `  Node.js ${process.version}, (c) Node.js contributors, MIT licence and bundled third-party licences:`,
+      `  https://github.com/nodejs/node/blob/${process.version}/LICENSE`,
+      "",
+      "app/node_modules",
+      "  The Kokoro voice engine (kokoro-js, Apache 2.0), Hugging Face Transformers.js (Apache 2.0),",
+      "  ONNX Runtime (MIT) and their dependencies. Each package's licence is in its own folder.",
+      "",
+      "app/server.mjs and app/web",
+      "  Bundled open-source libraries including React, three.js, Fastify, ws and the Anthropic SDK,",
+      "  each under its own licence (MIT unless stated otherwise in the source repository's lockfile).",
+      "",
+      "HWR-App's own code is MIT licensed (LICENSE.txt). Homeworld and Homeworld: Revelations belong",
+      "to Gearbox Software and Modiphius Entertainment; this is an unofficial, non-commercial fan project.",
+      "",
+    ].join("\r\n"),
+  );
 } else {
   for (const kind of PRIVATE_KINDS) {
     const src = join(root, "reference", kind);
