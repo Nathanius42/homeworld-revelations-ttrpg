@@ -1,6 +1,7 @@
 /**
  * Builds the portable Windows folder (story #536): double-click HWR-App.exe on a laptop with no
- * dev tools. A private build for Nathan's own machines; CI never runs it and it's never uploaded.
+ * dev tools. CI never runs it. The default build carries the private folder and is for this
+ * household's own machines only; a --no-private build is the one shared on GitHub releases.
  *
  *   corepack pnpm package:win [--no-private] [--out <folder>]
  *
@@ -144,6 +145,25 @@ if (noPrivate) {
   }
 }
 
+// The same start as the launcher, as a script anyone can read: for PCs whose antivirus or
+// SmartScreen won't run the unsigned HWR-App.exe. The server's window stays open; closing it stops the game.
+writeFileSync(
+  join(out, "Start without launcher.cmd"),
+  [
+    "@echo off",
+    "rem Starts HWR-App without HWR-App.exe: the game server in this window, the host console in your browser.",
+    "rem Close this window to stop the game. Saves and settings: %LOCALAPPDATA%\\HWR-App",
+    'cd /d "%~dp0"',
+    'set "HWR_WEB_DIST=%~dp0app\\web"',
+    'set "HWR_PRIVATE_DIR=%~dp0private"',
+    'set "HWR_DATA=%LOCALAPPDATA%\\HWR-App\\hwr.sqlite"',
+    'if not exist "%LOCALAPPDATA%\\HWR-App" mkdir "%LOCALAPPDATA%\\HWR-App"',
+    'start "" cmd /c "timeout /t 4 /nobreak >nul & start http://localhost:8787/host"',
+    'runtime\\node.exe --env-file-if-exists="%LOCALAPPDATA%\\HWR-App\\.env" app\\server.mjs',
+    "",
+  ].join("\r\n"),
+);
+
 writeFileSync(
   join(out, "README.txt"),
   [
@@ -157,7 +177,14 @@ writeFileSync(
     "Claude GM: paste your API key into the Claude GM panel on the host console.",
     "",
     noPrivate
-      ? "This copy has no private folder: stock art and synthesised sound."
+      ? [
+          "This copy has no private folder: stock art and synthesised sound.",
+          "",
+          "HWR-App.exe is unsigned, so Windows SmartScreen or antivirus may warn about it. It's a small",
+          "tray launcher (tools/package/launcher/Launcher.cs in the source) that starts the bundled Node.js",
+          "server in the background. To skip it, double-click \"Start without launcher.cmd\" instead: it",
+          "starts the same server in a window you can see and opens the host console in your browser.",
+        ].join("\r\n")
       : "PRIVATE BUILD: the private folder holds licensed game assets, soundtracks and family portraits. Don't share this copy.",
     "",
   ].join("\r\n"),

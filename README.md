@@ -52,7 +52,15 @@ The [docs](docs/Home.md) folder is the project wiki: design notes, decisions, it
 
 I designed and directed this project and used [Claude Code](https://claude.com/claude-code) as a pair programmer throughout. The work was planned on a board, as user stories and bugs, with a branch and review for each change. Playtests at the family table fed straight back into the backlog; the [iteration reviews](docs/Iteration-Reviews.md) tell that story.
 
-## Run it
+## Download for Windows
+
+Each [release](../../releases) has a portable Windows build: unzip it anywhere and double-click `HWR-App.exe`. It needs no install and no developer tools.
+
+> **The launcher is unsigned, so antivirus may flag it.** `HWR-App.exe` is a small tray program compiled from [`Launcher.cs`](tools/package/launcher/Launcher.cs). It starts the bundled Node.js server in the background and opens the host console. Because it's new, unsigned and starts a hidden process, Windows SmartScreen may say *Windows protected your PC*, and some antivirus products (Norton, for one) report it as a generic threat. Check the zip against the SHA-256 on the release page. If you'd rather not run the launcher, double-click **`Start without launcher.cmd`** instead. It's a short script you can read first, and it starts the same server in a visible window and opens the host console in your browser. Or run from source as below.
+
+The download leaves out the licensed extras (ship models, music, sound and the voice model), so it uses synthesised sound and the browser's own voices.
+
+## Run it from source
 
 You need Node 24 and Corepack (it comes with Node).
 
