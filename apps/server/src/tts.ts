@@ -40,6 +40,8 @@ type WorkerMessage =
 let worker: Worker | undefined;
 let nextId = 1;
 const pending = new Map<number, { resolve: (wav: Buffer) => void; reject: (err: Error) => void }>();
+/** Lines the worker is making right now (at most one: they're queued). */
+const inWorker = new Set<number>();
 /** Generation time divided by audio time, for the last few lines. */
 const ratios: number[] = [];
 let slow = false;
@@ -58,10 +60,12 @@ function start(): Worker {
     if (m.type === "ready") log(`Kokoro voices ready in ${Date.now() - started} ms (${m.threads} threads)`);
     else if (m.type === "failed") log(`Kokoro voices unavailable: ${m.message}`);
     else if (m.type === "done") {
+      inWorker.delete(m.id);
       record(m.ms / 1000 / Math.max(m.seconds, 0.1));
       pending.get(m.id)?.resolve(Buffer.from(m.wav));
       pending.delete(m.id);
     } else if (m.type === "error") {
+      inWorker.delete(m.id);
       pending.get(m.id)?.reject(new Error(m.message));
       pending.delete(m.id);
     }
@@ -70,6 +74,7 @@ function start(): Worker {
     log(`Kokoro worker stopped: ${err.message}`);
     for (const p of pending.values()) p.reject(err);
     pending.clear();
+    inWorker.clear();
     worker = undefined;
   });
   w.unref();
@@ -86,6 +91,29 @@ function record(ratio: number): void {
     slow = true;
     log(`Kokoro is too slow on this PC (${average.toFixed(2)}x real time); narration uses the browser's voices`);
   }
+}
+
+/** Set once the server is stopping: no new speech is started. */
+let closing = false;
+
+/**
+ * Stops Kokoro before the process exits. Exiting while the worker is inside the voice model's
+ * native code crashes the process (Windows fail-fast), which the launcher reports as the server
+ * stopping, and terminating the worker can't interrupt that code either. So: refuse new lines,
+ * fail the ones waiting so their requests end, let the line in progress finish (a second or
+ * two; at most one runs at a time), then terminate the idle worker.
+ */
+export async function stopSpeech(maxWaitMs = 10_000): Promise<void> {
+  closing = true;
+  const err = new Error("The server is stopping.");
+  for (const p of pending.values()) p.reject(err);
+  pending.clear();
+  const w = worker;
+  if (!w) return;
+  const until = Date.now() + maxWaitMs;
+  while (inWorker.size > 0 && Date.now() < until) await new Promise((r) => setTimeout(r, 50));
+  worker = undefined;
+  await w.terminate().catch(() => undefined);
 }
 
 export function ttsAvailable(): boolean {
@@ -137,13 +165,16 @@ export function speak(text: string, voice: Voice, speed: number): Promise<Buffer
     return hit;
   }
   if (slow) return Promise.reject(new TtsSlowError());
+  if (closing) return Promise.reject(new Error("The server is stopping."));
   waiting++;
   const job = queue.then(
     () =>
       new Promise<Buffer>((resolve, reject) => {
         if (slow) return reject(new TtsSlowError());
+        if (closing) return reject(new Error("The server is stopping."));
         const id = nextId++;
         pending.set(id, { resolve, reject });
+        inWorker.add(id);
         start().postMessage({ id, text, voice, speed });
       }),
   );

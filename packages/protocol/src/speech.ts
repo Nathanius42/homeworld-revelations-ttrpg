@@ -47,10 +47,18 @@ export interface KokoroChoice {
 /** Voices for speakers the mission doesn't name: a mix of accents and sexes, picked by name so each keeps theirs. */
 const NPC_VOICES = ["bm_lewis", "bf_isabella", "am_michael", "bf_lily", "bm_daniel", "af_bella", "am_adam", "bf_alice", "bm_fable", "af_nicole", "am_eric", "af_sarah"];
 
-/** The Narrator is George, Fleet Command is Emma; named characters get the mission's choice or a stable pick. */
+/**
+ * The Narrator is George, Fleet Command is Emma; named characters get the mission's choice
+ * ("voice" or "voice@speed") or a stable pick.
+ */
 export function chooseKokoro(entry: Pick<Narration, "speaker" | "tone">, missionVoices: Record<string, string> = {}): KokoroChoice {
   const named = missionVoices[entry.speaker];
-  if (named) return { voice: named, speed: 1 };
+  if (named) {
+    // "bm_fable@0.82": a voice and a speed, for a speaker who should sound slower or quicker than people do.
+    const [voice, at] = named.split("@");
+    const speed = Number(at);
+    return { voice: voice!, speed: at && speed >= 0.7 && speed <= 1.3 ? speed : 1 };
+  }
   if (entry.tone === "fleet" || /fleet command/i.test(entry.speaker)) return { voice: "bf_emma", speed: 1.05 };
   if (entry.speaker === "Narrator" || entry.tone === "gm") return { voice: "bm_george", speed: 0.97 };
   if (entry.tone === "danger") return { voice: "bm_george", speed: 1.05 };

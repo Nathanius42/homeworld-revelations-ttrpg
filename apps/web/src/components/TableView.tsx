@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { TurnBanner } from "./TurnBanner";
 import { setVoiceEnabled, speechSupported, useNarrationSpeech, useVoiceEnabled } from "../speech";
 import { nowPlaying, setMusicEnabled, useMusicAvailable, useMusicEnabled } from "../music";
-import type { TableState } from "@hwr/protocol";
+import type { StoryClock, TableState } from "@hwr/protocol";
 import { ATTRIBUTES, ATTRIBUTE_LABELS, MOMENTUM_CAP, SKILLS, SKILL_LABELS } from "@hwr/rules-engine";
 import { isMuted, loadGameSounds, onMuteChange, setMuted, sfx, startDrone } from "../audio";
 import { useMe, useStore } from "../store";
@@ -15,6 +15,7 @@ import { Party, SheetModal } from "./Party";
 
 export function Pools({ state }: { state: TableState }) {
   const threat = state.pools.threat;
+  const clock = state.story?.clock;
   const last = useRef(threat);
   const [bump, setBump] = useState(0);
   useEffect(() => {
@@ -40,6 +41,23 @@ export function Pools({ state }: { state: TableState }) {
           {threat}
         </span>
       </div>
+      {clock && <Countdown clock={clock} />}
+    </div>
+  );
+}
+
+/** The campaign countdown, such as "Dreadnought awakening": one pip per step, filled as it runs on. */
+export function Countdown({ clock }: { clock: StoryClock }) {
+  return (
+    <div className="pool countdown" title={`${clock.label}: ${clock.value} of ${clock.max}. Missions run it on; when it fills, the story turns.`}>
+      <span className="label" style={{ color: "var(--danger)" }}>
+        {clock.label}
+      </span>
+      <span className="pips" aria-label={`${clock.value} of ${clock.max}`}>
+        {Array.from({ length: clock.max }, (_, i) => (
+          <i key={i} className={cx("pip-diamond", "danger", i < clock.value && "on")} />
+        ))}
+      </span>
     </div>
   );
 }

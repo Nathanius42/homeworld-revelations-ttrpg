@@ -62,6 +62,7 @@ export function recordChapter(state: TableState, missionTitle: string, endingTex
   });
   campaign.ru += ru;
   for (const s of party) campaign.advances[s.id] = (campaign.advances[s.id] ?? 0) + 1;
+  if (state.story) campaign.story = structuredClone(state.story);
   return campaign;
 }
 
@@ -99,6 +100,8 @@ export function carryOver(prev: TableState, next: TableState): TableState {
   );
   next.players = prev.players.filter((p) => p.role !== "spectator").map((p) => ({ ...p, connected: false }));
   next.campaign = structuredClone(prev.campaign);
+  // The story itself carries on through the campaign (recordChapter saved it there).
+  delete next.story;
   return next;
 }
 

@@ -1,0 +1,618 @@
+{
+ "id": "the-keepers",
+ "title": "The Keepers",
+ "blurb": "The Bentusi want to meet the Dreadnought. So, it turns out, do the Keepers: ancient guardians that come out of nowhere for anyone who carries the Progenitors' work.",
+ "recommendedPlayers": "2-6 players, about two hours",
+ "art": "/packs/dreadnought-arc/act-two/bentus.webp",
+ "sequel": "balcora-gate",
+ "music": "hiigara",
+ "clock": {
+  "id": "awakening",
+  "label": "Dreadnought awakening",
+  "max": 8
+ },
+ "voices": {
+  "Fleet Command": "bm_george",
+  "The Dreadnought": "am_onyx@0.82",
+  "Vash’Kora": "am_onyx@0.82",
+  "The Bentusi": "bf_alice@0.9",
+  "Bentusi adviser": "bf_alice@0.95"
+ },
+ "primer": [
+  "Your crew commands the Dreadnought now, and something aboard her is waking: watch the countdown.",
+  "The Bentusi, the ancient traders who helped the Kushan home a century ago, have asked to meet her. The fleet is bringing her to the rendezvous with the great harbour ship, the Bentus."
+ ],
+ "startNode": "briefing",
+ "gmNotes": "Act Two, mission four of the Dreadnought arc, around Homeworld 2's Keepers and the sacrifice of the Bentus.\nThe Keepers are Progenitor guardians, nearly invulnerable. The Dreadnought's mind, Vash’Kora, recognises them as its own and offers to reveal their weakness at a price (+2 countdown, flag keeperWeakness=hers); finding it the hard way sets keeperWeakness=ours.\nThe Bentus sacrifices itself to destroy the Keepers, as in Homeworld 2. With their last words the Bentusi offer the mind's name (knowsName, which opens options in the finale) or the crew can spend those seconds rescuing survivors (bentusiSaved).\nFlags from earlier: toldFleet brings a Bentusi adviser aboard. The countdown at 3+ makes the mind speak on the way.\nTone: wonder, dread, grief. End with Balcora: the Dreadnought is the key.",
+ "nodes": {
+  "briefing": {
+   "id": "briefing",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"Dreadnought, Fleet Command. The Bentusi have come to us for the first time in a century. They'll meet you at the rendezvous. Whatever they want with her, Karan S'jet wants to hear it first.\"",
+   "next": "drift",
+   "scene": {
+    "title": "The Keepers",
+    "location": "En route to the rendezvous",
+    "art": "/packs/dreadnought-arc/act-two/dreadnought-transit.webp",
+    "mood": "briefing"
+   }
+  },
+  "drift": {
+   "id": "drift",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "clockAtLeast": 3
+     },
+     "next": "drift-loud"
+    }
+   ],
+   "otherwise": "drift-quiet"
+  },
+  "drift-loud": {
+   "id": "drift-loud",
+   "type": "narration",
+   "speaker": "The Dreadnought",
+   "tone": "npc",
+   "text": "Halfway to the rendezvous the helm shifts by a fraction of a degree, on its own. When you correct it, the voice comes from everywhere at once: \"Path. Wrong. Another path is older.\" It lets go. This time.",
+   "next": "trace",
+   "effects": {
+    "threat": 1
+   }
+  },
+  "drift-quiet": {
+   "id": "drift-quiet",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "Halfway to the rendezvous the navigation plot redraws itself, then redraws itself back. Nobody touched it. The log shows nothing at all.",
+   "next": "trace"
+  },
+  "trace": {
+   "id": "trace",
+   "type": "test",
+   "prompt": "Something is moving through her systems between the commands you give. Find out what it's doing.",
+   "reason": "Trace what moves through her systems",
+   "approaches": [
+    {
+     "label": "Follow the signal through her core",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Watch for the pattern behind the glitches",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Computers, Progenitor technology",
+   "pass": {
+    "text": "It isn't random. It's mapping: every star the fleet passes, every hyperspace lane, laid out like threads on a loom. Whatever she is, she was built to find paths.",
+    "effects": {
+     "setFlags": {
+      "sawPattern": true
+     },
+     "clock": -1
+    },
+    "next": "bentus"
+   },
+   "fail": {
+    "text": "Whatever it is stays a step ahead of you, and seems almost amused by the effort.",
+    "effects": {
+     "threat": 1
+    },
+    "next": "bentus"
+   }
+  },
+  "bentus": {
+   "id": "bentus",
+   "type": "narration",
+   "speaker": "The Bentusi",
+   "tone": "npc",
+   "text": "The Bentus fills the sky: the great harbour ship of the Bentusi, older than the Hiigaran nation and glowing like a city. Their voice is many voices: \"Hiigarans. You carry an old thing. Older than you know. We would speak with what you carry.\"",
+   "next": "adviser",
+   "scene": {
+    "title": "The Bentus",
+    "location": "The rendezvous",
+    "art": "/packs/dreadnought-arc/act-two/bentus.webp",
+    "mood": "mystery"
+   }
+  },
+  "adviser": {
+   "id": "adviser",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "toldFleet"
+     },
+     "next": "adviser-aboard"
+    }
+   ],
+   "otherwise": "keepers"
+  },
+  "adviser-aboard": {
+   "id": "adviser-aboard",
+   "type": "narration",
+   "speaker": "Bentusi adviser",
+   "tone": "npc",
+   "text": "Because you told Fleet everything, a Bentusi adviser has come aboard, a small silver craft docked to the Dreadnought's spine and a voice on your bridge. \"Do not be afraid of her. Be careful with her. Those are different things.\"",
+   "next": "keepers",
+   "effects": {
+    "momentum": 1
+   }
+  },
+  "keepers": {
+   "id": "keepers",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "danger",
+   "text": "They come out of nothing, with no hyperspace wake and no warning. Four ships of a design nobody has seen in living memory, pale and impossibly smooth, falling on the Bentus. On your bridge every display flares at once and the voice says, almost tenderly: \"Keepers. Mine.\"",
+   "next": "weakness",
+   "scene": {
+    "title": "The Keepers",
+    "location": "The rendezvous",
+    "art": "/packs/dreadnought-arc/act-two/keepers-strike.webp",
+    "mood": "tension",
+    "truths": [
+     {
+      "id": "keepers",
+      "label": "Keepers of the old order",
+      "kind": "complication",
+      "strength": 1,
+      "scope": "situation"
+     }
+    ]
+   }
+  },
+  "weakness": {
+   "id": "weakness",
+   "type": "choice",
+   "prompt": "The Bentus is taking terrible damage. Your guns barely mark the Keepers. And the Dreadnought is offering, insistently, to show you where to hit them.",
+   "options": [
+    {
+     "id": "let",
+     "label": "Let her into the targeting",
+     "hint": "She knows their weakness. She'll keep the access.",
+     "next": "fight-weak",
+     "effects": {
+      "clock": 2,
+      "setFlags": {
+       "keeperWeakness": "hers"
+      }
+     }
+    },
+    {
+     "id": "find",
+     "label": "Find the weakness yourselves",
+     "hint": "Sensors against the Keepers, the hard way",
+     "next": "search"
+    }
+   ]
+  },
+  "search": {
+   "id": "search",
+   "type": "test",
+   "prompt": "Pick the Keepers apart with the Dreadnought's sensors, without letting her help.",
+   "reason": "Find the Keepers' weakness without her",
+   "approaches": [
+    {
+     "label": "Read the Keepers' shield harmonics",
+     "attribute": "insight",
+     "skill": "combat",
+     "difficulty": 2
+    },
+    {
+     "label": "Model their hull from the Bentus's damage",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Sensors, Tactics",
+   "pass": {
+    "text": "There: a seam where the shields fold, every eleven seconds. Your own find, and nobody aboard but you knows it.",
+    "effects": {
+     "setFlags": {
+      "keeperWeakness": "ours"
+     },
+     "momentum": 1
+    },
+    "next": "fight-weak"
+   },
+   "fail": {
+    "text": "Nothing. The Keepers are flawless, and the Bentus is burning.",
+    "next": "fight-strong"
+   }
+  },
+  "fight-weak": {
+   "id": "fight-weak",
+   "type": "space",
+   "scene": {
+    "title": "Keepers of the Old Order",
+    "location": "The rendezvous",
+    "art": "/packs/dreadnought-arc/act-two/keepers-strike.webp",
+    "mood": "combat"
+   },
+   "intro": "You know where to hit them now. The lead Keeper turns from the Bentus to face you, and its attack droids pour towards the Dreadnought. Stations.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "keeper",
+     "name": "Keeper",
+     "className": "Progenitor Keeper",
+     "scale": 4,
+     "systems": {
+      "communications": 11,
+      "computers": 12,
+      "engines": 10,
+      "sensors": 12,
+      "structure": 12,
+      "weapons": 12
+     },
+     "maxHull": 16,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Keeper beam",
+       "cd": 5,
+       "range": "Long",
+       "piercing": 2
+      }
+     ],
+     "crew": {
+      "attribute": 11,
+      "skill": 4
+     },
+     "range": "Long",
+     "model": "kpr_destroyer"
+    },
+    {
+     "id": "droid-1",
+     "name": "Attack droids",
+     "className": "Keeper attack droid",
+     "scale": 1,
+     "systems": {
+      "communications": 8,
+      "computers": 10,
+      "engines": 12,
+      "sensors": 9,
+      "structure": 7,
+      "weapons": 9
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Disruptor",
+       "cd": 3,
+       "range": "Close"
+      }
+     ],
+     "crew": {
+      "attribute": 10,
+      "skill": 3
+     },
+     "range": "Close",
+     "optional": true,
+     "model": "kpr_attackdroid"
+    },
+    {
+     "id": "droid-2",
+     "name": "More attack droids",
+     "className": "Keeper attack droid",
+     "scale": 1,
+     "systems": {
+      "communications": 8,
+      "computers": 10,
+      "engines": 12,
+      "sensors": 9,
+      "structure": 7,
+      "weapons": 9
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Disruptor",
+       "cd": 3,
+       "range": "Close"
+      }
+     ],
+     "crew": {
+      "attribute": 10,
+      "skill": 3
+     },
+     "range": "Close",
+     "optional": true,
+     "model": "kpr_attackdroid"
+    }
+   ],
+   "victory": {
+    "text": "The Keeper splits along the seam you found and falls apart in silence. Its sisters turn on the Bentus with everything they have.",
+    "next": "sacrifice"
+   },
+   "defeat": {
+    "text": "The Keeper's beam carves the Dreadnought's flank open. It doesn't finish her. It doesn't need to: its sisters are finishing the Bentus.",
+    "effects": {
+     "stressParty": 2
+    },
+    "next": "sacrifice"
+   }
+  },
+  "fight-strong": {
+   "id": "fight-strong",
+   "type": "space",
+   "scene": {
+    "title": "Keepers of the Old Order",
+    "location": "The rendezvous",
+    "art": "/packs/dreadnought-arc/act-two/keepers-strike.webp",
+    "mood": "combat"
+   },
+   "intro": "Without the weakness you're fighting a ghost. The lead Keeper turns from the Bentus to face you, and its attack droids pour towards the Dreadnought. Hold them off the Bentus as long as you can.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "keeper",
+     "name": "Keeper",
+     "className": "Progenitor Keeper",
+     "scale": 4,
+     "systems": {
+      "communications": 11,
+      "computers": 12,
+      "engines": 10,
+      "sensors": 12,
+      "structure": 12,
+      "weapons": 12
+     },
+     "maxHull": 16,
+     "armour": 4,
+     "weapons": [
+      {
+       "name": "Keeper beam",
+       "cd": 5,
+       "range": "Long",
+       "piercing": 2
+      }
+     ],
+     "crew": {
+      "attribute": 11,
+      "skill": 4
+     },
+     "range": "Long",
+     "model": "kpr_destroyer"
+    },
+    {
+     "id": "droid-1",
+     "name": "Attack droids",
+     "className": "Keeper attack droid",
+     "scale": 1,
+     "systems": {
+      "communications": 8,
+      "computers": 10,
+      "engines": 12,
+      "sensors": 9,
+      "structure": 7,
+      "weapons": 9
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Disruptor",
+       "cd": 3,
+       "range": "Close"
+      }
+     ],
+     "crew": {
+      "attribute": 10,
+      "skill": 3
+     },
+     "range": "Close",
+     "optional": true,
+     "model": "kpr_attackdroid"
+    },
+    {
+     "id": "droid-2",
+     "name": "More attack droids",
+     "className": "Keeper attack droid",
+     "scale": 1,
+     "systems": {
+      "communications": 8,
+      "computers": 10,
+      "engines": 12,
+      "sensors": 9,
+      "structure": 7,
+      "weapons": 9
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Disruptor",
+       "cd": 3,
+       "range": "Close"
+      }
+     ],
+     "crew": {
+      "attribute": 10,
+      "skill": 3
+     },
+     "range": "Close",
+     "optional": true,
+     "model": "kpr_attackdroid"
+    }
+   ],
+   "breakaway": {
+    "difficulty": 2
+   },
+   "victory": {
+    "text": "Impossibly, the Keeper falls. The fleet will be telling that story for a century. Its sisters turn on the Bentus with everything they have.",
+    "next": "sacrifice"
+   },
+   "escaped": {
+    "text": "You pull the Dreadnought back before the Keeper can finish her. Its sisters turn on the Bentus.",
+    "next": "sacrifice"
+   },
+   "defeat": {
+    "text": "The Keeper's beam carves the Dreadnought's flank open, and she shudders like something in pain. Around you, the Keepers finish the Bentus.",
+    "effects": {
+     "stressParty": 2,
+     "clock": 1
+    },
+    "next": "sacrifice"
+   }
+  },
+  "sacrifice": {
+   "id": "sacrifice",
+   "type": "narration",
+   "speaker": "The Bentusi",
+   "tone": "npc",
+   "text": "The Bentus's voice is calm. \"We have seen this end. We choose it.\" The great harbour ship's core goes critical, and the light takes the Keepers with it. In the last moment before the comms die, the Bentusi speak to you alone: \"The old thing you carry. Do you wish to know its name?\"",
+   "next": "last-words",
+   "scene": {
+    "title": "Sacrifice",
+    "location": "The rendezvous",
+    "art": "/packs/dreadnought-arc/act-two/bentus-sacrifice.webp",
+    "mood": "loss"
+   }
+  },
+  "last-words": {
+   "id": "last-words",
+   "type": "choice",
+   "prompt": "There are survivors in the Bentus's wreckage and only seconds before the comms fail. What do you spend them on?",
+   "options": [
+    {
+     "id": "name",
+     "label": "Ask its name",
+     "hint": "Knowledge you may need at the end",
+     "next": "named",
+     "effects": {
+      "setFlags": {
+       "knowsName": true
+      },
+      "clock": -1
+     }
+    },
+    {
+     "id": "rescue",
+     "label": "Send every shuttle to the survivors",
+     "hint": "The Bentusi who can still be saved",
+     "next": "rescued",
+     "effects": {
+      "setFlags": {
+       "bentusiSaved": true
+      },
+      "ru": 2
+     }
+    }
+   ]
+  },
+  "named": {
+   "id": "named",
+   "type": "narration",
+   "speaker": "The Bentusi",
+   "tone": "npc",
+   "text": "\"Vash’Kora. The Architect of Paths. It laid the roads the gates still follow. It is not evil. It is not finished. Speak its name when it forgets itself.\" Then silence. On your bridge, every display dims, as if something has been seen for the first time and doesn't yet know how it feels about it.",
+   "next": "end-named"
+  },
+  "rescued": {
+   "id": "rescued",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "Your shuttles pull eleven Bentusi from the wreckage: small, silver, grieving, alive. Whatever the Bentus meant to tell you went with it. On the bridge the Dreadnought hums to itself, a little louder than before.",
+   "next": "end-rescued"
+  },
+  "end-named": {
+   "id": "end-named",
+   "type": "end",
+   "scene": {
+    "title": "Aftermath",
+    "location": "The rendezvous, debris field",
+    "art": "/packs/dreadnought-arc/act-two/keepers-aftermath.webp",
+    "mood": "loss"
+   },
+   "text": "\"Dreadnought, Fleet Command. We saw the Bentus go. Before the end, they sent us one thing: coordinates. Balcora. They said you'd understand why.\" You do. She's the key.",
+   "ru": 3
+  },
+  "end-rescued": {
+   "id": "end-rescued",
+   "type": "end",
+   "scene": {
+    "title": "Aftermath",
+    "location": "The rendezvous, debris field",
+    "art": "/packs/dreadnought-arc/act-two/keepers-aftermath.webp",
+    "mood": "loss"
+   },
+   "text": "\"Dreadnought, Fleet Command. We saw the Bentus go, and we saw your shuttles. Eleven Bentusi are alive because of you. They've given us coordinates: Balcora. And they say the Dreadnought is the key.\"",
+   "ru": 3
+  }
+ },
+ "npcs": {}
+}

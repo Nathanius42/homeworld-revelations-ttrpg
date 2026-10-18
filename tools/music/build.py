@@ -81,6 +81,23 @@ SETS: dict[str, dict[str, list[tuple[str, str]]]] = {
         "victory": [(DOK, "A New Beginning"), (DOK, "Let There Be Peace on Kharak Once Again"), (DOK, "Victory- Gaalsi Cruiser Destroyed")],
         "loss": [(DOK, "Jacob's Sacrifice"), (DOK, "I Will Pray for your Souls"), (DOK, "The Fate of Carrier Nabal")],
     },
+    # Homeworld 2's score for missions in the Vaygr war, such as the dreadnought arc.
+    "hiigara": {
+        "lobby": [(HW2, "Opening"), (HW2, "The Pride of Hiigara")],
+        "briefing": [(HW2, "The Signal"), (HW2, "The Rendezvous"), (HW2, "Captain Soban"), (HW2, "Transports En Route")],
+        "exploring": [(HW2, "Into the Dust"), (HW2, "Outskirts of Gehenna"), (HW2, "Derelicts"), (HW2, "Journey To The Relic's Core")],
+        "mystery": [
+            (HW2, "Progenitor Derelict"), (HW2, "The Progenitors"), (HW2, "Dreadnought Berth"), (HW2, "The Guardian"),
+            (HW2, "Sajuuk's Identity"), (HW2, "The Megalith-Unreleased"), (HW2, "Trinity Ambience-Unreleased"), (HW2, "The Eye of Aaran-Unreleased"),
+        ],
+        "tension": [(HW2, "Vaygr Approach"), (HW2, "Vaygr Bombers Approaching"), (HW2, "Inhibitors"), (HW2, "Movers Emerge"), (HW2, "Hiigara Under Siege")],
+        "combat": [
+            (HW2, "Vaygr Invasion"), (HW2, "Counterattack"), (HW2, "Transports Under Attack"), (HW2, "Assault on Chimera"),
+            (HW2, "The Movers Attack"), (HW2, "Keepers of Sajuuk"), (HW2, "Battle For Sajuuk (remixed)"),
+        ],
+        "victory": [(HW2, "Sajuuk-khar"), (HW2, "Rescue Mounted"), (HW2, "The Age of S'Jet"), (HW2, "The House of S'jet-Unreleased")],
+        "loss": [(HW2, "Sacrifice"), (HW2, "Soban Captured"), (HW2, "The Bentsui Foresaw this")],
+    },
 }
 
 SHORT = {HW: "Homeworld", HWR: "Homeworld Remastered", HW2: "Homeworld 2 Remastered", HW3: "Homeworld 3", DOK: "Deserts of Kharak"}

@@ -40,7 +40,7 @@ To balance it, `HWR_MISSION=khar-toba npx tsx test/sim.ts` in `apps/server` (the
 
 ## Mission music sets
 
-A mission can name a music set (`"music": "kharak"` in its definition). The table carries it as `missionMusic`, and the client plays that set's tracks for each mood, falling back to the general moods for any gap. `tools/music/build.py` builds the sets listed in `SETS` into `reference/music/<set>/<mood>/`. **kharak** is Deserts of Kharak's score (35 tracks), including cues written for the Khar-Toba itself, such as *Arrival at the Khar Toba Site* and *The First City of Kharak*. Tracks with speech in them are left out.
+A mission can name a music set (`"music": "kharak"` in its definition). The table carries it as `missionMusic`, and the client plays that set's tracks for each mood, falling back to the general moods for any gap. `tools/music/build.py` builds the sets listed in `SETS` into `reference/music/<set>/<mood>/`. **kharak** is Deserts of Kharak's score (35 tracks), including cues written for the Khar-Toba itself, such as *Arrival at the Khar Toba Site* and *The First City of Kharak*. **hiigara** is Homeworld 2's score (37 tracks) for missions in the Vaygr war, such as the dreadnought arc, including *Dreadnought Berth*, *Keepers of Sajuuk* and *Soban Captured*. Tracks with speech or singing in them are left out.
 
 ## Narration voices (Kokoro)
 

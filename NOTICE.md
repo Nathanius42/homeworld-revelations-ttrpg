@@ -14,6 +14,10 @@ Homeworld and its names, factions, ships and setting belong to Gearbox Software.
 
 The paintings in `apps/web/public/art` and the screenshots in `docs/images` are fan art of Homeworld, generated for this project. They are shared for non-commercial viewing alongside the code and are not covered by the MIT licence.
 
+## The Dreadnought arc
+
+The missions in `packs/dreadnought-arc` are fan fiction set during the events of Homeworld 2, whose story, characters, places and ships belong to Gearbox Software. Their paintings are fan art, made by painting over renders of the ship models from the Homeworld Remastered source files. Like the rest of the fan art, they're shared for non-commercial viewing and aren't covered by the MIT licence. The models themselves aren't included.
+
 ## Third-party software
 
 Libraries this project depends on keep their own licences, listed in each package and in `pnpm-lock.yaml`. The Windows download names the software bundled with it in `THIRD-PARTY-NOTICES.txt`.

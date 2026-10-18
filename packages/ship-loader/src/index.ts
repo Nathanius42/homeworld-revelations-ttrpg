@@ -42,6 +42,8 @@ async function texture(loader: THREE.TextureLoader, url: string, colour: boolean
     const t = await loader.loadAsync(url);
     t.colorSpace = colour ? THREE.SRGBColorSpace : THREE.NoColorSpace;
     t.anisotropy = 8;
+    // Homeworld 2 models tile their textures (UVs from -1 to 2); Homeworld 1 stays within 0 to 1 either way.
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
     return t;
   } catch {
     return null;

@@ -417,6 +417,46 @@ test("the host console shows the join code, the tables and who has connected", a
 });
 
 /** A tenth of a second of silence as a WAV file, standing in for a Kokoro line. */
+test("a saved campaign reopens from the host console, with its scars, wounds, countdown and refits", async ({ browser, page }) => {
+  // Seeded by playwright.config.ts: a finished Cold Harbour chapter in which one crew member went down.
+  const seed = JSON.parse(process.env.HWR_E2E_CAMPAIGN!) as { campaignName: string; playerId: string; characterName: string; scar: string };
+  await page.goto("/host");
+  const row = page.getByRole("region", { name: "Campaigns" }).locator(".host-campaign", { hasText: seed.campaignName });
+  await expect(row).toContainText("1 chapter, last Cold Harbour");
+  await row.getByRole("button", { name: "Start the next chapter" }).click();
+  await expect(page.locator(".host-join .panel-title")).toContainText(seed.campaignName);
+  const code = (await page.locator(".host-join .tv-code").textContent())!.trim();
+  // The new chapter is now the campaign's latest table, so the list offers to resume it.
+  await expect(row.getByRole("button", { name: /^Resume / })).toBeVisible();
+
+  // The scarred crew member's player comes back to the same seat on the new chapter.
+  const context = await browser.newContext();
+  contexts.push(context);
+  await context.addInitScript(
+    ([key, id]) => {
+      localStorage.setItem(key!, id!);
+      localStorage.setItem("hwr.name", "Sam");
+    },
+    [`hwr.player.${code}`, seed.playerId],
+  );
+  const player = await context.newPage();
+  await player.goto(`/t/${code}`);
+  const between = player.getByRole("region", { name: "Between missions" });
+  await expect(between.locator(".panel-title")).toContainText("10 RU banked");
+  await expect(between).toContainText("Dreadnought awakening");
+  await expect(between).toContainText(seed.scar);
+  await expect(between).toContainText(`${seed.characterName} is still wounded`);
+  await between.scrollIntoViewIfNeeded();
+  await between.screenshot({ path: join(SHOTS, "21-campaign-scars.png"), timeout: 30_000 });
+
+  await between.getByRole("button", { name: /Treat the wound/ }).click();
+  await expect(between).not.toContainText("is still wounded");
+  const armour = between.locator("li", { hasText: "Ablative armour plating" });
+  await armour.getByRole("button", { name: "4 RU" }).click();
+  await expect(armour.getByRole("button", { name: "Fitted" })).toBeDisabled();
+  await expect(between.locator(".panel-title")).toContainText("5 RU banked");
+});
+
 function silentWav(): Buffer {
   const samples = 2400;
   const b = Buffer.alloc(44 + samples * 2);

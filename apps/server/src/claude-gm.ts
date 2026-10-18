@@ -268,10 +268,14 @@ function situation(state: TableState, game: Game): string {
             : `[system] ${l.text}`,
     )
     .join("\n");
+  const story = state.story;
+  const flags = Object.entries(story?.flags ?? {}).map(([k, v]) => (v === true ? k : `${k}=${String(v)}`));
+  const remembered = flags.length ? `\nThe campaign remembers (choices made on earlier missions; let them echo): ${flags.join(", ")}.` : "";
+  const countdown = story?.clock ? `\nCountdown: ${story.clock.label} ${story.clock.value} of ${story.clock.max}. Let the pressure show as it rises.` : "";
   return `<situation>
 Scene: ${scene.title}, ${scene.location}.
 Truths: ${scene.truths.map((t) => `${t.label} (${t.kind}, id ${t.id})`).join("; ") || "none"}.
-Momentum ${state.pools.momentum}, Threat ${state.pools.threat}.
+Momentum ${state.pools.momentum}, Threat ${state.pools.threat}.${remembered}${countdown}
 ${party.join("\n")}
 ${waiting}
 Recent log:

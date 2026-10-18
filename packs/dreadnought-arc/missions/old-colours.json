@@ -1,0 +1,978 @@
+{
+ "id": "old-colours",
+ "title": "Old Colours",
+ "blurb": "Reassigned to a frigate, you escort refugees out of the outer colonies. Somewhere in the dust lanes, what you left behind at Tanis is waiting for you.",
+ "recommendedPlayers": "2-6 players, about two hours",
+ "art": "/packs/dreadnought-arc/act-one/old-colours-convoy.webp",
+ "sequel": "the-berth",
+ "music": "hiigara",
+ "voices": {
+  "Fleet Command": "bm_george",
+  "Talis Naabal": "bm_lewis",
+  "Captain Vohra Sek": "af_nicole"
+ },
+ "primer": [
+  "After Tanis, the Vaygr are raiding the outer colonies wherever the Hiigaran fleet isn't. You survived the loss of the Spear of Soban, and Fleet Command has given you a smaller ship: the assault frigate Lance of Soban.",
+  "Your job: bring eleven colony transports, and four thousand people, safely to the fleet's rally point. What you did with the Spear at Tanis decides what's waiting in the dust."
+ ],
+ "startNode": "briefing",
+ "gmNotes": "Act One, mission two of the Dreadnought arc, after Homeworld 2's Tanis and before Gehenna.\nThe crew fly the Kiith Soban assault frigate Lance of Soban, escorting colony transports under convoy master Talis Naabal.\nFlag destroyer from The Fall of Tanis decides the middle: captured means Captain Vohra Sek (Vaygr) flies the Spear against them and knows her tricks from the logs; half-scuttled means Vaygr salvagers are stripping the drifting wreck; scuttled means only wreckage and a Vaygr data core (intel about Gehenna).\nThe Spear can end destroyed, retaken (a later ally) or still captured (an enemy at Hiigara in the finale). Sek can be spared (sekSpared).\nEnd with the crew's reputation made (flag reputation): Fleet Command is about to send them to the Dreadnought.",
+ "nodes": {
+  "briefing": {
+   "id": "briefing",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"Lance of Soban, Fleet Command. You'll escort the colony transports out of Hiir-Vesh and bring them to the fleet's rally point. Vaygr raiders are hitting the outer colonies wherever the fleet isn't. Make sure they're not where you are.\" The Lance is a frigate, not a destroyer. She's small and fast, and she's yours.",
+   "next": "convoy",
+   "scene": {
+    "title": "Old Colours",
+    "location": "Hiir-Vesh colony, outer system",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-convoy.webp",
+    "mood": "briefing"
+   }
+  },
+  "convoy": {
+   "id": "convoy",
+   "type": "narration",
+   "speaker": "Talis Naabal",
+   "tone": "npc",
+   "text": "\"Talis Naabal, convoy master. Eleven transports, four thousand people, and every one of them heard what happened at Tanis.\" The old man's voice is steady, but you can hear a child crying somewhere behind him. \"We'll go where you lead. Just make sure it's somewhere we arrive.\"",
+   "next": "dust"
+  },
+  "dust": {
+   "id": "dust",
+   "type": "test",
+   "scene": {
+    "title": "The Dust Lanes",
+    "location": "Between Hiir-Vesh and the rally point",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-convoy.webp",
+    "mood": "tension",
+    "truths": [
+     {
+      "id": "dust",
+      "label": "Dust lanes",
+      "kind": "complication",
+      "strength": 1,
+      "scope": "location"
+     }
+    ]
+   },
+   "prompt": "The quickest route to the rally point runs through a long lane of dust and ice: blind to sensors, perfect for an ambush. The long way round adds a day the transports' life support can't spare.",
+   "reason": "Lead the convoy through the dust without losing it",
+   "approaches": [
+    {
+     "label": "Read the dust for anything hiding in it",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 2
+    },
+    {
+     "label": "Plot a lane the transports can follow",
+     "attribute": "reason",
+     "skill": "flight",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Sensors, Astronavigation",
+   "pass": {
+    "text": "You find a clean lane through the dust, and something else: a heat signature in the dust ahead that has no business being there.",
+    "effects": {
+     "momentum": 1,
+     "addTruths": [
+      {
+       "id": "seen-first",
+       "label": "Seen them first",
+       "kind": "advantage",
+       "strength": 1,
+       "scope": "situation"
+      }
+     ]
+    },
+    "next": "what-waits"
+   },
+   "fail": {
+    "text": "The convoy strings out in the dust, transports losing sight of each other. And something ahead is moving to meet you.",
+    "effects": {
+     "threat": 2
+    },
+    "next": "what-waits"
+   }
+  },
+  "what-waits": {
+   "id": "what-waits",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "destroyer",
+      "equals": "captured"
+     },
+     "next": "old-colours"
+    },
+    {
+     "when": {
+      "flag": "destroyer",
+      "equals": "half-scuttled"
+     },
+     "next": "adrift"
+    }
+   ],
+   "otherwise": "wreck"
+  },
+  "old-colours": {
+   "id": "old-colours",
+   "type": "narration",
+   "speaker": "Captain Vohra Sek",
+   "tone": "npc",
+   "text": "A destroyer slides out of the dust, and your heart stops: you know every line of her. The Spear of Soban, wearing Vaygr red. Her running lights blink a Kiith Soban greeting code, the one only her own crew would know. \"Lance of Soban. This is Captain Vohra Sek of the Vaygr ship Spear. Your old ship flies well. Your logs taught us all her tricks. Surrender your transports, and nobody else has to learn them the hard way.\"",
+   "next": "answer",
+   "scene": {
+    "title": "Old Colours",
+    "location": "The dust lanes",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-spear.webp",
+    "mood": "tension",
+    "truths": [
+     {
+      "id": "she-knows",
+      "label": "She knows your tricks",
+      "kind": "complication",
+      "strength": 1,
+      "scope": "situation"
+     }
+    ]
+   }
+  },
+  "answer": {
+   "id": "answer",
+   "type": "choice",
+   "prompt": "The transports are behind you. The Spear of Soban is in front of you. Her captain is waiting.",
+   "options": [
+    {
+     "id": "fight",
+     "label": "Fight her: the Lance against the Spear",
+     "hint": "A frigate against a destroyer, but you know her blind spots too",
+     "next": "duel",
+     "effects": {
+      "addTruths": [
+       {
+        "id": "blind-spots",
+        "label": "You know her blind spots",
+        "kind": "advantage",
+        "strength": 1,
+        "scope": "situation"
+       }
+      ]
+     }
+    },
+    {
+     "id": "bluff",
+     "label": "Bluff: claim the fleet is right behind you",
+     "hint": "Buy time for the transports to scatter",
+     "next": "bluff"
+    }
+   ]
+  },
+  "bluff": {
+   "id": "bluff",
+   "type": "test",
+   "prompt": "Sek knows Kiith Soban. Make her believe a Hiigaran battle group is one jump behind you.",
+   "reason": "Make Captain Sek believe the fleet is coming",
+   "approaches": [
+    {
+     "label": "Calm, certain and Soban",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 3
+    },
+    {
+     "label": "Fake the fleet's hyperspace signatures",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 3
+    }
+   ],
+   "focusHint": "Persuasion, Electronic Warfare",
+   "pass": {
+    "text": "Sek hesitates just long enough. The transports scatter into the dust while she's still deciding, and when she finally opens fire, it's only at you.",
+    "effects": {
+     "momentum": 2,
+     "setFlags": {
+      "convoyScattered": true
+     }
+    },
+    "next": "duel"
+   },
+   "fail": {
+    "text": "\"Nice try, Soban.\" The Spear's turrets swing towards the transports.",
+    "effects": {
+     "threat": 2
+    },
+    "next": "duel"
+   }
+  },
+  "duel": {
+   "id": "duel",
+   "type": "space",
+   "scene": {
+    "title": "Lance Against Spear",
+    "location": "The dust lanes",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-spear.webp",
+    "mood": "combat",
+    "truths": [
+     {
+      "id": "dust-cover",
+      "label": "Dust to hide in",
+      "kind": "advantage",
+      "strength": 1,
+      "scope": "location"
+     }
+    ]
+   },
+   "intro": "The Spear of Soban comes about to bring her torpedo tubes to bear, exactly the way you taught her crew to. Her bombers launch from the infiltrator riding on her back. Everyone to stations, and make her pay for every trick she learned from you.",
+   "ship": {
+    "id": "lance-of-soban",
+    "name": "Lance of Soban",
+    "className": "Hiigaran assault frigate (Kiith Soban)",
+    "scale": 3,
+    "systems": {
+     "communications": 8,
+     "computers": 9,
+     "engines": 10,
+     "sensors": 9,
+     "structure": 9,
+     "weapons": 10
+    },
+    "maxHull": 12,
+    "armour": 1,
+    "weapons": [
+     {
+      "name": "Twin assault guns",
+      "cd": 4,
+      "range": "Close"
+     },
+     {
+      "name": "Flak battery",
+      "cd": 3,
+      "range": "Medium",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_assaultfrigate"
+   },
+   "enemies": [
+    {
+     "id": "spear-vaygr",
+     "name": "Spear of Soban (Vaygr prize)",
+     "className": "Hiigaran destroyer under Vaygr colours",
+     "scale": 4,
+     "systems": {
+      "communications": 9,
+      "computers": 10,
+      "engines": 8,
+      "sensors": 9,
+      "structure": 11,
+      "weapons": 11
+     },
+     "maxHull": 15,
+     "armour": 2,
+     "weapons": [
+      {
+       "name": "Twin kinetic turrets",
+       "cd": 4,
+       "range": "Medium"
+      },
+      {
+       "name": "Torpedo tubes",
+       "cd": 5,
+       "range": "Long",
+       "piercing": 1
+      }
+     ],
+     "crew": {
+      "attribute": 10,
+      "skill": 3
+     },
+     "range": "Medium",
+     "model": "hgn_destroyer"
+    },
+    {
+     "id": "bomb-1",
+     "name": "Vaygr bomber wing",
+     "className": "Vaygr bomber wing",
+     "scale": 1,
+     "systems": {
+      "communications": 6,
+      "computers": 7,
+      "engines": 11,
+      "sensors": 7,
+      "structure": 6,
+      "weapons": 9
+     },
+     "maxHull": 7,
+     "armour": 0,
+     "weapons": [
+      {
+       "name": "Plasma bombs",
+       "cd": 3,
+       "range": "Close",
+       "piercing": 1
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Close",
+     "model": "vgr_bomber",
+     "optional": true
+    },
+    {
+     "id": "bomb-2",
+     "name": "Second bomber wing",
+     "className": "Vaygr bomber wing",
+     "scale": 1,
+     "systems": {
+      "communications": 6,
+      "computers": 7,
+      "engines": 11,
+      "sensors": 7,
+      "structure": 6,
+      "weapons": 9
+     },
+     "maxHull": 7,
+     "armour": 0,
+     "weapons": [
+      {
+       "name": "Plasma bombs",
+       "cd": 3,
+       "range": "Close",
+       "piercing": 1
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Close",
+     "model": "vgr_bomber",
+     "optional": true
+    }
+   ],
+   "breakaway": {
+    "difficulty": 3
+   },
+   "victory": {
+    "text": "The Spear's engines gutter and die, and she hangs in the dust, crippled, her turrets dark. On the comms, Sek is shouting orders at a crew that's starting to panic.",
+    "next": "her-fate"
+   },
+   "escaped": {
+    "text": "You break off into the dust with the transports, and the Spear doesn't follow. She'll be out there, somewhere, with Sek on her bridge.",
+    "next": "convoy-home"
+   },
+   "defeat": {
+    "text": "The Lance is holed and drifting. Sek could finish you, but she takes two of the transports instead and is gone before you can stop her. You'll see her again.",
+    "effects": {
+     "stressParty": 2,
+     "setFlags": {
+      "convoyLosses": true
+     }
+    },
+    "next": "convoy-home"
+   }
+  },
+  "her-fate": {
+   "id": "her-fate",
+   "type": "choice",
+   "prompt": "The Spear is dead in the dust and Sek's crew is breaking. You could finish her from here, or put a boarding party aboard and take her back.",
+   "options": [
+    {
+     "id": "finish",
+     "label": "Finish her",
+     "hint": "End it cleanly. No more Vaygr Spear.",
+     "next": "finished",
+     "effects": {
+      "setFlags": {
+       "destroyer": "destroyed"
+      }
+     }
+    },
+    {
+     "id": "board",
+     "label": "Board her and take her back",
+     "hint": "She's still a Soban ship. Bring her home.",
+     "next": "retake"
+    }
+   ]
+  },
+  "finished": {
+   "id": "finished",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "You give the order yourselves. The Lance's guns open the Spear's reactor, and your old ship goes up in a light that turns the dust gold. Somebody on the bridge salutes. Somebody else looks away.",
+   "next": "convoy-home"
+  },
+  "retake": {
+   "id": "retake",
+   "type": "combat",
+   "scene": {
+    "title": "Retaking the Spear",
+    "location": "Spear of Soban, bridge",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-boarding.webp",
+    "mood": "combat",
+    "truths": [
+     {
+      "id": "home-ground",
+      "label": "You know every corridor",
+      "kind": "advantage",
+      "strength": 1,
+      "scope": "location"
+     }
+    ]
+   },
+   "intro": "The bridge looks wrong with Vaygr banners hung across it. Captain Vohra Sek stands at your old command station with her prize crew around her, and she smiles like she's been waiting for you.",
+   "npcs": [
+    "sek",
+    "prizecrew",
+    "prizecrew"
+   ],
+   "parley": {
+    "label": "Offer Sek her life for her ship",
+    "approach": {
+     "label": "Offer her the lifeboats she didn't give you",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 3
+    },
+    "pass": {
+     "speaker": "Captain Vohra Sek",
+     "text": "\"Soban honour,\" Sek says, as if tasting the words. \"Fine. I'll take your lifeboats. Tell Makaan's other captains you're merciful. They'll find it very funny.\" Her crew lower their carbines.",
+     "effects": {
+      "momentum": 2,
+      "setFlags": {
+       "destroyer": "retaken",
+       "sekSpared": true
+      }
+     },
+     "next": "retaken"
+    },
+    "failText": "\"I've read your logs, Soban,\" Sek says. \"You don't bluff and you don't bargain. Neither do I.\""
+   },
+   "reinforcementText": "Boots on the ladder from deck six: more of the prize crew, coming up to help.",
+   "moraleText": "With Sek down, the prize crew drop their carbines and put their hands on their heads.",
+   "victory": {
+    "text": "The last of the prize crew surrenders. You tear the Vaygr banners down yourselves, and somewhere below decks, a Soban engineer who's been hiding in a duct since Tanis starts to cry.",
+    "effects": {
+     "setFlags": {
+      "destroyer": "retaken"
+     }
+    },
+    "next": "retaken"
+   },
+   "defeat": {
+    "text": "You're driven off the bridge. Sek blows the infiltrator's docking clamps and drags the crippled Spear into the dust. She'll repair her. She'll be back.",
+    "effects": {
+     "stressParty": 2
+    },
+    "next": "convoy-home"
+   }
+  },
+  "retaken": {
+   "id": "retaken",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "The Spear of Soban is a wreck, but she's a Hiigaran wreck again. A fleet tug will tow her to the rally point, and in time she'll fly. Her crew, the ones who survived Tanis, will want to know who brought her home.",
+   "next": "convoy-home"
+  },
+  "adrift": {
+   "id": "adrift",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "danger",
+   "text": "The heat signature is the Spear of Soban. She's drifting, stern blown out, exactly as you left her at Tanis, and Vaygr salvage tugs are clamped to her hull like ticks. Lights move inside her. They're stripping her for parts, and for her logs.",
+   "next": "salvage",
+   "scene": {
+    "title": "What Was Left",
+    "location": "The dust lanes",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-wreck.webp",
+    "mood": "tension"
+   }
+  },
+  "salvage": {
+   "id": "salvage",
+   "type": "combat",
+   "scene": {
+    "title": "Salvagers",
+    "location": "Spear of Soban, engineering",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-boarding.webp",
+    "mood": "combat",
+    "truths": [
+     {
+      "id": "breach",
+      "label": "In through the reactor breach, unseen",
+      "kind": "advantage",
+      "strength": 1,
+      "scope": "location"
+     }
+    ]
+   },
+   "intro": "You board her in vacuum suits through the hole the reactor made. In the dark of her engineering section, Vaygr salvagers are cutting her computer core out of its housing, and their chief turns as your lights find them.",
+   "npcs": [
+    "salvagechief",
+    "salvager",
+    "salvager"
+   ],
+   "victory": {
+    "text": "The salvagers are dead or fled. Their tugs cut loose and run. The Spear's computer core is still in its housing, half cut free, still holding everything she knew.",
+    "next": "core"
+   },
+   "defeat": {
+    "text": "You're driven back to the Lance. The salvage tugs drag the Spear's core away into the dust, and with it her logs.",
+    "effects": {
+     "stressParty": 1,
+     "setFlags": {
+      "destroyer": "destroyed",
+      "logsLost": true
+     }
+    },
+    "next": "convoy-home"
+   }
+  },
+  "core": {
+   "id": "core",
+   "type": "choice",
+   "prompt": "The Spear's core and her logs are yours again. The rest of her is a broken hull. Do you finish what you started at Tanis, or try to bring what's left of her home?",
+   "options": [
+    {
+     "id": "finish",
+     "label": "Finish the scuttle",
+     "hint": "Take the core and blow the hull. Nothing left for the Vaygr.",
+     "next": "finished",
+     "effects": {
+      "setFlags": {
+       "destroyer": "destroyed"
+      },
+      "ru": 1
+     }
+    },
+    {
+     "id": "tow",
+     "label": "Patch her up for a tow",
+     "hint": "She could fly again, if the reactor can be made safe",
+     "next": "patch"
+    }
+   ]
+  },
+  "patch": {
+   "id": "patch",
+   "type": "test",
+   "prompt": "Her reactor is half-overloaded and has been since Tanis. Make it safe enough for a tug to get near her.",
+   "reason": "Make the Spear's reactor safe for a tow",
+   "approaches": [
+    {
+     "label": "Undo your own overload, carefully",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Vent the core and pray",
+     "attribute": "will",
+     "skill": "engineering",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Reactor Systems",
+   "pass": {
+    "text": "The reactor settles into a sullen, safe idle. You undid your own sabotage with your own hands. A fleet tug will come for her.",
+    "effects": {
+     "setFlags": {
+      "destroyer": "retaken"
+     }
+    },
+    "next": "retaken"
+   },
+   "fail": {
+    "text": "The reactor surges and you barely get clear before it finishes what you started at Tanis. This time the Spear of Soban goes all the way.",
+    "effects": {
+     "stressParty": 2,
+     "setFlags": {
+      "destroyer": "destroyed"
+     }
+    },
+    "next": "convoy-home"
+   }
+  },
+  "wreck": {
+   "id": "wreck",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "The heat signature is a Vaygr scavenger picking over a field of wreckage that drifted out here from Tanis. Some of it is Vaygr. Some of it is unmistakably the Spear of Soban. In the middle of it all, a Vaygr infiltrator's data core is still blinking.",
+   "next": "scavengers",
+   "scene": {
+    "title": "Wreckage",
+    "location": "The dust lanes",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-wreck.webp",
+    "mood": "mystery"
+   }
+  },
+  "scavengers": {
+   "id": "scavengers",
+   "type": "space",
+   "scene": {
+    "title": "Scavengers",
+    "location": "The dust lanes",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-wreck.webp",
+    "mood": "combat"
+   },
+   "intro": "The scavenger isn't alone: Vaygr interceptor wings peel away from the wreckage to defend their find, and they're between you and the transports.",
+   "ship": {
+    "id": "lance-of-soban",
+    "name": "Lance of Soban",
+    "className": "Hiigaran assault frigate (Kiith Soban)",
+    "scale": 3,
+    "systems": {
+     "communications": 8,
+     "computers": 9,
+     "engines": 10,
+     "sensors": 9,
+     "structure": 9,
+     "weapons": 10
+    },
+    "maxHull": 12,
+    "armour": 1,
+    "weapons": [
+     {
+      "name": "Twin assault guns",
+      "cd": 4,
+      "range": "Close"
+     },
+     {
+      "name": "Flak battery",
+      "cd": 3,
+      "range": "Medium",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_assaultfrigate"
+   },
+   "enemies": [
+    {
+     "id": "scav",
+     "name": "Scavenger frigate",
+     "className": "Vaygr assault frigate",
+     "scale": 3,
+     "systems": {
+      "communications": 8,
+      "computers": 8,
+      "engines": 9,
+      "sensors": 8,
+      "structure": 9,
+      "weapons": 10
+     },
+     "maxHull": 12,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Plasma cannons",
+       "cd": 4,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_assaultfrigate"
+    },
+    {
+     "id": "int-1",
+     "name": "Interceptor wing",
+     "className": "Vaygr interceptor wing",
+     "scale": 1,
+     "systems": {
+      "communications": 6,
+      "computers": 7,
+      "engines": 12,
+      "sensors": 7,
+      "structure": 6,
+      "weapons": 8
+     },
+     "maxHull": 6,
+     "armour": 0,
+     "weapons": [
+      {
+       "name": "Light cannons",
+       "cd": 2,
+       "range": "Close"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Close",
+     "model": "vgr_interceptor"
+    }
+   ],
+   "breakaway": {
+    "difficulty": 2
+   },
+   "victory": {
+    "text": "The scavenger frigate breaks apart and its fighters scatter. The wreckage, and the data core, are yours.",
+    "next": "data"
+   },
+   "escaped": {
+    "text": "You pull the convoy clear and leave the wreckage to the Vaygr. Whatever was in that core stays out here.",
+    "next": "convoy-home"
+   },
+   "defeat": {
+    "text": "The interceptors chew the Lance up until the scavenger has what it came for and they all withdraw.",
+    "effects": {
+     "stressParty": 2
+    },
+    "next": "convoy-home"
+   }
+  },
+  "data": {
+   "id": "data",
+   "type": "test",
+   "prompt": "The infiltrator's core is cracked and freezing. Pull whatever's left of its memory before it fails.",
+   "reason": "Recover the Vaygr data core",
+   "approaches": [
+    {
+     "label": "Splice it into the Lance's systems",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Read the damage and save what can be saved",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Computers, Salvage",
+   "pass": {
+    "text": "Fragments of Vaygr fleet orders: rally points, ship counts, and a name repeated again and again: Gehenna. Fleet Intelligence will want this badly.",
+    "effects": {
+     "setFlags": {
+      "intel": "gehenna"
+     },
+     "ru": 2
+    },
+    "next": "convoy-home"
+   },
+   "fail": {
+    "text": "The core dies in your hands, taking whatever it knew with it.",
+    "effects": {
+     "threat": 1
+    },
+    "next": "convoy-home"
+   }
+  },
+  "convoy-home": {
+   "id": "convoy-home",
+   "type": "narration",
+   "speaker": "Talis Naabal",
+   "tone": "npc",
+   "scene": {
+    "title": "The Rally Point",
+    "location": "Fleet rally point",
+    "art": "/packs/dreadnought-arc/act-one/old-colours-home.webp",
+    "mood": "victory"
+   },
+   "text": "\"Lance of Soban, Talis Naabal. We see the fleet's lights. Whatever happened out there, my people are going to remember who brought them through it.\"",
+   "effects": {
+    "setFlags": {
+     "reputation": true
+    }
+   },
+   "next": "ending"
+  },
+  "ending": {
+   "id": "ending",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "destroyer",
+      "equals": "retaken"
+     },
+     "next": "end-retaken"
+    },
+    {
+     "when": {
+      "flag": "destroyer",
+      "equals": "captured"
+     },
+     "next": "end-still-out-there"
+    },
+    {
+     "when": {
+      "flag": "convoyLosses"
+     },
+     "next": "end-losses"
+    }
+   ],
+   "otherwise": "end-done"
+  },
+  "end-retaken": {
+   "id": "end-retaken",
+   "type": "end",
+   "text": "\"Lance of Soban, Fleet Command. You brought back the convoy and the Spear of Soban. Kiith Soban has asked for your names. So, it seems, has someone much higher up.\"",
+   "ru": 4
+  },
+  "end-still-out-there": {
+   "id": "end-still-out-there",
+   "type": "end",
+   "text": "\"Lance of Soban, Fleet Command. The convoy is home. The Spear is still out there under Vaygr colours, and we'll meet her again.\" Your orders come through an hour later. Fleet Command wants you somewhere very strange.",
+   "ru": 3
+  },
+  "end-losses": {
+   "id": "end-losses",
+   "type": "end",
+   "text": "\"Lance of Soban, Fleet Command. Nine transports of eleven. It isn't nothing.\" Your orders come through an hour later. Fleet Command wants you somewhere very strange.",
+   "ru": 2
+  },
+  "end-done": {
+   "id": "end-done",
+   "type": "end",
+   "text": "\"Lance of Soban, Fleet Command. The convoy is home, and whatever was left of the Spear can rest. Good work.\" Your orders come through an hour later. Fleet Command wants you somewhere very strange.",
+   "ru": 3
+  }
+ },
+ "npcs": {
+  "sek": {
+   "id": "sek",
+   "name": "Captain Vohra Sek",
+   "tier": "major",
+   "detail": "Wears a Hiigaran officer's coat taken from your ship's lockers",
+   "attributes": {
+    "agility": 10,
+    "brawn": 9,
+    "coordination": 11,
+    "insight": 11,
+    "reason": 10,
+    "will": 11
+   },
+   "skills": {
+    "combat": 3,
+    "command": 3,
+    "engineering": 2,
+    "exploration": 2,
+    "flight": 3,
+    "medical": 1
+   },
+   "maxStress": 14,
+   "armour": 1,
+   "weapon": {
+    "name": "Heavy pistol",
+    "stressRating": 4,
+    "range": "Close",
+    "piercing": 1
+   },
+   "attackAttribute": "coordination",
+   "portrait": "/packs/dreadnought-arc/act-one/vohra-sek.webp"
+  },
+  "prizecrew": {
+   "id": "prizecrew",
+   "name": "Vaygr prize crew",
+   "tier": "minor",
+   "detail": "Vaygr spacers in mismatched Hiigaran gear",
+   "attributes": {
+    "agility": 9,
+    "brawn": 9,
+    "coordination": 9,
+    "insight": 8,
+    "reason": 8,
+    "will": 8
+   },
+   "skills": {
+    "combat": 2,
+    "command": 0,
+    "engineering": 2,
+    "exploration": 1,
+    "flight": 1,
+    "medical": 0
+   },
+   "maxStress": 6,
+   "armour": 1,
+   "weapon": {
+    "name": "Vaygr boarding carbine",
+    "stressRating": 4,
+    "range": "Close"
+   },
+   "attackAttribute": "coordination",
+   "portrait": "/packs/dreadnought-arc/act-one/vaygr-boarder.webp"
+  },
+  "salvager": {
+   "id": "salvager",
+   "name": "Vaygr salvager",
+   "tier": "minor",
+   "detail": "Cutting torch in one hand, carbine slung",
+   "attributes": {
+    "agility": 9,
+    "brawn": 10,
+    "coordination": 9,
+    "insight": 8,
+    "reason": 8,
+    "will": 8
+   },
+   "skills": {
+    "combat": 1,
+    "command": 0,
+    "engineering": 2,
+    "exploration": 1,
+    "flight": 0,
+    "medical": 0
+   },
+   "maxStress": 6,
+   "armour": 1,
+   "weapon": {
+    "name": "Breaching cutter",
+    "stressRating": 3,
+    "range": "Reach",
+    "piercing": 1
+   },
+   "attackAttribute": "brawn",
+   "portrait": "/packs/dreadnought-arc/act-one/vaygr-boarder.webp"
+  },
+  "salvagechief": {
+   "id": "salvagechief",
+   "name": "Salvage chief",
+   "tier": "notable",
+   "detail": "A Vaygr engineer who knows exactly what a Hiigaran reactor is worth",
+   "attributes": {
+    "agility": 9,
+    "brawn": 9,
+    "coordination": 9,
+    "insight": 10,
+    "reason": 10,
+    "will": 9
+   },
+   "skills": {
+    "combat": 2,
+    "command": 2,
+    "engineering": 3,
+    "exploration": 2,
+    "flight": 1,
+    "medical": 0
+   },
+   "maxStress": 9,
+   "armour": 1,
+   "weapon": {
+    "name": "Vaygr boarding carbine",
+    "stressRating": 4,
+    "range": "Close"
+   },
+   "attackAttribute": "coordination",
+   "portrait": "/packs/dreadnought-arc/act-one/vaygr-boarder.webp"
+  }
+ }
+}

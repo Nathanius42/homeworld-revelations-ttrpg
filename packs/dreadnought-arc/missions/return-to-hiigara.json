@@ -1,0 +1,2396 @@
+{
+ "id": "return-to-hiigara",
+ "title": "Return to Hiigara",
+ "blurb": "Makaan besieges the homeworld and his planet killers are falling. Sajuuk is coming home, and the Dreadnought is in the line. She has never been closer to waking.",
+ "recommendedPlayers": "2-6 players, about three hours",
+ "art": "/packs/dreadnought-arc/act-three/sajuuk-arrives.webp",
+ "music": "hiigara",
+ "clock": {
+  "id": "awakening",
+  "label": "Dreadnought awakening",
+  "max": 8
+ },
+ "voices": {
+  "Fleet Command": "bm_george",
+  "The Dreadnought": "am_onyx@0.82",
+  "Vash’Kora": "am_onyx@0.82",
+  "Bentusi adviser": "bf_alice@0.95",
+  "Karan S'jet": "bf_emma",
+  "Sajuuk": "bm_lewis@0.74"
+ },
+ "primer": [
+  "The final chapter. Makaan has brought the whole Vaygr fleet to Hiigara, and he has planet killers.",
+  "The fleet went through the Balcora Gate to the galaxy's core and found Sajuuk, the great Progenitor flagship. The Pride of Hiigara was left behind there. Karan S'jet is bringing Sajuuk home.",
+  "The countdown decides how hard the Dreadnought fights you today. What happens to her is up to you."
+ ],
+ "startNode": "briefing",
+ "gmNotes": "Act Three, mission six and the finale of the Dreadnought arc, around Homeworld 2's defence of Hiigara.\nThe Pride of Hiigara is abandoned in the galactic core; Sajuuk, with Karan S'jet joined to it, leads the fleet. Sajuuk destroys Makaan's flagship at the end, whatever the crew do.\nThe Sajuuk thread: at countdown 7+ or with sajuukHeard, Vash’Kora calls to a dormant Progenitor mind in Sajuuk. Silence the call (callCut, -1) or it stirs (sajuukStirring): Karan holds it, barely. It echoes in the battles and the endings.\nThe salvo battle depends on the countdown: under 4 she answers the helm; 4-5 she hesitates (locked stations); 6-7 she acts on her own; 8 she has the guns and turns on Hiigara.\nThe last salvo: fight through (kept), put her to sleep (knowsName: asleep), offer her a path (knowsName, under 6: ally), use her as a shield (any countdown: shield, the sure way at 8), or lose her.\nFlags left behind: dreadnought (kept/asleep/ally/shield/lost), hiigaraHit, sajuukStirring, callCut.\nTone: everything at once. Let the crew feel the weight of every missile, and of what they decide to do with her.",
+ "nodes": {
+  "briefing": {
+   "id": "briefing",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"All ships, Fleet Command. Hiigara is under siege. Makaan has brought everything he has. Word from the core: the fleet found what the Bentusi promised. The Pride of Hiigara is left behind there, empty. Karan S'jet has joined with something far greater, and she's bringing it home. Hold until she comes.\"",
+   "next": "arrival",
+   "scene": {
+    "title": "Return to Hiigara",
+    "location": "The Hiigara system",
+    "art": "/packs/dreadnought-arc/act-three/hiigara-siege.webp",
+    "mood": "briefing"
+   }
+  },
+  "arrival": {
+   "id": "arrival",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "You drop out of hyperspace into the worst of it: Hiigara's sky crowded with Vaygr. Then space folds open beside you, and Sajuuk comes home. It's vast and ancient, Progenitor-built, the flagship that is now the fleet's heart. On your bridge, every display turns towards it.",
+   "next": "spear",
+   "scene": {
+    "title": "Sajuuk",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/sajuuk-arrives.webp",
+    "mood": "mystery"
+   }
+  },
+  "spear": {
+   "id": "spear",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "destroyer",
+      "equals": "retaken"
+     },
+     "next": "spear-line"
+    }
+   ],
+   "otherwise": "call-check"
+  },
+  "spear-line": {
+   "id": "spear-line",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "The Spear of Soban takes her place off your bow in the line, scorched and patched and Hiigaran. Her captain signals the old Soban greeting, and adds: \"Whatever happens today, we're with you.\"",
+   "next": "call-check",
+   "effects": {
+    "momentum": 2
+   }
+  },
+  "call-check": {
+   "id": "call-check",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "clockAtLeast": 7
+     },
+     "next": "the-call"
+    },
+    {
+     "when": {
+      "flag": "sajuukHeard"
+     },
+     "next": "the-call"
+    }
+   ],
+   "otherwise": "isolation"
+  },
+  "the-call": {
+   "id": "the-call",
+   "type": "narration",
+   "speaker": "The Dreadnought",
+   "tone": "danger",
+   "text": "She sings. There's no other word for it: a note through every deck, every bulkhead, every bone, thrown out across the dark at Sajuuk. \"Sibling. Wake. They put a small thing in your heart. Wake and put it out.\"",
+   "next": "karan-asks",
+   "scene": {
+    "title": "The Call",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/the-call.webp",
+    "mood": "tension",
+    "truths": [
+     {
+      "id": "singing",
+      "label": "She's calling to Sajuuk",
+      "kind": "complication",
+      "strength": 1,
+      "scope": "situation"
+     }
+    ]
+   }
+  },
+  "karan-asks": {
+   "id": "karan-asks",
+   "type": "narration",
+   "speaker": "Karan S'jet",
+   "tone": "npc",
+   "text": "A new voice on your channel, calm and strained, a voice the whole fleet knows: \"Dreadnought, this is Karan S'jet. Something in here is listening to your ship. Something old, under me. I can hold it, but not for long. Whatever she's saying, make her stop.\"",
+   "next": "cut-link"
+  },
+  "cut-link": {
+   "id": "cut-link",
+   "type": "test",
+   "prompt": "Cut the channel between two Progenitor minds before the one in Sajuuk wakes up and answers.",
+   "reason": "Silence her call to Sajuuk",
+   "approaches": [
+    {
+     "label": "Jam the Progenitor channel",
+     "attribute": "reason",
+     "skill": "combat",
+     "difficulty": 2
+    },
+    {
+     "label": "Tear out her transmitter by hand",
+     "attribute": "brawn",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Talk her down",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Communications, Progenitor technology",
+   "pass": {
+    "text": "The note breaks off mid-song. On Sajuuk, whatever was stirring settles back into the dark. Karan breathes out over the channel: \"Thank you.\"",
+    "effects": {
+     "clock": -1,
+     "setFlags": {
+      "callCut": true
+     }
+    },
+    "next": "isolation"
+   },
+   "fail": {
+    "text": "The note goes on and on. And then, from Sajuuk, something sings back.",
+    "effects": {
+     "setFlags": {
+      "sajuukStirring": true
+     },
+     "threat": 2
+    },
+    "next": "stirring"
+   }
+  },
+  "stirring": {
+   "id": "stirring",
+   "type": "narration",
+   "speaker": "Sajuuk",
+   "tone": "npc",
+   "text": "A voice below hearing, slower even than hers, from the flagship itself: \"Who calls. Who wakes me. What is this small bright thing in my heart.\" Over the channel, Karan S'jet, through her teeth: \"Me. It's me. Go back to sleep.\"",
+   "next": "isolation"
+  },
+  "isolation": {
+   "id": "isolation",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "isolated"
+     },
+     "next": "isolation-note"
+    }
+   ],
+   "otherwise": "line"
+  },
+  "isolation-note": {
+   "id": "isolation-note",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "Whatever else happens today, the system you cut her out of at Balcora stays dark to her. It's dark to you too, but it's yours.",
+   "next": "line"
+  },
+  "line": {
+   "id": "line",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"Dreadnought, Fleet Command. Makaan's battle line is coming in to cover his planet killers. Break that line, or the planet killers get a clear run at the homeworld.\"",
+   "next": "unleash",
+   "scene": {
+    "title": "The Battle Line",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/battle-line.webp",
+    "mood": "tension"
+   }
+  },
+  "unleash": {
+   "id": "unleash",
+   "type": "choice",
+   "prompt": "The last offer, maybe. She's showing you a power you haven't seen before, enough to break the whole line at once.",
+   "options": [
+    {
+     "id": "unleash",
+     "label": "Let her loose",
+     "hint": "Break them. The countdown runs on.",
+     "next": "line-battle",
+     "effects": {
+      "clock": 1,
+      "momentum": 3,
+      "addTruths": [
+       {
+        "id": "unleashed",
+        "label": "Every Progenitor system awake",
+        "kind": "advantage",
+        "strength": 1,
+        "scope": "situation"
+       }
+      ]
+     }
+    },
+    {
+     "id": "hiigaran",
+     "label": "Fight her as a Hiigaran ship",
+     "hint": "Hold her back for what's coming",
+     "next": "line-battle"
+    }
+   ]
+  },
+  "line-battle": {
+   "id": "line-battle",
+   "type": "space",
+   "scene": {
+    "title": "The Battle Line",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/battle-line.webp",
+    "mood": "combat"
+   },
+   "intro": "A Vaygr battlecruiser leads the line, her heavy guns charging, with a destroyer and frigates in support. Stations.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "bc",
+     "name": "Vaygr battlecruiser",
+     "className": "Vaygr battlecruiser",
+     "scale": 5,
+     "systems": {
+      "communications": 10,
+      "computers": 10,
+      "engines": 7,
+      "sensors": 10,
+      "structure": 13,
+      "weapons": 12
+     },
+     "maxHull": 18,
+     "armour": 3,
+     "weapons": [
+      {
+       "name": "Heavy ion cannons",
+       "cd": 5,
+       "range": "Long",
+       "piercing": 1
+      }
+     ],
+     "crew": {
+      "attribute": 10,
+      "skill": 3
+     },
+     "range": "Long",
+     "chargeEvery": 2,
+     "model": "vgr_battlecruiser"
+    },
+    {
+     "id": "line-dd",
+     "name": "Line destroyer",
+     "className": "Vaygr destroyer",
+     "scale": 4,
+     "systems": {
+      "communications": 9,
+      "computers": 9,
+      "engines": 8,
+      "sensors": 9,
+      "structure": 11,
+      "weapons": 11
+     },
+     "maxHull": 15,
+     "armour": 2,
+     "weapons": [
+      {
+       "name": "Missile batteries",
+       "cd": 5,
+       "range": "Long"
+      }
+     ],
+     "crew": {
+      "attribute": 10,
+      "skill": 3
+     },
+     "range": "Long",
+     "model": "vgr_destroyer",
+     "optional": true
+    },
+    {
+     "id": "line-f",
+     "name": "Line frigate",
+     "className": "Vaygr assault frigate",
+     "scale": 3,
+     "systems": {
+      "communications": 8,
+      "computers": 8,
+      "engines": 9,
+      "sensors": 8,
+      "structure": 9,
+      "weapons": 10
+     },
+     "maxHull": 12,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Plasma cannons",
+       "cd": 4,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_assaultfrigate",
+     "optional": true
+    }
+   ],
+   "phases": [
+    {
+     "id": "spear-flank",
+     "when": {
+      "round": 2
+     },
+     "requires": {
+      "flag": "destroyer",
+      "equals": "retaken"
+     },
+     "text": "The Spear of Soban rakes the battlecruiser's flank, close enough to scorch her own paint. \"Now, Dreadnought!\"",
+     "effects": {
+      "momentum": 2
+     }
+    },
+    {
+     "id": "sajuuk-glances",
+     "when": {
+      "round": 3
+     },
+     "requires": {
+      "flag": "sajuukStirring"
+     },
+     "speaker": "Sajuuk",
+     "text": "\"Small ships. Small fires. Why do you fight beside the singer.\" A shiver runs through Sajuuk's hull. Karan doesn't answer it, and that's worse.",
+     "effects": {
+      "threat": 1
+     }
+    }
+   ],
+   "victory": {
+    "text": "The battlecruiser breaks in two and the Vaygr line comes apart around her. Then, behind it, the planet killers move up.",
+    "next": "launch"
+   },
+   "defeat": {
+    "text": "The line batters the Dreadnought back, but Sajuuk's guns break it for you. Then, behind it, the planet killers move up.",
+    "effects": {
+     "stressParty": 1
+    },
+    "next": "launch"
+   }
+  },
+  "launch": {
+   "id": "launch",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "danger",
+   "text": "The planet killers come out of the Vaygr line: vast, slow, spidery ships, unfolding their legs as they take station above Hiigara. Then they fire. Every missile that lands will kill a city. And on the bridge, as if she's been waiting for exactly this, the Dreadnought begins to fight you for the helm.",
+   "next": "band",
+   "scene": {
+    "title": "The Planet Killers",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/planet-killers.webp",
+    "mood": "tension"
+   }
+  },
+  "band": {
+   "id": "band",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "clockAtLeast": 8
+     },
+     "next": "salvo-8"
+    },
+    {
+     "when": {
+      "clockAtLeast": 6
+     },
+     "next": "salvo-6"
+    },
+    {
+     "when": {
+      "clockAtLeast": 4
+     },
+     "next": "salvo-4"
+    }
+   ],
+   "otherwise": "salvo-0"
+  },
+  "salvo-0": {
+   "id": "salvo-0",
+   "type": "space",
+   "scene": {
+    "title": "The Planet Killers",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/salvo.webp",
+    "mood": "combat"
+   },
+   "intro": "She answers the helm. It's all flying and gunnery now: every missile you stop is a city that lives. Stations.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "pk-1",
+     "name": "Planet killer one",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "Planet killer one punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "pk-2",
+     "name": "Planet killer two",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "Planet killer two punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "launcher",
+     "name": "Vaygr planet killer",
+     "className": "Vaygr planet killer",
+     "scale": 4,
+     "systems": {
+      "communications": 8,
+      "computers": 9,
+      "engines": 6,
+      "sensors": 9,
+      "structure": 11,
+      "weapons": 9
+     },
+     "maxHull": 14,
+     "armour": 2,
+     "weapons": [
+      {
+       "name": "Defence turrets",
+       "cd": 3,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "optional": true,
+     "model": "vgr_planetkiller"
+    }
+   ],
+   "impactEffects": {
+    "setFlags": {
+     "hiigaraHit": true
+    },
+    "threat": 1
+   },
+   "interceptEffects": {
+    "stressParty": 1
+   },
+   "phases": [
+    {
+     "id": "second-salvo",
+     "when": {
+      "round": 2
+     },
+     "text": "The planet killer fires again. Two more missiles fall towards Hiigara.",
+     "spawn": [
+      {
+       "id": "pk-3",
+       "name": "Planet killer three",
+       "className": "Planet-killer missile",
+       "scale": 5,
+       "systems": {
+        "communications": 0,
+        "computers": 6,
+        "engines": 9,
+        "sensors": 6,
+        "structure": 6,
+        "weapons": 0
+       },
+       "maxHull": 6,
+       "armour": 1,
+       "weapons": [],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_planetkillermissile",
+       "impact": {
+        "rounds": 2,
+        "text": "Planet killer three punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+       }
+      },
+      {
+       "id": "pk-4",
+       "name": "Planet killer four",
+       "className": "Planet-killer missile",
+       "scale": 5,
+       "systems": {
+        "communications": 0,
+        "computers": 6,
+        "engines": 9,
+        "sensors": 6,
+        "structure": 6,
+        "weapons": 0
+       },
+       "maxHull": 6,
+       "armour": 1,
+       "weapons": [],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_planetkillermissile",
+       "impact": {
+        "rounds": 2,
+        "text": "Planet killer four punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+       }
+      }
+     ]
+    },
+    {
+     "id": "sajuuk-swings",
+     "when": {
+      "round": 2
+     },
+     "requires": {
+      "flag": "sajuukStirring"
+     },
+     "speaker": "Karan S'jet",
+     "text": "Sajuuk's great guns swing round, past the missiles, onto you. Then, slowly, away. Karan's voice is a whisper: \"I have it. I have it. Get her out of my head.\"",
+     "effects": {
+      "threat": 1
+     }
+    }
+   ],
+   "victory": {
+    "text": "The salvo is spent. The planet killer is reloading. One more salvo, the biggest yet, and the Dreadnought is pulling at the helm.",
+    "next": "last-low"
+   },
+   "defeat": {
+    "text": "The Dreadnought staggers out of the salvo's path, burning, and Hiigara takes the hits you couldn't stop. The planet killer is reloading for one last salvo.",
+    "effects": {
+     "setFlags": {
+      "hiigaraHit": true
+     },
+     "stressParty": 1
+    },
+    "next": "last-low"
+   }
+  },
+  "salvo-4": {
+   "id": "salvo-4",
+   "type": "space",
+   "scene": {
+    "title": "The Planet Killers",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/salvo.webp",
+    "mood": "combat"
+   },
+   "intro": "She hesitates. Systems lag a beat behind every order, and the helm won't take an attack pattern at all. Stations.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "pk-1",
+     "name": "Planet killer one",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "Planet killer one punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "pk-2",
+     "name": "Planet killer two",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "Planet killer two punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "launcher",
+     "name": "Vaygr planet killer",
+     "className": "Vaygr planet killer",
+     "scale": 4,
+     "systems": {
+      "communications": 8,
+      "computers": 9,
+      "engines": 6,
+      "sensors": 9,
+      "structure": 11,
+      "weapons": 9
+     },
+     "maxHull": 14,
+     "armour": 2,
+     "weapons": [
+      {
+       "name": "Defence turrets",
+       "cd": 3,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "optional": true,
+     "model": "vgr_planetkiller"
+    }
+   ],
+   "impactEffects": {
+    "setFlags": {
+     "hiigaraHit": true
+    },
+    "threat": 1
+   },
+   "interceptEffects": {
+    "stressParty": 1
+   },
+   "phases": [
+    {
+     "id": "second-salvo",
+     "when": {
+      "round": 2
+     },
+     "text": "The planet killer fires again. Two more missiles fall towards Hiigara.",
+     "spawn": [
+      {
+       "id": "pk-3",
+       "name": "Planet killer three",
+       "className": "Planet-killer missile",
+       "scale": 5,
+       "systems": {
+        "communications": 0,
+        "computers": 6,
+        "engines": 9,
+        "sensors": 6,
+        "structure": 6,
+        "weapons": 0
+       },
+       "maxHull": 6,
+       "armour": 1,
+       "weapons": [],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_planetkillermissile",
+       "impact": {
+        "rounds": 2,
+        "text": "Planet killer three punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+       }
+      },
+      {
+       "id": "pk-4",
+       "name": "Planet killer four",
+       "className": "Planet-killer missile",
+       "scale": 5,
+       "systems": {
+        "communications": 0,
+        "computers": 6,
+        "engines": 9,
+        "sensors": 6,
+        "structure": 6,
+        "weapons": 0
+       },
+       "maxHull": 6,
+       "armour": 1,
+       "weapons": [],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_planetkillermissile",
+       "impact": {
+        "rounds": 2,
+        "text": "Planet killer four punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+       }
+      }
+     ]
+    },
+    {
+     "id": "sajuuk-swings",
+     "when": {
+      "round": 2
+     },
+     "requires": {
+      "flag": "sajuukStirring"
+     },
+     "speaker": "Karan S'jet",
+     "text": "Sajuuk's great guns swing round, past the missiles, onto you. Then, slowly, away. Karan's voice is a whisper: \"I have it. I have it. Get her out of my head.\"",
+     "effects": {
+      "threat": 1
+     }
+    },
+    {
+     "id": "lag",
+     "when": {
+      "round": 2
+     },
+     "speaker": "The Dreadnought",
+     "text": "\"Wait.\" The sensor station locks. \"I am looking.\"",
+     "lock": [
+      "scan"
+     ]
+    }
+   ],
+   "victory": {
+    "text": "The salvo is spent. The planet killer is reloading. One more salvo, the biggest yet, and the Dreadnought is pulling at the helm.",
+    "next": "last-low"
+   },
+   "defeat": {
+    "text": "The Dreadnought staggers out of the salvo's path, burning, and Hiigara takes the hits you couldn't stop. The planet killer is reloading for one last salvo.",
+    "effects": {
+     "setFlags": {
+      "hiigaraHit": true
+     },
+     "stressParty": 1
+    },
+    "next": "last-low"
+   },
+   "locked": [
+    "pattern"
+   ],
+   "overrideDifficulty": 1
+  },
+  "salvo-6": {
+   "id": "salvo-6",
+   "type": "space",
+   "scene": {
+    "title": "The Planet Killers",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/salvo.webp",
+    "mood": "combat"
+   },
+   "intro": "She picks her own targets now. Every round you'll be splitting the bridge between stopping missiles and taking back what she's taken. Stations.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "pk-1",
+     "name": "Planet killer one",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "Planet killer one punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "pk-2",
+     "name": "Planet killer two",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "Planet killer two punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "launcher",
+     "name": "Vaygr planet killer",
+     "className": "Vaygr planet killer",
+     "scale": 4,
+     "systems": {
+      "communications": 8,
+      "computers": 9,
+      "engines": 6,
+      "sensors": 9,
+      "structure": 11,
+      "weapons": 9
+     },
+     "maxHull": 14,
+     "armour": 2,
+     "weapons": [
+      {
+       "name": "Defence turrets",
+       "cd": 3,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "optional": true,
+     "model": "vgr_planetkiller"
+    }
+   ],
+   "impactEffects": {
+    "setFlags": {
+     "hiigaraHit": true
+    },
+    "threat": 1
+   },
+   "interceptEffects": {
+    "stressParty": 1
+   },
+   "phases": [
+    {
+     "id": "second-salvo",
+     "when": {
+      "round": 2
+     },
+     "text": "The planet killer fires again. Two more missiles fall towards Hiigara.",
+     "spawn": [
+      {
+       "id": "pk-3",
+       "name": "Planet killer three",
+       "className": "Planet-killer missile",
+       "scale": 5,
+       "systems": {
+        "communications": 0,
+        "computers": 6,
+        "engines": 9,
+        "sensors": 6,
+        "structure": 6,
+        "weapons": 0
+       },
+       "maxHull": 6,
+       "armour": 1,
+       "weapons": [],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_planetkillermissile",
+       "impact": {
+        "rounds": 2,
+        "text": "Planet killer three punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+       }
+      },
+      {
+       "id": "pk-4",
+       "name": "Planet killer four",
+       "className": "Planet-killer missile",
+       "scale": 5,
+       "systems": {
+        "communications": 0,
+        "computers": 6,
+        "engines": 9,
+        "sensors": 6,
+        "structure": 6,
+        "weapons": 0
+       },
+       "maxHull": 6,
+       "armour": 1,
+       "weapons": [],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_planetkillermissile",
+       "impact": {
+        "rounds": 2,
+        "text": "Planet killer four punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+       }
+      }
+     ]
+    },
+    {
+     "id": "sajuuk-swings",
+     "when": {
+      "round": 2
+     },
+     "requires": {
+      "flag": "sajuukStirring"
+     },
+     "speaker": "Karan S'jet",
+     "text": "Sajuuk's great guns swing round, past the missiles, onto you. Then, slowly, away. Karan's voice is a whisper: \"I have it. I have it. Get her out of my head.\"",
+     "effects": {
+      "threat": 1
+     }
+    }
+   ],
+   "victory": {
+    "text": "The salvo is spent. The planet killer is reloading. One more salvo, the biggest yet, and the Dreadnought is pulling at the helm.",
+    "next": "last-high"
+   },
+   "defeat": {
+    "text": "The Dreadnought staggers out of the salvo's path, burning, and Hiigara takes the hits you couldn't stop. The planet killer is reloading for one last salvo.",
+    "effects": {
+     "setFlags": {
+      "hiigaraHit": true
+     },
+     "stressParty": 1
+    },
+    "next": "last-high"
+   },
+   "rogue": {
+    "speaker": "The Dreadnought",
+    "fire": [
+     "\"{target}. Mine to end.\" The lance fires before anyone touches the trigger.",
+     "\"Slow. You are all so slow.\" She swings onto {target} and fires on her own."
+    ],
+    "surge": [
+     "\"Not your ship. Not your path.\" Every console on the bridge spits sparks.",
+     "A shudder runs the length of her, like something waking from a dream it didn't like."
+    ],
+    "seize": [
+     "\"The {station} is mine now.\" The controls go dead under your hands.",
+     "\"I will do the {station}.\" Your console locks, politely, completely."
+    ],
+    "awake": true
+   }
+  },
+  "salvo-8": {
+   "id": "salvo-8",
+   "type": "space",
+   "scene": {
+    "title": "The Planet Killers",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/salvo.webp",
+    "mood": "combat"
+   },
+   "intro": "She has the guns. You watch the lance turn, not towards the missiles, but towards Hiigara itself, and the whole bridge fights her for it. Stations.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "pk-1",
+     "name": "Planet killer one",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "Planet killer one punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "pk-2",
+     "name": "Planet killer two",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "Planet killer two punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "launcher",
+     "name": "Vaygr planet killer",
+     "className": "Vaygr planet killer",
+     "scale": 4,
+     "systems": {
+      "communications": 8,
+      "computers": 9,
+      "engines": 6,
+      "sensors": 9,
+      "structure": 11,
+      "weapons": 9
+     },
+     "maxHull": 14,
+     "armour": 2,
+     "weapons": [
+      {
+       "name": "Defence turrets",
+       "cd": 3,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "optional": true,
+     "model": "vgr_planetkiller"
+    }
+   ],
+   "impactEffects": {
+    "setFlags": {
+     "hiigaraHit": true
+    },
+    "threat": 1
+   },
+   "interceptEffects": {
+    "stressParty": 1
+   },
+   "phases": [
+    {
+     "id": "second-salvo",
+     "when": {
+      "round": 2
+     },
+     "text": "The planet killer fires again. Two more missiles fall towards Hiigara.",
+     "spawn": [
+      {
+       "id": "pk-3",
+       "name": "Planet killer three",
+       "className": "Planet-killer missile",
+       "scale": 5,
+       "systems": {
+        "communications": 0,
+        "computers": 6,
+        "engines": 9,
+        "sensors": 6,
+        "structure": 6,
+        "weapons": 0
+       },
+       "maxHull": 6,
+       "armour": 1,
+       "weapons": [],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_planetkillermissile",
+       "impact": {
+        "rounds": 2,
+        "text": "Planet killer three punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+       }
+      },
+      {
+       "id": "pk-4",
+       "name": "Planet killer four",
+       "className": "Planet-killer missile",
+       "scale": 5,
+       "systems": {
+        "communications": 0,
+        "computers": 6,
+        "engines": 9,
+        "sensors": 6,
+        "structure": 6,
+        "weapons": 0
+       },
+       "maxHull": 6,
+       "armour": 1,
+       "weapons": [],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_planetkillermissile",
+       "impact": {
+        "rounds": 2,
+        "text": "Planet killer four punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+       }
+      }
+     ]
+    },
+    {
+     "id": "sajuuk-swings",
+     "when": {
+      "round": 2
+     },
+     "requires": {
+      "flag": "sajuukStirring"
+     },
+     "speaker": "Karan S'jet",
+     "text": "Sajuuk's great guns swing round, past the missiles, onto you. Then, slowly, away. Karan's voice is a whisper: \"I have it. I have it. Get her out of my head.\"",
+     "effects": {
+      "threat": 1
+     }
+    },
+    {
+     "id": "turns",
+     "when": {
+      "round": 2
+     },
+     "speaker": "The Dreadnought",
+     "text": "\"They put small things in the hearts of great ones. On that world, they will do it again. Better to end the path here.\" The lance charges.",
+     "effects": {
+      "stressParty": 1
+     }
+    }
+   ],
+   "victory": {
+    "text": "The salvo is spent. The planet killer is reloading. One more salvo, the biggest yet, and the Dreadnought is pulling at the helm.",
+    "next": "last-8"
+   },
+   "defeat": {
+    "text": "The Dreadnought staggers out of the salvo's path, burning, and Hiigara takes the hits you couldn't stop. The planet killer is reloading for one last salvo.",
+    "effects": {
+     "setFlags": {
+      "hiigaraHit": true
+     },
+     "stressParty": 1
+    },
+    "next": "last-8"
+   },
+   "locked": [
+    "fire"
+   ],
+   "rogue": {
+    "speaker": "The Dreadnought",
+    "fire": [
+     "\"{target}. Mine to end.\" The lance fires before anyone touches the trigger.",
+     "\"Slow. You are all so slow.\" She swings onto {target} and fires on her own."
+    ],
+    "surge": [
+     "\"Not your ship. Not your path.\" Every console on the bridge spits sparks.",
+     "A shudder runs the length of her, like something waking from a dream it didn't like."
+    ],
+    "seize": [
+     "\"The {station} is mine now.\" The controls go dead under your hands.",
+     "\"I will do the {station}.\" Your console locks, politely, completely."
+    ],
+    "awake": true
+   }
+  },
+  "last-low": {
+   "id": "last-low",
+   "type": "choice",
+   "prompt": "One salvo left, the biggest, and she's straining at the helm like a ship that wants to be somewhere else. What do you do with her?",
+   "options": [
+    {
+     "id": "fight",
+     "label": "Fight it through",
+     "hint": "Win the helm and stop the last salvo yourselves",
+     "next": "fight-low"
+    },
+    {
+     "id": "sleep",
+     "label": "Put her to sleep",
+     "hint": "Speak her name and ask her to rest",
+     "requires": {
+      "flag": "knowsName"
+     },
+     "next": "sleep"
+    },
+    {
+     "id": "path",
+     "label": "Offer her a path",
+     "hint": "A place in the fleet, and a road of her own",
+     "requires": {
+      "flag": "knowsName"
+     },
+     "next": "path"
+    },
+    {
+     "id": "shield",
+     "label": "Use her as a shield",
+     "hint": "Set the helm into the salvo and abandon ship",
+     "next": "shield-helm"
+    }
+   ]
+  },
+  "last-high": {
+   "id": "last-high",
+   "type": "choice",
+   "prompt": "One salvo left, the biggest, and she has half the bridge. You can't fly her well enough for much longer. What do you do?",
+   "options": [
+    {
+     "id": "fight",
+     "label": "Fight it through",
+     "hint": "She'll fight you every round",
+     "next": "fight-high"
+    },
+    {
+     "id": "sleep",
+     "label": "Put her to sleep",
+     "hint": "Speak her name, and hope she still hears it",
+     "requires": {
+      "flag": "knowsName"
+     },
+     "next": "sleep-hard"
+    },
+    {
+     "id": "shield",
+     "label": "Use her as a shield",
+     "hint": "Set the helm into the salvo and abandon ship",
+     "next": "shield-helm"
+    }
+   ]
+  },
+  "last-8": {
+   "id": "last-8",
+   "type": "choice",
+   "prompt": "She has the guns, and she's turning them on Hiigara. The last salvo is falling. There may only be one sure way left.",
+   "options": [
+    {
+     "id": "shield",
+     "label": "Use her as a shield",
+     "hint": "Set the helm into the salvo and abandon ship. The sure way.",
+     "next": "shield-helm"
+    },
+    {
+     "id": "wrestle",
+     "label": "Wrestle her for the helm",
+     "hint": "A hard test. Fail, and she's lost.",
+     "next": "wrestle"
+    },
+    {
+     "id": "sleep",
+     "label": "Speak her name",
+     "hint": "A last, long chance",
+     "requires": {
+      "flag": "knowsName"
+     },
+     "next": "sleep-hard"
+    }
+   ]
+  },
+  "fight-low": {
+   "id": "fight-low",
+   "type": "space",
+   "scene": {
+    "title": "The Last Salvo",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/salvo.webp",
+    "mood": "combat"
+   },
+   "intro": "Hiigaran hands on every control. She fights you, but you're stronger. Stop the last salvo. Stations.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "last-1",
+     "name": "The first of the last salvo",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "The first of the last salvo punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "last-2",
+     "name": "The second of the last salvo",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "The second of the last salvo punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "last-3",
+     "name": "The third of the last salvo",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "The third of the last salvo punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    }
+   ],
+   "impactEffects": {
+    "setFlags": {
+     "hiigaraHit": true
+    },
+    "threat": 1
+   },
+   "interceptEffects": {
+    "stressParty": 1
+   },
+   "victory": {
+    "text": "The last salvo is spent, and the Dreadnought is still yours.",
+    "effects": {
+     "setFlags": {
+      "dreadnought": "kept"
+     }
+    },
+    "next": "toll-check"
+   },
+   "defeat": {
+    "text": "Her hull fails, and so does your grip on her. She stops answering anyone at all.",
+    "next": "lose"
+   }
+  },
+  "fight-high": {
+   "id": "fight-high",
+   "type": "space",
+   "scene": {
+    "title": "The Last Salvo",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/salvo.webp",
+    "mood": "combat"
+   },
+   "intro": "She fights you for every station. Take them back and stop the last salvo, or lose her trying. Stations.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "last-1",
+     "name": "The first of the last salvo",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "The first of the last salvo punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "last-2",
+     "name": "The second of the last salvo",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "The second of the last salvo punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "last-3",
+     "name": "The third of the last salvo",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "The third of the last salvo punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    },
+    {
+     "id": "last-4",
+     "name": "The fourth of the last salvo",
+     "className": "Planet-killer missile",
+     "scale": 5,
+     "systems": {
+      "communications": 0,
+      "computers": 6,
+      "engines": 9,
+      "sensors": 6,
+      "structure": 6,
+      "weapons": 0
+     },
+     "maxHull": 6,
+     "armour": 1,
+     "weapons": [],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_planetkillermissile",
+     "impact": {
+      "rounds": 3,
+      "text": "The fourth of the last salvo punches through the upper atmosphere. A light blooms over Hiigara, and the comms channels fill with screaming."
+     }
+    }
+   ],
+   "impactEffects": {
+    "setFlags": {
+     "hiigaraHit": true
+    },
+    "threat": 1
+   },
+   "interceptEffects": {
+    "stressParty": 1
+   },
+   "victory": {
+    "text": "The last salvo is spent, and the Dreadnought is still yours.",
+    "effects": {
+     "setFlags": {
+      "dreadnought": "kept"
+     }
+    },
+    "next": "toll-check"
+   },
+   "defeat": {
+    "text": "Her hull fails, and so does your grip on her. She stops answering anyone at all.",
+    "next": "lose"
+   },
+   "rogue": {
+    "speaker": "The Dreadnought",
+    "fire": [
+     "\"{target}. Mine to end.\" The lance fires before anyone touches the trigger.",
+     "\"Slow. You are all so slow.\" She swings onto {target} and fires on her own."
+    ],
+    "surge": [
+     "\"Not your ship. Not your path.\" Every console on the bridge spits sparks.",
+     "A shudder runs the length of her, like something waking from a dream it didn't like."
+    ],
+    "seize": [
+     "\"The {station} is mine now.\" The controls go dead under your hands.",
+     "\"I will do the {station}.\" Your console locks, politely, completely."
+    ],
+    "awake": true
+   },
+   "locked": [
+    "fire"
+   ]
+  },
+  "wrestle": {
+   "id": "wrestle",
+   "type": "test",
+   "prompt": "Get to the helm through a bridge that doesn't want you there, and take her back by force.",
+   "reason": "Wrestle the Dreadnought for the helm",
+   "approaches": [
+    {
+     "label": "Override her by hand",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 4
+    },
+    {
+     "label": "Force your way to the helm",
+     "attribute": "brawn",
+     "skill": "flight",
+     "difficulty": 4
+    },
+    {
+     "label": "Command her like a ship",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 4
+    }
+   ],
+   "focusHint": "Progenitor technology, Command",
+   "pass": {
+    "text": "The helm comes back under your hands with a jolt that throws half the bridge off their feet. She's still fighting. But she's yours, for now.",
+    "effects": {
+     "clock": -1
+    },
+    "next": "fight-high"
+   },
+   "fail": {
+    "text": "The helm burns your hands. She doesn't even notice you're there any more.",
+    "next": "lose"
+   }
+  },
+  "sleep": {
+   "id": "sleep",
+   "type": "extended",
+   "scene": {
+    "title": "Her Name",
+    "location": "The Dreadnought, command deck",
+    "art": "/packs/dreadnought-arc/act-three/her-name.webp",
+    "mood": "mystery"
+   },
+   "prompt": "\"Vash’Kora.\" The bridge goes still. Now talk her down, gently, all the way down, while the last salvo falls.",
+   "label": "Ask Vash’Kora to rest",
+   "work": 6,
+   "magnitude": 1,
+   "resistance": 0,
+   "attempts": 4,
+   "approaches": [
+    {
+     "label": "Speak to her",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 2
+    },
+    {
+     "label": "Ease her systems down one by one",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Show her the road she laid",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 2
+    }
+   ],
+   "pressure": [
+    "\"Not finished,\" she says. \"Never finished.\"",
+    "The last salvo is past the moon. Sajuuk's guns are reaching for it."
+   ],
+   "complete": {
+    "text": "\"Rest,\" she repeats, as if she's never heard the word. The note in the decks drops, and drops, and stops. Her displays stay lit, and they stay in Hiigaran. Sajuuk's guns take the last salvo apart in the upper air.",
+    "effects": {
+     "clock": -4,
+     "setFlags": {
+      "dreadnought": "asleep"
+     }
+    },
+    "next": "toll-check"
+   },
+   "timeout": {
+    "text": "She won't sleep. Not now, not with the sky on fire. There's one way left.",
+    "next": "shield-helm"
+   }
+  },
+  "sleep-hard": {
+   "id": "sleep-hard",
+   "type": "extended",
+   "scene": {
+    "title": "Her Name",
+    "location": "The Dreadnought, command deck",
+    "art": "/packs/dreadnought-arc/act-three/her-name.webp",
+    "mood": "mystery"
+   },
+   "prompt": "\"Vash’Kora.\" She's so far gone it barely reaches her. Keep saying it while the last salvo falls.",
+   "label": "Ask Vash’Kora to rest",
+   "work": 7,
+   "magnitude": 1,
+   "resistance": 0,
+   "attempts": 4,
+   "approaches": [
+    {
+     "label": "Speak to her",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 3
+    },
+    {
+     "label": "Ease her systems down one by one",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 3
+    },
+    {
+     "label": "Show her the road she laid",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 3
+    }
+   ],
+   "pressure": [
+    "\"Who,\" she says. \"Who is that.\"",
+    "The lance is still charging.",
+    "The last salvo is past the moon."
+   ],
+   "complete": {
+    "text": "On the last breath of it, she hears you. \"Vash’Kora,\" she says, wonderingly, as if remembering. Then: \"Rest.\" The lance powers down. Sajuuk's guns take the last salvo apart in the upper air.",
+    "effects": {
+     "clock": -4,
+     "setFlags": {
+      "dreadnought": "asleep"
+     }
+    },
+    "next": "toll-check"
+   },
+   "timeout": {
+    "text": "She's too far gone to hear her own name. There's one way left.",
+    "next": "shield-helm"
+   }
+  },
+  "path": {
+   "id": "path",
+   "type": "test",
+   "scene": {
+    "title": "The Architect of Paths",
+    "location": "The Dreadnought, command deck",
+    "art": "/packs/dreadnought-arc/act-three/her-name.webp",
+    "mood": "mystery"
+   },
+   "prompt": "\"Vash’Kora. Architect of Paths. Stop the salvo with us, and we'll give you a road: a place in the fleet, and a home that isn't a grave.\"",
+   "reason": "Offer the Architect of Paths a road",
+   "approaches": [
+    {
+     "label": "Speak for the crew",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 3
+    },
+    {
+     "label": "Find what she truly wants",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 3
+    }
+   ],
+   "focusHint": "Diplomacy, Progenitor lore",
+   "pass": {
+    "text": "A long silence. Then every gun on the ship swings onto the last salvo at once, with an accuracy no Hiigaran crew could match. \"A road,\" she says. \"Yes. Show me.\" The sky over Hiigara is empty.",
+    "effects": {
+     "setFlags": {
+      "dreadnought": "ally"
+     }
+    },
+    "next": "toll-check"
+   },
+   "fail": {
+    "text": "\"Small things offering roads,\" she says, and laughs, if it is a laugh. She takes the helm.",
+    "effects": {
+     "clock": 2
+    },
+    "next": "last-high"
+   }
+  },
+  "shield-helm": {
+   "id": "shield-helm",
+   "type": "test",
+   "scene": {
+    "title": "The Shield",
+    "location": "The Dreadnought, command deck",
+    "art": "/packs/dreadnought-arc/act-three/abandon.webp",
+    "mood": "tension"
+   },
+   "prompt": "You can't steer her well enough to shoot the salvo down. But you can put the whole ship in its path. Lock the helm onto the salvo's course before she notices what you're doing.",
+   "reason": "Set the helm into the salvo",
+   "approaches": [
+    {
+     "label": "Lock the course and burn the controls",
+     "attribute": "agility",
+     "skill": "flight",
+     "difficulty": 2
+    },
+    {
+     "label": "Trick her into the course",
+     "attribute": "insight",
+     "skill": "flight",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Piloting, Sabotage",
+   "pass": {
+    "text": "The course locks. She feels it too late, and the whole ship howls. You have three minutes.",
+    "next": "evacuate"
+   },
+   "fail": {
+    "text": "It takes far too long, by hand, with her fighting you for every degree. The course locks with barely two minutes left.",
+    "effects": {
+     "stressParty": 1
+    },
+    "next": "evacuate"
+   }
+  },
+  "evacuate": {
+   "id": "evacuate",
+   "type": "extended",
+   "scene": {
+    "title": "Abandon Ship",
+    "location": "The Dreadnought, lifeboat decks",
+    "art": "/packs/dreadnought-arc/act-three/abandon.webp",
+    "mood": "tension"
+   },
+   "prompt": "It's Tanis again: corridors, alarms, the lifeboats aft. Except this time the ship herself is trying to keep you aboard.",
+   "label": "Get everyone off before the salvo hits",
+   "work": 6,
+   "magnitude": 1,
+   "resistance": 0,
+   "attempts": 3,
+   "approaches": [
+    {
+     "label": "Run for the lifeboats",
+     "attribute": "agility",
+     "skill": "exploration",
+     "difficulty": 2
+    },
+    {
+     "label": "Force the sealed doors",
+     "attribute": "brawn",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Get the stragglers moving",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 2
+    }
+   ],
+   "pressure": [
+    "A bulkhead closes ahead of you, gently. You force it.",
+    "\"Stay,\" she says, in every corridor at once. \"Stay with me.\""
+   ],
+   "complete": {
+    "text": "The last lifeboat clears her hull with seconds to spare. Behind you, the Dreadnought flies straight and true into the heart of the last salvo, and the sky over Hiigara turns white.",
+    "effects": {
+     "setFlags": {
+      "dreadnought": "shield"
+     }
+    },
+    "next": "toll-check"
+   },
+   "timeout": {
+    "text": "The last lifeboat tears free as the salvo hits, and the blast throws it end over end. Not everyone in it walks away unhurt. Behind you, the Dreadnought is gone, and so are the missiles.",
+    "effects": {
+     "setFlags": {
+      "dreadnought": "shield"
+     },
+     "stressParty": 3
+    },
+    "next": "toll-check"
+   }
+  },
+  "lose": {
+   "id": "lose",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "sajuukStirring"
+     },
+     "next": "lose-sajuuk"
+    }
+   ],
+   "otherwise": "lose-fleet"
+  },
+  "lose-sajuuk": {
+   "id": "lose-sajuuk",
+   "type": "narration",
+   "speaker": "Karan S'jet",
+   "tone": "npc",
+   "text": "Karan S'jet, very quietly: \"I'm sorry. The thing under me wants to answer her, and I can't hold it while she sings. Get to your lifeboats. Now.\" Sajuuk's guns fire once. The Dreadnought breaks apart, and on Sajuuk, the voice beneath Karan goes silent.",
+   "next": "lost"
+  },
+  "lose-fleet": {
+   "id": "lose-fleet",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"Dreadnought, Fleet Command. We can't let her fire on the homeworld. Abandon ship.\" You barely make the lifeboats. Behind you, Sajuuk and the fleet turn their guns on the ship that carried you this far.",
+   "next": "lost"
+  },
+  "lost": {
+   "id": "lost",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "She goes in silence. The last salvo is taken apart by Sajuuk's guns, but not before two cities burn.",
+   "next": "makaan",
+   "effects": {
+    "setFlags": {
+     "dreadnought": "lost",
+     "hiigaraHit": true
+    },
+    "stressParty": 2
+   }
+  },
+  "toll-check": {
+   "id": "toll-check",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "hiigaraHit"
+     },
+     "next": "toll"
+    }
+   ],
+   "otherwise": "makaan"
+  },
+  "toll": {
+   "id": "toll",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "danger",
+   "text": "Not every missile was stopped. Below the clouds, cities that were there this morning are burning, and the fleet's rescue ships are already falling towards them.",
+   "next": "makaan"
+  },
+  "makaan": {
+   "id": "makaan",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "Then Sajuuk turns on Makaan's flagship, and it is over very quickly. The Vaygr fleet breaks and runs. Across the galaxy, gate after gate begins to wake, and the age of hyperspace begins.",
+   "next": "ending",
+   "scene": {
+    "title": "The End of Makaan",
+    "location": "High orbit over Hiigara",
+    "art": "/packs/dreadnought-arc/act-three/makaan-falls.webp",
+    "mood": "victory"
+   }
+  },
+  "ending": {
+   "id": "ending",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "dreadnought",
+      "equals": "kept"
+     },
+     "next": "kept-check"
+    },
+    {
+     "when": {
+      "flag": "dreadnought",
+      "equals": "asleep"
+     },
+     "next": "end-asleep"
+    },
+    {
+     "when": {
+      "flag": "dreadnought",
+      "equals": "ally"
+     },
+     "next": "ally-check"
+    },
+    {
+     "when": {
+      "flag": "dreadnought",
+      "equals": "shield"
+     },
+     "next": "end-shield"
+    }
+   ],
+   "otherwise": "end-lost"
+  },
+  "kept-check": {
+   "id": "kept-check",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "sajuukStirring"
+     },
+     "next": "end-kept-uneasy"
+    }
+   ],
+   "otherwise": "end-kept"
+  },
+  "ally-check": {
+   "id": "ally-check",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "sajuukStirring"
+     },
+     "next": "end-ally-sajuuk"
+    }
+   ],
+   "otherwise": "end-ally"
+  },
+  "end-kept": {
+   "id": "end-kept",
+   "type": "end",
+   "scene": {
+    "title": "Her Commanders",
+    "location": "Hiigara, the fleet anchorage",
+    "art": "/packs/dreadnought-arc/act-three/anchorage.webp",
+    "mood": "victory"
+   },
+   "text": "\"Dreadnought, Fleet Command. Hiigara stands. The Daiamid want to know what to do with her. They've decided to ask her crew.\" On the bridge, the hum is low and steady. She's still in there. So are you.",
+   "ru": 5
+  },
+  "end-kept-uneasy": {
+   "id": "end-kept-uneasy",
+   "type": "end",
+   "scene": {
+    "title": "Her Commanders",
+    "location": "Hiigara, the fleet anchorage",
+    "art": "/packs/dreadnought-arc/act-three/anchorage.webp",
+    "mood": "victory"
+   },
+   "text": "\"Dreadnought, Fleet Command. Hiigara stands, and the Dreadnought is yours.\" A private channel, later, from Karan S'jet: \"Keep her away from Sajuuk. The thing under me hasn't gone back to sleep. It's listening for her.\"",
+   "ru": 5
+  },
+  "end-asleep": {
+   "id": "end-asleep",
+   "type": "end",
+   "scene": {
+    "title": "Rest",
+    "location": "Hiigara, the fleet anchorage",
+    "art": "/packs/dreadnought-arc/act-three/anchorage.webp",
+    "mood": "victory"
+   },
+   "text": "\"Dreadnought, Fleet Command. Hiigara stands.\" Her mind sleeps, perhaps for good. What's left is the greatest warship the Hiigarans have ever flown, and she answers to her crew alone.",
+   "ru": 5
+  },
+  "end-ally": {
+   "id": "end-ally",
+   "type": "end",
+   "scene": {
+    "title": "The Architect's Road",
+    "location": "Hiigara, the fleet anchorage",
+    "art": "/packs/dreadnought-arc/act-three/anchorage.webp",
+    "mood": "victory"
+   },
+   "text": "\"Dreadnought, Fleet Command. Hiigara stands, and we're told your ship has asked, politely, for a star chart of the whole galaxy.\" Vash’Kora, the Architect of Paths, is awake and part of the fleet. Nobody knows yet what that means.",
+   "ru": 5
+  },
+  "end-ally-sajuuk": {
+   "id": "end-ally-sajuuk",
+   "type": "end",
+   "scene": {
+    "title": "The Architect's Road",
+    "location": "Hiigara, the fleet anchorage",
+    "art": "/packs/dreadnought-arc/act-three/anchorage.webp",
+    "mood": "victory"
+   },
+   "text": "\"Dreadnought, Fleet Command. Hiigara stands.\" Vash’Kora is awake and part of the fleet. And at night, across the anchorage, she and the thing beneath Karan S'jet talk softly to each other in a language no one else can follow.",
+   "ru": 5
+  },
+  "end-shield": {
+   "id": "end-shield",
+   "type": "end",
+   "scene": {
+    "title": "The Shield of Hiigara",
+    "location": "Hiigara, the fleet anchorage",
+    "art": "/packs/dreadnought-arc/act-three/end-shield.webp",
+    "mood": "loss"
+   },
+   "text": "\"All ships, Fleet Command. Hiigara stands, because a crew put their own ship in front of the last salvo. That's twice now they've lost a ship and kept their heads. The fleet will find them a third.\"",
+   "ru": 5
+  },
+  "end-lost": {
+   "id": "end-lost",
+   "type": "end",
+   "scene": {
+    "title": "What It Cost",
+    "location": "Hiigara, the fleet anchorage",
+    "art": "/packs/dreadnought-arc/act-three/end-lost.webp",
+    "mood": "loss"
+   },
+   "text": "\"Dreadnought crew, Fleet Command. Hiigara stands. You did everything that could be done.\" Below, two cities are still burning. Nobody will say it was your fault. Some nights, you will.",
+   "ru": 3
+  }
+ },
+ "npcs": {}
+}

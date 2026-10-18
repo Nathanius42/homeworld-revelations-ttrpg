@@ -57,6 +57,7 @@ import {
   type ItemStatus,
   SHIP_SYSTEMS,
   INFIRMARY_COST,
+  type StoryState,
 } from "@hwr/protocol";
 import { localPortraits } from "./local-portraits.js";
 import { recap, recordChapter } from "./campaign.js";
@@ -68,11 +69,15 @@ import {
   buildCustomSheet,
   MISSIONS,
   REQUISITION,
+  SHIP_REFITS,
+  applyRefits,
+  meets,
   type CombatNode,
   type Effects,
   type ExtendedNode,
   type Mission,
   type SpaceNode,
+  type EnemyShipSpec,
   type MissionNode,
   type Outcome,
   type SceneSetup,
@@ -228,6 +233,8 @@ export class Game {
         return this.requisition(player, msg.characterId, msg.itemId);
       case "treatWound":
         return this.treatWound(player, msg.characterId);
+      case "refit":
+        return this.refit(player, msg.refitId);
       case "gmNarrate":
         this.requireGm(player);
         return this.narrate("Game Master", msg.text, "gm");
@@ -318,6 +325,10 @@ export class Game {
     this.state.awards = { ru: 0, reasons: [] };
     for (const id of party) Object.assign(this.state.characters[id]!, { fortune: FORTUNE_START, hurt: false, downed: false });
     const wounded = party.filter((id) => this.state.characters[id]!.injuries > 0).map((id) => this.sheet(id).name);
+    // The story carries on from the campaign; a mission with a countdown starts it if this campaign hasn't met it yet.
+    const story = (this.state.story = structuredClone(this.state.campaign?.story) ?? { flags: {} });
+    const clock = this.mission.clock;
+    if (clock && story.clock?.id !== clock.id) story.clock = { ...clock, value: 0 };
     this.system(`Mission start: ${this.mission.title}. ${party.length} crew aboard. Threat starts at ${this.state.pools.threat}.`);
     const previously = this.state.campaign && recap(this.state.campaign);
     if (previously) this.narrate("Narrator", previously, "gm");
@@ -363,6 +374,23 @@ export class Game {
     campaign.ru -= item.cost;
   }
 
+  /** Refits the crew's ship with the campaign's banked Requisition. Any of the crew can order it; each refit is done once. */
+  private refit(player: PlayerInfo, refitId: string): void {
+    if (this.state.phase !== "lobby") throw new GameError("The shipyard works between missions, in the lobby.");
+    if (!player.characterId) throw new GameError("Only the crew can order a refit.");
+    const campaign = this.state.campaign;
+    if (!campaign) throw new GameError("Requisition is earned on missions: finish one first.");
+    const refit = SHIP_REFITS.find((r) => r.id === refitId);
+    if (!refit) throw new GameError("The shipyard doesn't offer that.");
+    const done = (campaign.refits ??= []);
+    if (done.includes(refit.id)) throw new GameError(`The ship already has ${refit.name.toLowerCase()}.`);
+    if (campaign.lostRefits?.includes(refit.id)) throw new GameError(`${refit.name} can't be fitted again: that system was cut off for good.`);
+    if (campaign.ru < refit.cost) throw new GameError(`${refit.name} costs ${refit.cost} RU and the crew has ${campaign.ru}.`);
+    campaign.ru -= refit.cost;
+    done.push(refit.id);
+    this.system(`The shipyard fits ${refit.name.toLowerCase()} (${refit.cost} RU).`);
+  }
+
   /** The fleet infirmary treats a wound carried from the last mission, for 1 RU of the campaign's Requisition. */
   private treatWound(player: PlayerInfo, characterId: string): void {
     if (this.state.phase !== "lobby") throw new GameError("The infirmary treats wounds between missions, in the lobby.");
@@ -399,10 +427,16 @@ export class Game {
         if (node.effects) this.applyEffects(node.effects);
         this.state.awaitingContinue = true;
         return;
-      case "choice":
+      case "choice": {
         this.narrate("Narrator", node.prompt, "gm");
-        this.state.pendingChoice = { id: node.id, prompt: node.prompt, options: node.options.map(({ id, label, hint }) => ({ id, label, hint })), votes: {} };
+        const offered = node.options.filter((o) => !o.requires || meets(o.requires, this.state.story));
+        this.state.pendingChoice = { id: node.id, prompt: node.prompt, options: offered.map(({ id, label, hint }) => ({ id, label, hint })), votes: {} };
         return;
+      }
+      case "branch": {
+        const taken = node.cases.find((c) => meets(c.when, this.state.story));
+        return this.enterNode(taken?.next ?? node.otherwise);
+      }
       case "test":
         this.narrate("Narrator", node.prompt, "gm");
         this.requestRoll({
@@ -478,6 +512,37 @@ export class Game {
       const to = rollerId ?? this.leastLoaded();
       if (to) this.giveItem(to, effects.giveItem.name, effects.giveItem.origin, effects.giveItem.uses, effects.giveItem.size, true);
     }
+    if (effects.setFlags) Object.assign(this.story().flags, effects.setFlags);
+    if (effects.clock) this.advanceClock(effects.clock);
+    if (effects.loseRefits) this.loseRefits(effects.loseRefits);
+  }
+
+  /** Strips refits from the campaign's ship for good, naming each one the crew actually had. */
+  private loseRefits(ids: readonly string[]): void {
+    const campaign = this.state.campaign;
+    if (!campaign) return;
+    campaign.lostRefits = [...new Set([...(campaign.lostRefits ?? []), ...ids])];
+    const lost = (campaign.refits ?? []).filter((id) => ids.includes(id));
+    if (!lost.length) return;
+    campaign.refits = campaign.refits!.filter((id) => !ids.includes(id));
+    const names = lost.map((id) => SHIP_REFITS.find((r) => r.id === id)?.name.toLowerCase() ?? id);
+    this.system(`Lost for good: ${names.join(" and ")}.`);
+  }
+
+  /** What the story remembers in this mission. */
+  private story(): StoryState {
+    return (this.state.story ??= { flags: {} });
+  }
+
+  /** Runs the campaign countdown on (or back), within its bounds, and tells the table. */
+  private advanceClock(delta: number): void {
+    const clock = this.story().clock;
+    if (!clock) return;
+    const before = clock.value;
+    clock.value = Math.max(0, Math.min(clock.max, clock.value + delta));
+    if (clock.value === before) return;
+    const full = clock.value === clock.max ? " The countdown has run out." : "";
+    this.system(`${clock.label}: ${clock.value} of ${clock.max}.${full}`);
   }
 
   private award(ru: number, reason: string): void {
@@ -578,7 +643,8 @@ export class Game {
     const option = node.options.find((o) => o.id === optionId)!;
     delete this.state.pendingChoice;
     this.system(`The crew decides: ${option.label}.`);
-    this.enterNode(option.next);
+    if (option.effects) this.applyEffects(option.effects);
+    if (this.state.phase === "playing") this.enterNode(option.next);
   }
 
   // ---------------------------------------------------------------- rolls
@@ -1065,21 +1131,72 @@ export class Game {
     const zero = () => Object.fromEntries(SHIP_SYSTEMS.map((k) => [k, 0])) as Record<ShipSystem, number>;
     this.state.scene.mode = "space";
     this.state.space = {
-      ship: { ...structuredClone(node.ship), hull: 0, breaches: zero() },
-      enemies: this.scaledFleet(node).map((e) => ({ ...structuredClone(e), hull: 0, breaches: zero(), destroyed: false })),
+      // Refits bought in the campaign go on whichever ship the crew fly.
+      ship: { ...applyRefits(node.ship, this.state.campaign?.refits ?? []), hull: 0, breaches: zero() },
+      enemies: this.scaledFleet(node).map((e) => this.enemyState(e, 1)),
       round: 1,
       acted: [],
       enemyActed: [],
       uses: {},
+      ...(node.breakaway ? { canBreakaway: true } : {}),
+      ...(node.locked?.length ? { locked: [...node.locked] } : {}),
+      ...(node.rogue?.awake ? { rogue: true } : {}),
     };
     this.narrate("Narrator", node.intro, "danger");
     this.system("Ship action! Each crew member works one bridge station a round. Repeating an action in the same round is harder.");
+    const ending = this.runPhases();
+    if (ending) this.endSpace(ending);
   }
 
-  /** Enemy fleets are written for three or more crew; one or two face one fewer of the ships that must be beaten. */
+  /** A fresh enemy as it enters the battle in the given round. */
+  private enemyState(spec: EnemyShipSpec, round: number): NonNullable<TableState["space"]>["enemies"][number] {
+    const zero = Object.fromEntries(SHIP_SYSTEMS.map((k) => [k, 0])) as Record<ShipSystem, number>;
+    const e = { ...structuredClone(spec), hull: 0, breaches: zero, destroyed: false };
+    return spec.impact ? { ...e, impactRound: round + spec.impact.rounds - 1 } : e;
+  }
+
+  /** Runs every phase whose trigger now holds, in order, and returns the ending one called for. */
+  private runPhases(): "victory" | "escaped" | "defeat" | undefined {
+    const sp = this.state.space;
+    const node = this.spaceNode();
+    if (!sp || !node?.phases) return undefined;
+    sp.phasesDone ??= [];
+    for (const phase of node.phases) {
+      if (sp.phasesDone.includes(phase.id)) continue;
+      const w = phase.when;
+      const holds =
+        (w.round === undefined || sp.round >= w.round) &&
+        (w.destroyed === undefined || sp.enemies.some((e) => e.id === w.destroyed && e.destroyed)) &&
+        (w.hullAtLeast === undefined || sp.ship.hull >= w.hullAtLeast) &&
+        (!w.cleared || sp.enemies.every((e) => e.destroyed || e.optional));
+      if (!holds) continue;
+      sp.phasesDone.push(phase.id);
+      if (phase.requires && !meets(phase.requires, this.state.story)) continue;
+      this.narrate(phase.speaker ?? "Narrator", phase.text, phase.speaker ? "npc" : "danger");
+      if (phase.effects) this.applyEffects(phase.effects);
+      for (const spec of phase.spawn ?? []) {
+        sp.enemies = sp.enemies.filter((e) => e.id !== spec.id);
+        sp.enemies.push(this.enemyState(spec, sp.round));
+        if (spec.impact) this.system(`${spec.name} inbound: it strikes at the end of round ${sp.round + spec.impact.rounds - 1} unless it's stopped.`);
+      }
+      if (phase.lock?.length) {
+        sp.locked = [...new Set([...(sp.locked ?? []), ...phase.lock])];
+        this.system(`Locked out: ${phase.lock.map((a) => this.stationRules(a).label).join(", ")}. Engineering can override.`);
+      }
+      if (phase.unlock) sp.locked = phase.unlock === "all" ? [] : (sp.locked ?? []).filter((a) => !phase.unlock!.includes(a));
+      if (phase.rogue !== undefined) sp.rogue = phase.rogue;
+      if (phase.end) return phase.end;
+    }
+    return undefined;
+  }
+
+  /**
+   * Enemy fleets are written for three or more crew; one or two face one fewer of the ships that
+   * must be beaten. Missiles are the story's stakes, so they all still fly.
+   */
   private scaledFleet(node: SpaceNode): SpaceNode["enemies"] {
     if (this.partyIds().length > 2) return node.enemies;
-    const required = node.enemies.filter((e) => !e.optional);
+    const required = node.enemies.filter((e) => !e.optional && !e.impact);
     if (required.length < 2) return node.enemies;
     const drop = required.at(-1)!;
     return node.enemies.filter((e) => e !== drop);
@@ -1104,6 +1221,10 @@ export class Game {
         return { station: "Command", label: "Rally the crew", attribute: "will", skill: "command", difficulty: 0 };
       case "jam":
         return { station: "Comms", label: "Jam their targeting", system: "communications", attribute: "reason", skill: "combat", difficulty: 1 };
+      case "intercept":
+        return { station: "Helm", label: "Intercept", system: "engines", attribute: "agility", skill: "flight", difficulty: 2 };
+      case "override":
+        return { station: "Engineering", label: "Override", system: "computers", attribute: "reason", skill: "engineering", difficulty: this.spaceNode()?.overrideDifficulty ?? 2 };
     }
   }
 
@@ -1137,6 +1258,8 @@ export class Game {
     this.requireController(player, msg.characterId);
     if (sp.acted.includes(msg.characterId)) throw new GameError("You've already worked a station this round.");
     if (msg.action === "breakaway" && !node.breakaway) throw new GameError("There's no breaking away from this fight.");
+    if (sp.locked?.includes(msg.action)) throw new GameError(`The ship won't answer: ${this.stationRules(msg.action).label} is locked out. Override it first.`);
+    if (msg.action === "override" && !(msg.station && sp.locked?.includes(msg.station))) throw new GameError("Choose a locked station to take back.");
     const rules = this.stationRules(msg.action);
     if (rules.system && this.isOffline(sp.ship, rules.system)) throw new GameError(`The ${rules.system} system is offline.`);
 
@@ -1145,10 +1268,12 @@ export class Game {
     let reason = `${rules.station}: ${rules.label}`;
     const target = msg.targetId ? this.liveEnemies().find((e) => e.id === msg.targetId) : undefined;
     let weaponName: string | undefined;
-    if (msg.action === "fire" || msg.action === "scan") {
+    if (msg.action === "fire" || msg.action === "scan" || msg.action === "intercept") {
       if (!target) throw new GameError("Choose a target that's still flying.");
+      if (msg.action === "intercept" && !target.impact) throw new GameError("Only a missile in flight can be intercepted.");
       reason += ` · ${target.name}`;
     }
+    if (msg.action === "override") reason += ` · ${this.stationRules(msg.station!).label}`;
     if (msg.action === "fire") {
       const weapon = sp.ship.weapons.find((w) => w.name === msg.weaponName) ?? sp.ship.weapons.find((w) => this.inRange(w, target!));
       if (!weapon || !this.inRange(weapon, target!)) throw new GameError(`${target!.name} is out of range for that weapon.`);
@@ -1166,7 +1291,7 @@ export class Game {
       origin: "station",
       characterId: msg.characterId,
       reason,
-      station: { action: msg.action, targetId: target?.id, weaponName },
+      station: { action: msg.action, targetId: target?.id, weaponName, ...(msg.action === "override" ? { station: msg.station } : {}) },
       approaches: [{ label: reason, attribute: rules.attribute, skill: rules.skill, difficulty, system: rules.system }],
     });
   }
@@ -1197,8 +1322,7 @@ export class Game {
     if (sp.weakness === target.id) delete sp.weakness;
     const hit = this.hitShip(target, roll.total + (weapon.vicious ?? 0) * roll.effects, piercing);
     record.stress = { ...roll, inflicted: hit.inflicted, target: target.name, injuriesGained: hit.breached.length, breached: hit.breached };
-    const totalBreaches = SHIP_SYSTEMS.reduce((n, k) => n + target.breaches[k], 0);
-    if (totalBreaches >= target.scale) {
+    if (this.wrecked(target, hit.inflicted)) {
       target.destroyed = true;
       this.narrate("Narrator", `${target.name} comes apart in a blossom of fire.`, "danger");
       this.stats(record.characterId).takedowns += 1;
@@ -1251,6 +1375,25 @@ export class Game {
           break;
         case "breakaway":
           return this.endSpace("escaped");
+        case "intercept": {
+          const missile = sp.enemies.find((e) => e.id === pending.station?.targetId && !e.destroyed);
+          if (!missile) break;
+          missile.destroyed = true;
+          // A warhead bursting against the hull gets through all but the heaviest armour.
+          const hit = this.hitShip(sp.ship, rollChallengeDice(missile.impact?.cd ?? 5, this.rng).total, 3);
+          const breached = hit.breached.length ? ` ${hit.breached.join(" and ")} breached.` : "";
+          this.narrate("Narrator", `${name} throws the ship into ${missile.name}'s path. It bursts against the hull: ${hit.inflicted} damage.${breached}`, "danger");
+          const node = this.spaceNode();
+          if (node?.interceptEffects) this.applyEffects(node.interceptEffects);
+          break;
+        }
+        case "override": {
+          const station = pending.station?.station;
+          if (!station) break;
+          sp.locked = (sp.locked ?? []).filter((a) => a !== station);
+          this.narrate("Narrator", `${name} tears the ${this.stationRules(station).label.toLowerCase()} controls back from the ship's grip.`, "gm");
+          break;
+        }
         case "fire":
           break;
       }
@@ -1276,6 +1419,12 @@ export class Game {
         this.enemyShipTurn(e);
         if (this.checkSpaceEnd()) return;
       }
+      if (sp.rogue) this.rogueTurn();
+      if (this.checkSpaceEnd()) return;
+      for (const m of this.liveEnemies().filter((x) => x.impact && (x.impactRound ?? 0) <= sp.round)) {
+        this.impact(m);
+        if (this.checkSpaceEnd()) return;
+      }
       sp.round += 1;
       sp.acted = [];
       sp.enemyActed = [];
@@ -1284,6 +1433,61 @@ export class Game {
       delete sp.pattern;
       delete sp.jammed;
       this.system(`Round ${sp.round}.`);
+      this.checkSpaceEnd();
+    }
+  }
+
+  /** Enough breaches to break a ship; a missile goes with any hit that gets through its armour. */
+  private wrecked(enemy: NonNullable<TableState["space"]>["enemies"][number], inflicted: number): boolean {
+    return SHIP_SYSTEMS.reduce((n, k) => n + enemy.breaches[k], 0) >= enemy.scale || (Boolean(enemy.impact) && inflicted > 0);
+  }
+
+  /** A missile that wasn't stopped strikes home. */
+  private impact(missile: NonNullable<TableState["space"]>["enemies"][number]): void {
+    const sp = this.state.space!;
+    missile.destroyed = true;
+    missile.impacted = true;
+    this.narrate("Narrator", missile.impact!.text, "danger");
+    if (missile.impact!.cd) {
+      const hit = this.hitShip(sp.ship, rollChallengeDice(missile.impact!.cd, this.rng).total, 0);
+      if (hit.breached.length) this.narrate("Narrator", `The blast breaches ${hit.breached.join(" and ")}.`, "danger");
+    }
+    const node = this.spaceNode();
+    if (node?.impactEffects) this.applyEffects(node.impactEffects);
+  }
+
+  /** The ship's own will: it fires on someone, surges through its own systems, or seizes a station. */
+  private rogueTurn(): void {
+    const sp = this.state.space!;
+    const rogue = this.spaceNode()?.rogue;
+    if (!rogue) return;
+    // Only stations the crew could use in this fight are worth taking from them.
+    const usable = (a: StationAction) => (a !== "breakaway" || sp.canBreakaway) && (a !== "intercept" || this.liveEnemies().some((x) => x.impact));
+    const seizable = (["fire", "evasive", "pattern", "scan", "jam", "breakaway", "intercept"] as StationAction[]).filter((a) => usable(a) && !sp.locked?.includes(a));
+    const targets = this.liveEnemies();
+    const weapon = sp.ship.weapons[0];
+    const roll = this.rng.die(6);
+    const act = roll <= 2 ? "surge" : (roll <= 4 || !seizable.length) && targets.length && weapon ? "fire" : seizable.length ? "seize" : "surge";
+    if (act === "fire") {
+      const target = this.pick(targets);
+      this.narrate(rogue.speaker, this.pick(rogue.fire).replace("{target}", target.name), "npc");
+      const hit = this.hitShip(target, rollChallengeDice(weapon!.cd, this.rng).total, weapon!.piercing ?? 0);
+      if (this.wrecked(target, hit.inflicted)) {
+        target.destroyed = true;
+        this.narrate("Narrator", `${target.name} comes apart in a blossom of fire.`, "danger");
+      } else {
+        this.narrate("Narrator", `${target.name} takes ${hit.inflicted}.`, "gm");
+      }
+    } else if (act === "seize") {
+      const station = this.pick(seizable);
+      sp.locked = [...(sp.locked ?? []), station];
+      this.narrate(rogue.speaker, this.pick(rogue.seize).replace("{station}", this.stationRules(station).label.toLowerCase()), "npc");
+      this.system(`Locked out: ${this.stationRules(station).label}. Engineering can override.`);
+    } else {
+      this.narrate(rogue.speaker, this.pick(rogue.surge), "npc");
+      // A surge comes from inside the hull, so armour doesn't stop it.
+      const hit = this.hitShip(sp.ship, rollChallengeDice(rogue.surgeCd ?? 3, this.rng).total, sp.ship.armour);
+      this.narrate("Narrator", `Power surges through the decks: ${hit.inflicted} damage${hit.breached.length ? `, ${hit.breached.join(" and ")} breached` : ""}.`, "danger");
     }
   }
 
@@ -1335,6 +1539,11 @@ export class Game {
   private checkSpaceEnd(): boolean {
     const sp = this.state.space;
     if (!sp || this.state.scene.mode !== "space") return true;
+    const ending = this.runPhases();
+    if (ending) {
+      this.endSpace(ending);
+      return true;
+    }
     if (this.isOffline(sp.ship, "structure")) {
       this.endSpace("defeat");
       return true;
@@ -1394,7 +1603,7 @@ export class Game {
     const used = node.attempts - (current.attemptsLeft ?? 0);
     this.narrate("Narrator", node.pressure[(used - 1) % node.pressure.length]!, "danger");
     if (!outcome && this.state.pools.threat >= 3 && current.resistance === node.resistance) {
-      this.adjustThreat(-2, "the reactor surges and the core fights back (resistance +1)");
+      this.adjustThreat(-2, `${node.label} gets harder (resistance +1)`);
       current.resistance += 1;
     }
     this.requestWork(node);

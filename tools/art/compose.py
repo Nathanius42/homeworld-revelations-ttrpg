@@ -125,8 +125,12 @@ def main():
     parser.add_argument("scenes", nargs="*")
     parser.add_argument("--variants", type=int, default=2)
     parser.add_argument("--seed", type=int)
+    parser.add_argument("--spec", default=os.path.join(HERE, "scenes.json"), help="scene file (private missions keep their own)")
+    parser.add_argument("--out", default=None, help="where the images go (default apps/web/public/art)")
     args = parser.parse_args()
-    spec = json.load(open(os.path.join(HERE, "scenes.json"), encoding="utf-8"))
+    if args.out:
+        gen.ART_DIR = os.path.abspath(args.out)
+    spec = json.load(open(args.spec, encoding="utf-8"))
     if not gen.wait_server():
         sys.exit("ComfyUI is not reachable")
     os.makedirs(os.path.join(COMFY_INPUT, "hwr-comp"), exist_ok=True)

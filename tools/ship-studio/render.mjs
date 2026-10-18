@@ -1,17 +1,21 @@
 /**
  * Renders the shots listed in shots.json to reference/renders/<name>.png (transparent background).
  * Start the studio first (`corepack pnpm --filter @hwr/ship-studio dev`), then:
- *   node tools/ship-studio/render.mjs [name ...]
+ *   node tools/ship-studio/render.mjs [--shots <file>] [name ...]
+ * A private mission keeps its own shot list (e.g. reference/missions/shots.json) and passes it with --shots.
  */
 import { chromium } from "@playwright/test";
 import { mkdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 
 const here = import.meta.dirname;
 const out = join(here, "..", "..", "reference", "renders");
 mkdirSync(out, { recursive: true });
-const shots = JSON.parse(readFileSync(join(here, "shots.json"), "utf8"));
-const only = process.argv.slice(2);
+const args = process.argv.slice(2);
+const shotsAt = args.indexOf("--shots");
+const shotsFile = shotsAt >= 0 ? resolve(args.splice(shotsAt, 2)[1]) : join(here, "shots.json");
+const shots = JSON.parse(readFileSync(shotsFile, "utf8"));
+const only = args;
 
 const browser = await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
 for (const shot of shots.filter((s) => !only.length || only.includes(s.name))) {

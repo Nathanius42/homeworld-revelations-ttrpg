@@ -876,6 +876,16 @@ textarea::placeholder {
   background: var(--amber);
   box-shadow: 0 0 8px var(--amber);
 }
+.pip-diamond.danger {
+  border-color: var(--danger-soft);
+}
+.pip-diamond.danger.on {
+  background: var(--danger);
+  box-shadow: 0 0 8px var(--danger);
+}
+.countdown .pips {
+  flex-wrap: wrap;
+}
 .threat-value {
   font-family: var(--mono);
   font-size: 26px;
@@ -2327,6 +2337,12 @@ textarea::placeholder {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-dim);
+}
+.ship-info .strikes {
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--danger);
 }
 .systems {
   display: flex;

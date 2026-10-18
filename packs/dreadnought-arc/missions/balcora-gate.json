@@ -1,0 +1,795 @@
+{
+ "id": "balcora-gate",
+ "title": "Balcora Gate",
+ "blurb": "The gate to the galaxy's core is sealed, and the Dreadnought is its key. Opening it means letting her mind out into the gate, and getting it back afterwards.",
+ "recommendedPlayers": "2-6 players, about two hours",
+ "art": "/packs/dreadnought-arc/act-three/balcora-gate.webp",
+ "sequel": "return-to-hiigara",
+ "music": "hiigara",
+ "clock": {
+  "id": "awakening",
+  "label": "Dreadnought awakening",
+  "max": 8
+ },
+ "voices": {
+  "Fleet Command": "bm_george",
+  "The Dreadnought": "am_onyx@0.82",
+  "Vash’Kora": "am_onyx@0.82",
+  "Bentusi adviser": "bf_alice@0.95",
+  "Karan S'jet": "bf_emma",
+  "Sajuuk": "bm_lewis@0.74"
+ },
+ "primer": [
+  "The Bentus is gone, but its last gift was coordinates: Balcora, where a sealed gate guards the road to the galaxy's core.",
+  "The Pride of Hiigara needs that road. The Dreadnought is the key, and her mind is closer to waking than ever. Watch the countdown."
+ ],
+ "startNode": "briefing",
+ "gmNotes": "Act Three, mission five of the Dreadnought arc, around Homeworld 2's Balcora Gate.\nA staged battle at the pickets (second wave when the first is cleared). If destroyer=retaken, the Spear of Soban helps. At countdown 4+ the mind helps when the hull is hurt, and the countdown runs on.\nOpening the gate: all the way (+2, easy), on a leash (hard, -1 if it works, +2 if she tears free), or by name if knowsName (-1). At 6+ after the gate, her sentinels fight the crew for the bridge.\nAt 7+ the mind hears Sajuuk through the open gate (sajuukHeard): it wants to wake its sleeping sibling. That pays off at Hiigara.\nThe isolate choice: cut her out of the guns or the helm for good (-2 countdown, isolated=weapons/helm, and the crew lose the matching refits), or leave her whole.\nTone: awe at the gate, then the fear that the key won't come back out of the lock.",
+ "nodes": {
+  "briefing": {
+   "id": "briefing",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"Dreadnought, Fleet Command. The Bentusi were right. The Balcora Gate is sealed, and the Pride of Hiigara has to go through it to reach whatever waits at the galaxy's core. Makaan's fleet holds the approaches. Clear them, and then open the gate. Your ship is the key.\"",
+   "next": "mood",
+   "scene": {
+    "title": "Balcora Gate",
+    "location": "The Balcora system",
+    "art": "/packs/dreadnought-arc/act-three/balcora-approach.webp",
+    "mood": "briefing"
+   }
+  },
+  "mood": {
+   "id": "mood",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "clockAtLeast": 4
+     },
+     "next": "gate-calls"
+    }
+   ],
+   "otherwise": "pickets"
+  },
+  "gate-calls": {
+   "id": "gate-calls",
+   "type": "narration",
+   "speaker": "The Dreadnought",
+   "tone": "npc",
+   "text": "Before the gate is even on your sensors, she knows where it is. The voice comes from everywhere: \"Gate. I laid this road. It remembers me.\" The navigation plot redraws itself, unasked, into a straight line.",
+   "next": "pickets",
+   "effects": {
+    "threat": 1
+   }
+  },
+  "pickets": {
+   "id": "pickets",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "The Vaygr hold the approach in depth: a destroyer and her frigates on picket, and more ships beyond them, waiting. The Balcora Gate hangs behind them all, a ring of dark stone the size of a moon.",
+   "next": "spear",
+   "scene": {
+    "title": "The Pickets",
+    "location": "Balcora Gate approaches",
+    "art": "/packs/dreadnought-arc/act-three/balcora-pickets.webp",
+    "mood": "tension"
+   }
+  },
+  "spear": {
+   "id": "spear",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "destroyer",
+      "equals": "retaken"
+     },
+     "next": "spear-joins"
+    }
+   ],
+   "otherwise": "unleash"
+  },
+  "spear-joins": {
+   "id": "spear-joins",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "The Spear of Soban drops out of hyperspace off your flank with her guns already hot. \"Dreadnought, Spear. Thought you might want your old ship watching your back.\"",
+   "next": "unleash",
+   "effects": {
+    "momentum": 2
+   }
+  },
+  "unleash": {
+   "id": "unleash",
+   "type": "choice",
+   "prompt": "The Dreadnought is offering again: the full lance at full power, more than her Hiigaran fittings were ever meant to carry.",
+   "options": [
+    {
+     "id": "unleash",
+     "label": "Let her guns wake",
+     "hint": "Overwhelming power. The countdown runs on.",
+     "next": "battle",
+     "effects": {
+      "clock": 2,
+      "momentum": 3,
+      "addTruths": [
+       {
+        "id": "unleashed",
+        "label": "Progenitor lance at full power",
+        "kind": "advantage",
+        "strength": 1,
+        "scope": "situation"
+       }
+      ]
+     }
+    },
+    {
+     "id": "hiigaran",
+     "label": "Fight her as a Hiigaran ship",
+     "hint": "Only the systems you understand",
+     "next": "battle"
+    }
+   ]
+  },
+  "battle": {
+   "id": "battle",
+   "type": "space",
+   "scene": {
+    "title": "Breaking the Pickets",
+    "location": "Balcora Gate approaches",
+    "art": "/packs/dreadnought-arc/act-three/balcora-pickets.webp",
+    "mood": "combat"
+   },
+   "intro": "The picket destroyer turns to meet you, her frigates spreading wide. Behind them, the second line starts to move. Stations.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "picket",
+     "name": "Picket destroyer",
+     "className": "Vaygr destroyer",
+     "scale": 4,
+     "systems": {
+      "communications": 9,
+      "computers": 9,
+      "engines": 8,
+      "sensors": 9,
+      "structure": 11,
+      "weapons": 11
+     },
+     "maxHull": 15,
+     "armour": 2,
+     "weapons": [
+      {
+       "name": "Missile batteries",
+       "cd": 5,
+       "range": "Long"
+      }
+     ],
+     "crew": {
+      "attribute": 10,
+      "skill": 3
+     },
+     "range": "Long",
+     "model": "vgr_destroyer"
+    },
+    {
+     "id": "pf-1",
+     "name": "Picket frigate",
+     "className": "Vaygr assault frigate",
+     "scale": 3,
+     "systems": {
+      "communications": 8,
+      "computers": 8,
+      "engines": 9,
+      "sensors": 8,
+      "structure": 9,
+      "weapons": 10
+     },
+     "maxHull": 12,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Plasma cannons",
+       "cd": 4,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_assaultfrigate",
+     "optional": true
+    },
+    {
+     "id": "pf-2",
+     "name": "Second picket frigate",
+     "className": "Vaygr assault frigate",
+     "scale": 3,
+     "systems": {
+      "communications": 8,
+      "computers": 8,
+      "engines": 9,
+      "sensors": 8,
+      "structure": 9,
+      "weapons": 10
+     },
+     "maxHull": 12,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Plasma cannons",
+       "cd": 4,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_assaultfrigate",
+     "optional": true
+    }
+   ],
+   "phases": [
+    {
+     "id": "spear-run",
+     "when": {
+      "round": 2
+     },
+     "requires": {
+      "flag": "destroyer",
+      "equals": "retaken"
+     },
+     "text": "The Spear of Soban cuts across the picket line at knife range, drawing every Vaygr gun for a few precious seconds.",
+     "effects": {
+      "momentum": 2
+     }
+    },
+    {
+     "id": "help",
+     "when": {
+      "hullAtLeast": 8
+     },
+     "requires": {
+      "clockAtLeast": 4
+     },
+     "speaker": "The Dreadnought",
+     "text": "\"Hurt. No.\" Power floods the weapons from somewhere you can't trace. It's help. You didn't ask for it.",
+     "effects": {
+      "momentum": 2,
+      "clock": 1
+     }
+    },
+    {
+     "id": "second-line",
+     "when": {
+      "cleared": true
+     },
+     "text": "The picket destroyer breaks apart, and the second line comes on: two more frigates, burning straight for the gate to cut you off.",
+     "spawn": [
+      {
+       "id": "gf-1",
+       "name": "Gate-guard frigate",
+       "className": "Vaygr assault frigate",
+       "scale": 3,
+       "systems": {
+        "communications": 8,
+        "computers": 8,
+        "engines": 9,
+        "sensors": 8,
+        "structure": 9,
+        "weapons": 10
+       },
+       "maxHull": 12,
+       "armour": 1,
+       "weapons": [
+        {
+         "name": "Plasma cannons",
+         "cd": 4,
+         "range": "Medium"
+        }
+       ],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_assaultfrigate"
+      },
+      {
+       "id": "gf-2",
+       "name": "Second gate-guard frigate",
+       "className": "Vaygr assault frigate",
+       "scale": 3,
+       "systems": {
+        "communications": 8,
+        "computers": 8,
+        "engines": 9,
+        "sensors": 8,
+        "structure": 9,
+        "weapons": 10
+       },
+       "maxHull": 12,
+       "armour": 1,
+       "weapons": [
+        {
+         "name": "Plasma cannons",
+         "cd": 4,
+         "range": "Medium"
+        }
+       ],
+       "crew": {
+        "attribute": 9,
+        "skill": 2
+       },
+       "range": "Medium",
+       "model": "vgr_assaultfrigate"
+      }
+     ]
+    }
+   ],
+   "victory": {
+    "text": "The last gate-guard frigate tumbles away, burning. Nothing stands between the Dreadnought and the gate.",
+    "next": "gate"
+   },
+   "defeat": {
+    "text": "The Vaygr cripple her steering, and for one awful moment she drifts. Then she rights herself, alone, and carries you through the wreckage to the gate as if nothing could stop her.",
+    "effects": {
+     "stressParty": 2,
+     "clock": 1
+    },
+    "next": "gate"
+   }
+  },
+  "gate": {
+   "id": "gate",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "Up close, the Balcora Gate is carved, not built: a ring of dark stone covered in lines that might be writing, that might be a map. As the Dreadnought comes alongside, the lines begin, very faintly, to glow.",
+   "next": "how",
+   "scene": {
+    "title": "The Key",
+    "location": "The Balcora Gate",
+    "art": "/packs/dreadnought-arc/act-three/balcora-gate.webp",
+    "mood": "mystery"
+   }
+  },
+  "how": {
+   "id": "how",
+   "type": "choice",
+   "prompt": "The gate wants the key, and the key is her. Opening it means letting her mind out into the gate's for as long as it takes. How far do you let her go?",
+   "options": [
+    {
+     "id": "wide",
+     "label": "All the way",
+     "hint": "Quick and sure. She won't come all the way back.",
+     "next": "open-wide",
+     "effects": {
+      "clock": 2
+     }
+    },
+    {
+     "id": "leash",
+     "label": "On a leash",
+     "hint": "Hiigaran hands on every control. Slow, and hard on the crew.",
+     "next": "open-leash"
+    },
+    {
+     "id": "named",
+     "label": "Speak her name and ask",
+     "hint": "She answers to Vash’Kora",
+     "requires": {
+      "flag": "knowsName"
+     },
+     "next": "open-named",
+     "effects": {
+      "momentum": 1
+     }
+    }
+   ]
+  },
+  "open-wide": {
+   "id": "open-wide",
+   "type": "extended",
+   "prompt": "You open her up. The gate's lines blaze; her systems sing back. Keep the fleet's ships out of the way of whatever she's doing.",
+   "label": "Open the Balcora Gate",
+   "work": 5,
+   "magnitude": 1,
+   "resistance": 0,
+   "attempts": 4,
+   "approaches": [
+    {
+     "label": "Ride the power surges",
+     "attribute": "coordination",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Read the gate's map as it lights",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 2
+    },
+    {
+     "label": "Hold the fleet clear of the ring",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 2
+    }
+   ],
+   "pressure": [
+    "A Vaygr frigate strays too close to the ring and simply isn't there any more.",
+    "Her voice is singing now, a note too low to hear, and the gate is singing back."
+   ],
+   "complete": {
+    "text": "The ring fills with light from edge to edge. The road is open.",
+    "next": "gate-check"
+   },
+   "timeout": {
+    "text": "The ring opens, in the end, but it takes everything she has, and she doesn't give all of it back.",
+    "effects": {
+     "clock": 1
+    },
+    "next": "gate-check"
+   }
+  },
+  "open-leash": {
+   "id": "open-leash",
+   "type": "extended",
+   "prompt": "Every command goes through Hiigaran hands, and she hates it. Feed her to the gate one system at a time and pull her back between each.",
+   "label": "Open the Balcora Gate",
+   "work": 7,
+   "magnitude": 1,
+   "resistance": 1,
+   "attempts": 5,
+   "approaches": [
+    {
+     "label": "Splice each system in by hand",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Pull her back before she runs",
+     "attribute": "agility",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Keep the bridge crew steady",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 2
+    }
+   ],
+   "pressure": [
+    "\"Slow,\" she says. \"Slow, slow, slow.\" The lights pulse with it.",
+    "A console burns out in someone's hands. She was pulling the other way.",
+    "The gate's lines flicker, as if it's losing interest."
+   ],
+   "complete": {
+    "text": "The ring fills with light from edge to edge, and she's still yours. Mostly. She's sulking, if a warship can sulk.",
+    "effects": {
+     "clock": -1
+    },
+    "next": "gate-check"
+   },
+   "timeout": {
+    "text": "She tears the leash out of your hands. The gate opens in a blaze of light, and for a long moment no console on the bridge answers anyone.",
+    "effects": {
+     "clock": 2,
+     "stressParty": 1
+    },
+    "next": "gate-check"
+   }
+  },
+  "open-named": {
+   "id": "open-named",
+   "type": "extended",
+   "prompt": "\"Vash’Kora. Open the road.\" She stills at her name. Now help her do it without losing her in it.",
+   "label": "Open the Balcora Gate",
+   "work": 6,
+   "magnitude": 1,
+   "resistance": 0,
+   "attempts": 5,
+   "approaches": [
+    {
+     "label": "Talk her through it",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 2
+    },
+    {
+     "label": "Read the gate's map with her",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 2
+    },
+    {
+     "label": "Balance the power by hand",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    }
+   ],
+   "pressure": [
+    "\"This road,\" she says, almost gently. \"I laid this road.\"",
+    "The gate's lines answer her, faster now. She's remembering."
+   ],
+   "complete": {
+    "text": "The ring fills with light from edge to edge. \"Open,\" she says, and then, after a pause you could almost call shy: \"Thank you for asking.\"",
+    "effects": {
+     "clock": -1
+    },
+    "next": "gate-check"
+   },
+   "timeout": {
+    "text": "The gate opens, but somewhere in the middle of it she stopped listening to you.",
+    "effects": {
+     "clock": 1
+    },
+    "next": "gate-check"
+   }
+  },
+  "gate-check": {
+   "id": "gate-check",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "clockAtLeast": 6
+     },
+     "next": "bridge-turns"
+    }
+   ],
+   "otherwise": "gate-opens"
+  },
+  "bridge-turns": {
+   "id": "bridge-turns",
+   "type": "narration",
+   "speaker": "The Dreadnought",
+   "tone": "danger",
+   "text": "\"Road open. Keep it open. Keep the ship.\" The bridge walls unfold. Things of pale metal step out of alcoves nobody knew were there, and they turn, all together, to face you.",
+   "next": "bridge-fight",
+   "scene": {
+    "title": "Her Defences",
+    "location": "The Dreadnought, command deck",
+    "art": "/packs/dreadnought-arc/act-three/bridge-sentinels.webp",
+    "mood": "combat"
+   }
+  },
+  "bridge-fight": {
+   "id": "bridge-fight",
+   "type": "combat",
+   "intro": "A Progenitor sentinel steps between you and the helm, its drones circling. It isn't trying to kill you. It's trying to keep you from the controls.",
+   "npcs": [
+    "sentinel",
+    "drone"
+   ],
+   "reinforcementText": "Another drone drops out of the ceiling, humming her note.",
+   "moraleText": "With the sentinel down, the drones fold themselves back into the walls, as if they'd never been.",
+   "victory": {
+    "text": "You reach the helm and pull her back out of the gate with your own hands. The sentinels fold away. The voice says nothing at all.",
+    "effects": {
+     "momentum": 1,
+     "clock": -1
+    },
+    "next": "gate-opens"
+   },
+   "defeat": {
+    "text": "The sentinels pin you to the deck, not hurting you, just holding you, until she's done. Then they let go and fold away, and she hands the helm back as if nothing happened.",
+    "effects": {
+     "stressParty": 1,
+     "clock": 1
+    },
+    "next": "gate-opens"
+   }
+  },
+  "gate-opens": {
+   "id": "gate-opens",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "The Pride of Hiigara slides past you into the ring and is gone, the fleet behind her, on the road to the galaxy's core. Through the open gate, for a moment, the stars are thick as dust.",
+   "next": "hears",
+   "scene": {
+    "title": "The Road to the Core",
+    "location": "The Balcora Gate",
+    "art": "/packs/dreadnought-arc/act-three/gate-open.webp",
+    "mood": "mystery"
+   }
+  },
+  "hears": {
+   "id": "hears",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "clockAtLeast": 7
+     },
+     "next": "hears-sajuuk"
+    }
+   ],
+   "otherwise": "isolate"
+  },
+  "hears-sajuuk": {
+   "id": "hears-sajuuk",
+   "type": "narration",
+   "speaker": "The Dreadnought",
+   "tone": "danger",
+   "text": "Something answers her through the gate, from very far away: a weight, slow and asleep and vast. Every display on the bridge turns towards the core. \"Sibling,\" she says. \"Sleeping. I will wake you.\" Then the gate's light dims, and she's quiet again.",
+   "next": "isolate",
+   "effects": {
+    "setFlags": {
+     "sajuukHeard": true
+    }
+   }
+  },
+  "isolate": {
+   "id": "isolate",
+   "type": "choice",
+   "prompt": "The fleet's engineers can cut her mind out of one system for good, by hand, before you leave the gate. Whatever Hiigaran refits are fitted to that system will have to go with it.",
+   "options": [
+    {
+     "id": "guns",
+     "label": "Cut her out of the guns",
+     "hint": "The countdown falls by 2. You lose the fire-control computer and upgraded guns.",
+     "next": "orders",
+     "effects": {
+      "clock": -2,
+      "loseRefits": [
+       "fire-control",
+       "main-guns"
+      ],
+      "setFlags": {
+       "isolated": "weapons"
+      }
+     }
+    },
+    {
+     "id": "helm",
+     "label": "Cut her out of the helm",
+     "hint": "The countdown falls by 2. You lose the engine overhaul.",
+     "next": "orders",
+     "effects": {
+      "clock": -2,
+      "loseRefits": [
+       "engines"
+      ],
+      "setFlags": {
+       "isolated": "helm"
+      }
+     }
+    },
+    {
+     "id": "whole",
+     "label": "Leave her whole",
+     "hint": "You'll need everything she has at Hiigara",
+     "next": "orders"
+    }
+   ]
+  },
+  "orders": {
+   "id": "orders",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"Dreadnought, Fleet Command. The Pride is through. But Makaan isn't following her. His whole fleet is turning for Hiigara. Take the Dreadnought home, and hold the line until the fleet comes back.\"",
+   "next": "end"
+  },
+  "end": {
+   "id": "end",
+   "type": "end",
+   "scene": {
+    "title": "Homeward",
+    "location": "Leaving Balcora",
+    "art": "/packs/dreadnought-arc/act-three/gate-open.webp",
+    "mood": "victory"
+   },
+   "text": "\"Dreadnought, Fleet Command. Hiigara is under siege. Everything we have left is going home, and you're the biggest gun we've got. Jump when ready.\"",
+   "ru": 3
+  }
+ },
+ "npcs": {
+  "sentinel": {
+   "id": "sentinel",
+   "name": "Progenitor sentinel",
+   "tier": "notable",
+   "detail": "A shape of pale metal that unfolds from the bridge wall, taller than any of you",
+   "attributes": {
+    "agility": 10,
+    "brawn": 11,
+    "coordination": 10,
+    "insight": 10,
+    "reason": 9,
+    "will": 12
+   },
+   "skills": {
+    "combat": 2,
+    "command": 1,
+    "engineering": 2,
+    "exploration": 2,
+    "flight": 0,
+    "medical": 0
+   },
+   "maxStress": 8,
+   "armour": 1,
+   "weapon": {
+    "name": "Restraining beam",
+    "stressRating": 3,
+    "range": "Close"
+   },
+   "attackAttribute": "coordination",
+   "portrait": "/packs/dreadnought-arc/act-three/sentinel.webp"
+  },
+  "drone": {
+   "id": "drone",
+   "name": "Sentinel drone",
+   "tier": "minor",
+   "detail": "A floating eye of pale metal, humming the ship's note",
+   "attributes": {
+    "agility": 11,
+    "brawn": 7,
+    "coordination": 9,
+    "insight": 9,
+    "reason": 8,
+    "will": 8
+   },
+   "skills": {
+    "combat": 1,
+    "command": 0,
+    "engineering": 1,
+    "exploration": 1,
+    "flight": 1,
+    "medical": 0
+   },
+   "maxStress": 4,
+   "armour": 0,
+   "weapon": {
+    "name": "Pulse emitter",
+    "stressRating": 2,
+    "range": "Close"
+   },
+   "attackAttribute": "coordination",
+   "portrait": "/packs/dreadnought-arc/act-three/sentinel.webp"
+  }
+ }
+}

@@ -1,37 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { KHARSAANS_PROMISE, SYSTEM_CAP, applyRefits } from "@hwr/content";
 import { seededRng } from "@hwr/rules-engine";
 import { firstSentences, pickScar, recap, SCARS } from "../src/campaign.js";
-import type { Game } from "../src/engine.js";
+import { playToEnd } from "./bots.js";
 import { Hub } from "../src/hub.js";
 import { Store } from "../src/store.js";
-
-/** Plays a table's mission to the end with simple bots, as the balance simulator does. */
-function playToEnd(game: Game, ids: string[]): void {
-  const s = game.state;
-  const ctl = (c: string) => s.characters[c]!.controllerId!;
-  const standing = (id: string) => s.characters[id]!.injuries < 2;
-  for (let n = 0; s.phase === "playing" && n < 800; n++) {
-    if (s.awaitingContinue) game.handle(ids[0]!, { type: "advance" });
-    else if (s.pendingChoice) for (const id of ids) game.handle(id, { type: "vote", optionId: s.pendingChoice!.options[0]!.id });
-    else if (s.pendingRoll?.rolled) game.handle(ctl(s.pendingRoll.rolled.characterId), { type: "acceptRoll", bonus: 3 });
-    else if (s.pendingRoll) {
-      const party = game.partyIds().filter(standing);
-      game.handle(ctl(s.pendingRoll.characterId ?? party[n % party.length]!), { type: "roll", boughtDice: 0, payWithThreat: false, useFocus: true, fortuneCritical: false });
-    } else if (s.scene.mode === "space" && s.space) {
-      const c = game.partyIds().find((id) => standing(id) && !s.space!.acted.includes(id))!;
-      const target = s.space.enemies.find((e) => !e.destroyed)!;
-      try {
-        game.handle(ctl(c), { type: "stationAction", action: s.space.round >= 3 ? "breakaway" : "fire", characterId: c, targetId: target.id });
-      } catch {
-        game.handle(ctl(c), { type: "stationAction", action: "rally", characterId: c });
-      }
-    } else {
-      const c = game.partyIds().find((id) => standing(id) && !s.scene.acted.includes(id))!;
-      const t = s.scene.npcs.find((x) => x.hostile && !x.defeated && !x.surrendered)!;
-      game.handle(ctl(c), { type: "combatAction", action: "attack", characterId: c, targetNpcId: t.id });
-    }
-  }
-}
 
 function finishedTable(hub: Hub) {
   const table = hub.create("Kharsaan's Promise", "cold-harbour");
@@ -161,6 +134,41 @@ describe("campaign", () => {
     expect(store.campaigns()[0]).toMatchObject({ code: next.code, phase: "lobby" });
     expect(hub.reopenCampaign(one!.id).code).toBe(next.code);
     expect(() => hub.reopenCampaign("nope")).toThrow(/No saved campaign/);
+  });
+
+  it("refits the crew's ship with banked RU, once each, and fits the refits when a ship battle starts", () => {
+    const hub = new Hub(new Store(":memory:"));
+    const { table, ids } = finishedTable(hub);
+    const next = hub.continueCampaign(table.game.state.code).game;
+    const s = next.state;
+    const me = s.players.find((p) => p.id === ids[0])!;
+    next.join("Sam", "player", me.id);
+    s.campaign!.ru = 9;
+    next.handle(me.id, { type: "refit", refitId: "armour" });
+    next.handle(me.id, { type: "refit", refitId: "main-guns" });
+    expect(s.campaign!.refits).toEqual(["armour", "main-guns"]);
+    expect(s.campaign!.ru).toBe(0);
+    expect(() => next.handle(me.id, { type: "refit", refitId: "armour" })).toThrow(/already has/);
+    expect(() => next.handle(me.id, { type: "refit", refitId: "bulkheads" })).toThrow(/costs 3 RU/);
+
+    // Play Cold Harbour with these refits until its ship battle starts.
+    const battle = hub.create("Kharsaan's Promise", "cold-harbour").game;
+    (battle as unknown as { rng: unknown }).rng = seededRng(7);
+    const pid = battle.join("Sam", "player").id;
+    battle.handle(pid, { type: "claimCharacter", characterId: battle.state.sheets[0]!.id });
+    battle.state.campaign = { id: "c", name: "Ship", chapters: [], ru: 0, advances: {}, refits: ["armour", "main-guns", "nonsense"] };
+    battle.handle(pid, { type: "startGame" });
+    playToEnd(battle, [pid], () => battle.state.scene.mode === "space");
+    const ship = battle.state.space!.ship;
+    expect(ship.armour).toBe(KHARSAANS_PROMISE.armour + 1);
+    expect(ship.weapons.map((w) => w.cd)).toEqual(KHARSAANS_PROMISE.weapons.map((w) => w.cd + 1));
+  });
+
+  it("caps refitted systems and ignores refits it doesn't know", () => {
+    const ship = { armour: 1, maxHull: 10, systems: { communications: 12, computers: 9, engines: 11, sensors: 9, structure: 9, weapons: 10 }, weapons: [] };
+    const out = applyRefits(ship, ["comms", "engines", "bulkheads", "gone"]);
+    expect(out).toMatchObject({ maxHull: 12, systems: { communications: SYSTEM_CAP, engines: 12 } });
+    expect(ship.maxHull).toBe(10); // the mission's ship is never changed
   });
 
   it("keeps the recap short", () => {

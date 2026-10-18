@@ -82,7 +82,31 @@ Facial hair goes in `avoid` rather than "clean-shaven" alone, because prompts of
 - **Denoise is the dial**: around 0.45 keeps the model's detail, 0.55 and up starts redesigning the ship. ControlNet canny at 0.6 holds the silhouette while the paint-over relights it.
 - Game textures pack data into channels: glow maps use G and B for other things (the Mothership's bay glowed green until the map was converted to greyscale), and only the red channel of a team map is the team-colour mask.
 - The source models use different axis conventions, so the studio auto-orients them (longest axis horizontal, shortest up), with an override for tall hulls like the Mothership.
+- **Both motherships fly upright.** The Kushan Mothership and Homeworld 2's *Pride of Hiigara* have their longest axis vertical, like a tower. Never roll or rotate them flat in a shot or composite. Size them by `height` instead, as the title does. An Act One draft laid the *Pride* on her side to fit a wide frame, and it was wrong.
 - **Space ships stay in space.** The Mothership and the fleet's other big ships never land or fly in an atmosphere: they're built in orbit and only ever jump between systems. Scenes with them use a space plate (`"space": true` in `scenes.json`). It's painted square and cropped, with the no-landscape negative on both the plate and the paint-over, and no planet-surface references. An earlier title asked for "high orbit above Kharak", and SDXL put the Mothership low over the dunes.
 - Always render several variants and compare them on a contact sheet. One generated portrait had a US flag patch, which an automated pass would never have caught.
+
+## Homeworld 2 ships
+
+The Homeworld 1 ships in the Remastered source files are OBJ. The Homeworld 2 ships aren't, so `prep.py` converts them:
+
+| Source | Converter | Ships |
+| --- | --- | --- |
+| Collada (`.DAE`) | `tools/ship-studio/dae2obj.py` | Ten Hiigaran ships, including the destroyer, assault frigate, interceptor, carrier and battlecruiser |
+| Compiled `.hod` only | `tools/ship-studio/hod2obj.py` | Everything else: the Vaygr, the *Pride of Hiigara*, the shipyard, the Dreadnought, the Keepers |
+
+- **Collada:** only the detailed level (`MULT[...]_LOD[0]`) is kept. Each node's transform is baked in, and each material is named after its diffuse texture so `prep.py` matches it.
+- **HOD:** an IFF file. `HVMD` holds `STAT` materials, `LMIP` DXT textures, `MULT` meshes per level of detail and `GOBG` surface detail; `DTRM`/`HIER` holds the joints the meshes hang from. The reader keeps level 0 and places each mesh at its joint. It decodes the top mip of each texture by wrapping it in a DDS header for Pillow, and keeps only the green channel of a glow map.
+- **Textures tile:** Homeworld 2 UVs run from −1 to 2, so the loader sets textures to repeat.
+- **Team colour:** a Vaygr hull is mostly team-coloured, so Vaygr shots set a Vaygr colour (`"team": "54504a"`) rather than the studio's beige default.
+- **Which way is up:** Homeworld 2 models are authored Y-up. Auto-orienting, which lays the longest axis along X and the shortest along Y, can turn them upside down or onto their side, and lays a ring like the Balcora Gate flat. `prep.py`'s `ORIENT` keeps such ships `"native"`. In native orientation a ship's nose points along Z, so side views use a yaw around 60 to 120.
+- **Glow from Collada:** Collada ships' glow maps are converted by `prep.py` itself, and for Homeworld 2 it also keeps only the green channel (the red and blue channels showed as white panels).
+- **Poses the game animates:** some joints only take their real positions in an animation. The planet killer's five legs share one rest pose, so `POSE` turns each leg's root a fifth of the way round the body.
+- **Materials with meaningless names:** `MATERIALS` maps them by hand, such as Sajuuk's `JUSTMESH_hw2Shader4` to its right-hand hull texture.
+- **Check the layout before painting:** mirror a ship (`"flip": true`) so it faces the action. A proof sheet of every scene on a plain backdrop, made with `compose.composite`, shows which way each ship points.
+
+A private mission keeps its own shot list and scene file: `render.mjs --shots reference/missions/shots.json`, then `compose.py --spec reference/missions/scenes.json --out reference/missions`.
+
+Homeworld Mobile's glTF meshes were tried as a stand-in for the `.hod`-only ships and dropped. They're built for a top-down camera, so from a side angle most of the hull is missing.
 
 Next: Deserts of Kharak ground units for the Kharak scenes (#378), and a 3D ship viewer using the same models.

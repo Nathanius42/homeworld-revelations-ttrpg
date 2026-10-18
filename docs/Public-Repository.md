@@ -16,7 +16,19 @@ Everything committed here, except:
 
 Links from the remaining docs to left-out pages become plain text. The public copy gets its own README, a plain MIT licence for the code, a NOTICE setting the Homeworld and Revelations rights and the fan art apart, and a GitHub Actions workflow that typechecks, tests and builds.
 
-The `reference/` folder is never committed, so it can't be exported.
+The `reference/` folder is never committed, so it can't be exported. The one exception is on purpose: **mission packs**.
+
+### Mission packs
+
+A pack is a set of missions written privately and shared deliberately, such as the Dreadnought arc. `tools/public/packs.json` lists each pack's missions in the private folder. The export:
+1. copies those missions into `packs/<name>/missions/` of the public copy;
+2. rewrites their art paths from `/local/missions/…` to `/packs/<name>/…`;
+3. copies only the pictures they use;
+4. drops the "Private: never shared." note from the GM notes.
+
+The server loads every pack it finds (`apps/server/src/mission-packs.ts`), checked like a private mission, and serves its art at `/packs/<name>/`. The Windows build copies `packs/` into `app/packs`, shared or not. This repository has no `packs/` folder, so here the same missions come from the private folder as usual.
+
+A pack never carries the soundtrack, ship models or voices. A mission's music set or Kokoro voice falls back to the general moods and the browser's voices when they aren't there.
 
 ## Publishing a version
 
@@ -32,13 +44,19 @@ The `reference/` folder is never committed, so it can't be exported.
 
 ## The Windows download
 
-Each release can carry a portable build made without the private folder:
+Each release carries a portable build made without the private folder. After tagging the public copy, run this from this repository:
 
 ```bash
-corepack pnpm package:win --no-private
+node tools/public/release.mjs v1.1.0
 ```
 
-Run it in the public copy, after installing there (`corepack pnpm install`), so the download matches the tagged code. It adds `LICENSE.txt`, `NOTICE.txt`, `THIRD-PARTY-NOTICES.txt` and `Start without launcher.cmd`. Zip `dist\HWR-App` and attach it to the release with its SHA-256. The export keeps the public copy's `node_modules` and `dist`, so exporting again doesn't delete a build waiting to be uploaded.
+It checks the public copy is clean and at that tag, then:
+- installs and builds the folder with `--no-private`, which adds `LICENSE.txt`, `NOTICE.txt`, `THIRD-PARTY-NOTICES.txt` and `Start without launcher.cmd`;
+- starts the built server the way the start script does and checks it answers with no private files;
+- zips it with Windows' own `tar` (Git's GNU tar on the PATH can't write zips) and checks nothing private is inside;
+- writes `dist\RELEASE-NOTES-v1.1.0.md` with the download section and SHA-256 filled in.
+
+Fill in the notes, then attach the zip and paste them into a GitHub release. The script uploads nothing. The export keeps the public copy's `node_modules` and `dist`, so exporting again doesn't delete a build waiting to be uploaded.
 
 The launcher is unsigned and starts a hidden server process, so antivirus such as Norton can flag a freshly compiled `HWR-App.exe` as a generic threat. The README and the release notes say so, and the start script is the way round it.
 
@@ -47,4 +65,5 @@ The launcher is unsigned and starts a hidden server process, so antivirus such a
 | Piece | File |
 |---|---|
 | The export and its exclude list | `tools/public/export.mjs` |
+| The Windows download and release notes | `tools/public/release.mjs` |
 | Public README, licence, notice, CI, Git attributes | `tools/public/` |

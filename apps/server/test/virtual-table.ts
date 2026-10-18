@@ -13,6 +13,7 @@
  */
 import { writeFileSync } from "node:fs";
 import WebSocket from "ws";
+import { stationMove } from "./bots.js";
 import { chooseKokoro, chunks, speakableText, type ClientMessage, type LogEntry, type ServerMessage, type StationAction, type TableState } from "@hwr/protocol";
 
 const args = process.argv.slice(2);
@@ -52,6 +53,8 @@ class Bot {
   private busy = false;
   /** The round in which this player's station turned out to be offline: they rally the crew instead, as people do. */
   offlineRound?: number;
+  /** Set when the server refuses a breakaway: this battle has to be fought out. */
+  noBreakaway?: boolean;
   onState?: (s: TableState) => void;
 
   constructor(
@@ -70,7 +73,10 @@ class Bot {
         if (msg.type === "error") {
           errors.push(`${this.name}: ${msg.message}`);
           if (/offline/i.test(msg.message)) this.offlineRound = this.state?.space?.round;
+          if (/no breaking away/i.test(msg.message)) this.noBreakaway = true;
           this.waiting = undefined;
+          // A refusal changes nothing on the table, so no new state will prompt a retry: decide again now.
+          if (this.state) this.onState?.(this.state);
           return;
         }
         if (msg.type === "welcome") {
@@ -119,9 +125,11 @@ function decide(bot: Bot, s: TableState, players: Bot[]): ClientMessage | undefi
   if (s.scene.mode === "space" && s.space) {
     const sp = s.space;
     if (!standing(me) || sp.acted.includes(me)) return undefined;
+    // Locked stations and missiles in flight come first, as a family would see to them.
+    if (sp.locked?.length || sp.enemies.some((e) => e.impact && !e.destroyed)) return bot.offlineRound === sp.round ? { type: "stationAction", action: "rally", characterId: me } : stationMove(s, me);
     const target = sp.enemies.find((e) => !e.destroyed && !e.optional) ?? sp.enemies.find((e) => !e.destroyed);
     const plan: StationAction[] = ["fire", "scan", "evasive", "fire", "jam", "fire"];
-    const planned = sp.round >= 4 && sp.acted.length === 0 ? "breakaway" : plan[sp.acted.length % plan.length]!;
+    const planned = sp.round >= 4 && sp.acted.length === 0 && !bot.noBreakaway ? "breakaway" : plan[sp.acted.length % plan.length]!;
     const action = bot.offlineRound === sp.round ? "rally" : planned;
     return { type: "stationAction", action, characterId: me, targetId: target?.id };
   }

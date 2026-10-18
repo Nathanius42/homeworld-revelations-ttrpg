@@ -1,0 +1,638 @@
+{
+ "id": "fall-of-tanis",
+ "title": "The Fall of Tanis",
+ "blurb": "The Pride of Hiigara is minutes from launch when the Vaygr strike Tanis. Your destroyer, the Spear of Soban, is all that stands between them and the new Mothership, until they board her.",
+ "recommendedPlayers": "2-6 players, about two hours",
+ "art": "/packs/dreadnought-arc/act-one/tanis-shipyard.webp",
+ "sequel": "old-colours",
+ "music": "hiigara",
+ "voices": {
+  "Tanis Control": "bf_emma",
+  "Fleet Command": "bm_george"
+ },
+ "primer": [
+  "A century after the Homecoming, the Hiigarans are a nation again, with a fleet, a homeworld, and a second Mothership, the Pride of Hiigara, nearly finished at the Tanis shipyard.",
+  "You are the command crew of the Spear of Soban, a Kiith Soban destroyer on picket at Tanis. Today is supposed to be a celebration. It's the first day of a war: the Vaygr, raiders gathered under a warlord called Makaan, are coming for the Pride.",
+  "This is the first chapter of a longer story. What you do with your ship today will follow you."
+ ],
+ "startNode": "briefing",
+ "gmNotes": "Act One, mission one of the Dreadnought arc, set during Homeworld 2's opening: the Vaygr attack on the Tanis shipyard as the Pride of Hiigara launches.\nThe crew command the Kiith Soban destroyer SRS Spear of Soban. Kiith Soban are the Hiigaran military kiith: terse, disciplined, proud.\nThe Vaygr follow Makaan, a warlord who believes he is the Sajuuk-Khar. Their infiltrator frigates capture ships by boarding.\nThe heart of the mission is losing the ship: the crew save the Pride, are boarded, and must decide whether to scuttle the Spear (flag destroyer: scuttled or half-scuttled) or abandon her intact (destroyer: captured), in which case the Vaygr take her and she returns as an enemy in Old Colours.\nTone: pride, then shock, then a hard choice. End on loss and resolve.",
+ "nodes": {
+  "briefing": {
+   "id": "briefing",
+   "type": "narration",
+   "speaker": "Tanis Control",
+   "tone": "fleet",
+   "text": "\"All pickets, Tanis Control. The Pride of Hiigara completes final systems checks in under an hour. Hold your stations, keep the lanes clear, and enjoy the view. You won't see another day like this one.\" Below you, inside the shipyard's cradle, the new Mothership glows with work lights from bow to stern.",
+   "next": "bridge",
+   "scene": {
+    "title": "The Fall of Tanis",
+    "location": "Tanis shipyard, picket station",
+    "art": "/packs/dreadnought-arc/act-one/tanis-shipyard.webp",
+    "mood": "briefing",
+    "truths": [
+     {
+      "id": "picket",
+      "label": "On picket at Tanis",
+      "kind": "advantage",
+      "strength": 1,
+      "scope": "location"
+     }
+    ]
+   }
+  },
+  "bridge": {
+   "id": "bridge",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "The bridge of the Spear of Soban is quiet the way a Kiith Soban bridge always is: every station manned, every report short. You are her command crew. A century after the Homecoming, Hiigara is building a second Mothership, and the Spear's only job today is to watch the dark beyond the shipyard while the fleet celebrates.",
+   "next": "contact",
+   "scene": {
+    "title": "Spear of Soban",
+    "location": "Destroyer bridge, Tanis",
+    "art": "/packs/dreadnought-arc/act-one/tanis-bridge.webp",
+    "mood": "exploring"
+   }
+  },
+  "contact": {
+   "id": "contact",
+   "type": "test",
+   "prompt": "Sensors chime once, then again. Hyperspace inhibitor readings are fluttering at the edge of the system, as if something very large is trying to arrive quietly.",
+   "reason": "Read the signatures before they finish arriving",
+   "approaches": [
+    {
+     "label": "Pull the signal out of the noise",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 2
+    },
+    {
+     "label": "Cross-check against the fleet's registry",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Sensors, Signals Analysis",
+   "pass": {
+    "text": "Not traders. Not Hiigaran. A raiding fleet, with heavy hulls in the lead and something long and narrow trailing behind. You send the alarm a full minute before anyone else.",
+    "effects": {
+     "momentum": 2,
+     "addTruths": [
+      {
+       "id": "forewarned",
+       "label": "Forewarned",
+       "kind": "advantage",
+       "strength": 1,
+       "scope": "situation"
+      }
+     ]
+    },
+    "next": "posture"
+   },
+   "fail": {
+    "text": "By the time the readings make sense, the Vaygr are already out of hyperspace: frigates, bombers, and something long and narrow trailing behind them.",
+    "effects": {
+     "threat": 2
+    },
+    "next": "posture"
+   }
+  },
+  "posture": {
+   "id": "posture",
+   "type": "choice",
+   "prompt": "Tanis Control is shouting over every channel. The Pride is still in her cradle, helpless. The Vaygr frigates are making straight for her.",
+   "options": [
+    {
+     "id": "shield",
+     "label": "Put the Spear between the Vaygr and the Pride",
+     "hint": "The Pride is safe; the Spear takes every hit",
+     "next": "battle",
+     "effects": {
+      "addTruths": [
+       {
+        "id": "shield",
+        "label": "Shielding the Pride",
+        "kind": "complication",
+        "strength": 1,
+        "scope": "situation"
+       }
+      ],
+      "momentum": 1
+     }
+    },
+    {
+     "id": "hunt",
+     "label": "Hunt the frigates before they reach her",
+     "hint": "Hit them first, and hope nothing gets past",
+     "next": "battle",
+     "effects": {
+      "addTruths": [
+       {
+        "id": "initiative",
+        "label": "Taking the fight to them",
+        "kind": "advantage",
+        "strength": 1,
+        "scope": "situation"
+       }
+      ],
+      "threat": 1
+     }
+    }
+   ]
+  },
+  "battle": {
+   "id": "battle",
+   "type": "space",
+   "scene": {
+    "title": "The Vaygr Strike",
+    "location": "Above the Tanis shipyard",
+    "art": "/packs/dreadnought-arc/act-one/tanis-strike.webp",
+    "mood": "combat",
+    "truths": [
+     {
+      "id": "shipyard",
+      "label": "Shipyard guns in support",
+      "kind": "advantage",
+      "strength": 1,
+      "scope": "location"
+     }
+    ]
+   },
+   "intro": "Vaygr assault frigates come in low across the shipyard, bombers swarming ahead of them, and the Spear swings to meet them. Somewhere behind the frigates, that long narrow hull is closing on you, not on the Pride. Battle stations.",
+   "ship": {
+    "id": "spear-of-soban",
+    "name": "Spear of Soban",
+    "className": "Hiigaran destroyer (Kiith Soban)",
+    "scale": 4,
+    "systems": {
+     "communications": 9,
+     "computers": 10,
+     "engines": 8,
+     "sensors": 9,
+     "structure": 11,
+     "weapons": 11
+    },
+    "maxHull": 15,
+    "armour": 2,
+    "weapons": [
+     {
+      "name": "Twin kinetic turrets",
+      "cd": 4,
+      "range": "Medium"
+     },
+     {
+      "name": "Torpedo tubes",
+      "cd": 5,
+      "range": "Long",
+      "piercing": 1
+     }
+    ],
+    "model": "hgn_destroyer"
+   },
+   "enemies": [
+    {
+     "id": "frig-1",
+     "name": "Assault frigate Kesh",
+     "className": "Vaygr assault frigate",
+     "scale": 3,
+     "systems": {
+      "communications": 8,
+      "computers": 8,
+      "engines": 9,
+      "sensors": 8,
+      "structure": 9,
+      "weapons": 10
+     },
+     "maxHull": 12,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Plasma cannons",
+       "cd": 4,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_assaultfrigate"
+    },
+    {
+     "id": "frig-2",
+     "name": "Assault frigate Dorrah",
+     "className": "Vaygr assault frigate",
+     "scale": 3,
+     "systems": {
+      "communications": 8,
+      "computers": 8,
+      "engines": 9,
+      "sensors": 8,
+      "structure": 9,
+      "weapons": 10
+     },
+     "maxHull": 12,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Plasma cannons",
+       "cd": 4,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_assaultfrigate"
+    },
+    {
+     "id": "bomb-1",
+     "name": "Bomber wing",
+     "className": "Vaygr bomber wing",
+     "scale": 1,
+     "systems": {
+      "communications": 6,
+      "computers": 7,
+      "engines": 11,
+      "sensors": 7,
+      "structure": 6,
+      "weapons": 9
+     },
+     "maxHull": 7,
+     "armour": 0,
+     "weapons": [
+      {
+       "name": "Plasma bombs",
+       "cd": 3,
+       "range": "Close",
+       "piercing": 1
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Close",
+     "model": "vgr_bomber",
+     "optional": true
+    }
+   ],
+   "victory": {
+    "text": "The second frigate breaks apart against the shipyard's lights. For one breath the bridge cheers. Then the long narrow hull you'd forgotten slams into the Spear amidships, and the whole ship rings like a bell.",
+    "next": "infiltrator"
+   },
+   "defeat": {
+    "text": "A broadside opens the Spear's flank to space. While she's reeling, the long narrow hull you'd forgotten slams into her amidships and clamps on.",
+    "effects": {
+     "stressParty": 2
+    },
+    "next": "infiltrator"
+   }
+  },
+  "infiltrator": {
+   "id": "infiltrator",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "danger",
+   "text": "Infiltrator frigate. You know the class from briefings: Vaygr ships built to take ships, not destroy them. Its boarding collars burn through the hull on deck six, and the internal sensors light up with movement. Dozens of them, heading forward. Heading for you.",
+   "next": "boarders",
+   "scene": {
+    "title": "Boarders",
+    "location": "Spear of Soban, deck six",
+    "art": "/packs/dreadnought-arc/act-one/tanis-boarders.webp",
+    "mood": "tension",
+    "truths": [
+     {
+      "id": "home-deck",
+      "label": "Your own ship's corridors",
+      "kind": "advantage",
+      "strength": 1,
+      "scope": "location"
+     }
+    ]
+   }
+  },
+  "boarders": {
+   "id": "boarders",
+   "type": "combat",
+   "intro": "The bridge doors buckle. A Vaygr boarding master steps through the smoke with a breaching cutter still glowing, and his boarders fan out behind him.",
+   "npcs": [
+    "boardmaster",
+    "boarder",
+    "boarder"
+   ],
+   "reinforcementText": "More boots on the ladder. Two more boarders push through the ruined doors.",
+   "moraleText": "With their boarding master down, the boarders fall back towards the infiltrator, firing as they go.",
+   "victory": {
+    "text": "The bridge is yours again, for now. Through the smoke you can hear fighting on every deck below.",
+    "effects": {
+     "momentum": 1
+    },
+    "next": "lost"
+   },
+   "defeat": {
+    "text": "You are driven off the bridge and seal yourselves into the emergency control room aft. Through its armoured window you watch Vaygr walk your corridors.",
+    "effects": {
+     "stressParty": 1
+    },
+    "next": "lost"
+   }
+  },
+  "lost": {
+   "id": "lost",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"Spear of Soban, Fleet Command. The Pride is clear of the cradle. Your ship is lost: we count four more infiltrators docking. Abandon ship. Repeat, abandon ship.\" Decks four through nine are red on the board. The Spear of Soban is still flying, still fighting, and she isn't yours any more.",
+   "next": "fate"
+  },
+  "fate": {
+   "id": "fate",
+   "type": "choice",
+   "prompt": "The lifeboats are aft. So is the reactor. If you leave her whole, the Vaygr will have a Hiigaran destroyer, her logs, and every trick her crew ever taught her.",
+   "options": [
+    {
+     "id": "scuttle",
+     "label": "Scuttle her: overload the reactor first",
+     "hint": "Deny the Vaygr their prize, if there's time",
+     "next": "reactor"
+    },
+    {
+     "id": "run",
+     "label": "Abandon ship now",
+     "hint": "Get everyone out; the ship can be fought another day",
+     "next": "lifeboats",
+     "effects": {
+      "setFlags": {
+       "destroyer": "captured"
+      }
+     }
+    }
+   ]
+  },
+  "reactor": {
+   "id": "reactor",
+   "type": "extended",
+   "scene": {
+    "title": "The Reactor",
+    "location": "Spear of Soban, engineering",
+    "art": "/packs/dreadnought-arc/act-one/tanis-reactor.webp",
+    "mood": "tension",
+    "truths": [
+     {
+      "id": "boarders-near",
+      "label": "Boarders in the next compartment",
+      "kind": "threat",
+      "strength": 1,
+      "scope": "location"
+     }
+    ]
+   },
+   "prompt": "Engineering is a cathedral of red light. Override the safeties, drain the coolant and lock the controls so the Vaygr can't undo it, before the boarders cutting through the bulkhead get in.",
+   "label": "Overload the reactor",
+   "work": 7,
+   "magnitude": 1,
+   "resistance": 0,
+   "attempts": 4,
+   "approaches": [
+    {
+     "label": "Override the safeties from the console",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Drain the coolant by hand",
+     "attribute": "brawn",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Hold the bulkhead while the others work",
+     "attribute": "coordination",
+     "skill": "combat",
+     "difficulty": 2
+    }
+   ],
+   "pressure": [
+    "The bulkhead glows orange where the Vaygr are cutting.",
+    "Klaxons everywhere now. The reactor's voice drops into a groan you can feel in your teeth.",
+    "The cutter breaks through. A Vaygr carbine pokes through the hole and fires blind."
+   ],
+   "complete": {
+    "text": "The last lock engages. The reactor is past saving, and nothing the Vaygr do will change that. You have about four minutes. Run.",
+    "effects": {
+     "setFlags": {
+      "destroyer": "scuttled"
+     }
+    },
+    "next": "lifeboats"
+   },
+   "timeout": {
+    "text": "The bulkhead gives way. You get the overload started but not locked, and you have to run with Vaygr fire chasing you down the corridor. Maybe it will be enough.",
+    "effects": {
+     "setFlags": {
+      "destroyer": "half-scuttled"
+     },
+     "stressParty": 2
+    },
+    "next": "lifeboats"
+   }
+  },
+  "lifeboats": {
+   "id": "lifeboats",
+   "type": "test",
+   "scene": {
+    "title": "Abandon Ship",
+    "location": "Spear of Soban, lifeboat bay",
+    "art": "/packs/dreadnought-arc/act-one/tanis-lifeboats.webp",
+    "mood": "tension"
+   },
+   "prompt": "The lifeboat bay is chaos: wounded crew, jammed hatches, and the Vaygr only two decks away. Get everyone out.",
+   "reason": "Get the crew off the Spear",
+   "approaches": [
+    {
+     "label": "Take command of the evacuation",
+     "attribute": "will",
+     "skill": "command",
+     "difficulty": 2
+    },
+    {
+     "label": "Fly the last lifeboat out through the debris",
+     "attribute": "agility",
+     "skill": "flight",
+     "difficulty": 2
+    },
+    {
+     "label": "Triage the wounded on the move",
+     "attribute": "insight",
+     "skill": "medical",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Leadership, Evasive Manoeuvres, Emergency Medicine",
+   "pass": {
+    "text": "Every lifeboat clears the bay. Behind you the Spear of Soban turns slowly in the light of the burning shipyard.",
+    "next": "aftermath"
+   },
+   "fail": {
+    "text": "The last lifeboat clears the bay with its hatch half-shut and Vaygr fire scoring its hull. Everyone aboard makes it, but not all of them unhurt.",
+    "effects": {
+     "stressParty": 2
+    },
+    "next": "aftermath"
+   }
+  },
+  "aftermath": {
+   "id": "aftermath",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "destroyer",
+      "equals": "scuttled"
+     },
+     "next": "blooms"
+    },
+    {
+     "when": {
+      "flag": "destroyer",
+      "equals": "half-scuttled"
+     },
+     "next": "burns"
+    }
+   ],
+   "otherwise": "taken"
+  },
+  "blooms": {
+   "id": "blooms",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "Four minutes later the Spear of Soban becomes a small, brief sun. It takes the infiltrator with it, and every Vaygr aboard. Nobody in the lifeboat says anything for a long time.",
+   "next": "end-scuttled"
+  },
+  "burns": {
+   "id": "burns",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "The reactor goes, but not all the way. The Spear's stern blows out in a gout of fire and she tumbles away dark, burning, broken. The Vaygr infiltrators cast off and leave her. Whether anything of her survived, nobody can say.",
+   "next": "end-half"
+  },
+  "taken": {
+   "id": "taken",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "danger",
+   "text": "As your lifeboat pulls away, the Spear of Soban's running lights change from Hiigaran white to Vaygr red. She turns, slow and careful as if someone new is learning her helm, and follows the infiltrators into hyperspace.",
+   "next": "end-captured"
+  },
+  "end-scuttled": {
+   "id": "end-scuttled",
+   "type": "end",
+   "scene": {
+    "title": "Aboard the Pride",
+    "location": "Pride of Hiigara, recovery deck",
+    "art": "/packs/dreadnought-arc/act-one/tanis-pride.webp",
+    "mood": "loss"
+   },
+   "text": "\"Survivors of the Spear of Soban, Fleet Command. You denied the Vaygr their prize and kept the Pride's flank clear. Kiith Soban will remember both.\" The Pride of Hiigara jumps away from the ruins of Tanis with you aboard. The war has started.",
+   "ru": 3
+  },
+  "end-half": {
+   "id": "end-half",
+   "type": "end",
+   "scene": {
+    "title": "Aboard the Pride",
+    "location": "Pride of Hiigara, recovery deck",
+    "art": "/packs/dreadnought-arc/act-one/tanis-pride.webp",
+    "mood": "loss"
+   },
+   "text": "\"Survivors of the Spear of Soban, Fleet Command. Well fought. The Pride is clear.\" On the recovery deck, someone asks whether the Spear went up. You tell them the truth: you don't know.",
+   "ru": 2
+  },
+  "end-captured": {
+   "id": "end-captured",
+   "type": "end",
+   "scene": {
+    "title": "Aboard the Pride",
+    "location": "Pride of Hiigara, recovery deck",
+    "art": "/packs/dreadnought-arc/act-one/tanis-pride.webp",
+    "mood": "loss"
+   },
+   "text": "\"Survivors of the Spear of Soban, Fleet Command. Every one of your crew is accounted for. That matters.\" It does. But somewhere out there, Vaygr engineers are reading your ship's logs.",
+   "ru": 2
+  }
+ },
+ "npcs": {
+  "boardmaster": {
+   "id": "boardmaster",
+   "name": "Vaygr boarding master",
+   "tier": "notable",
+   "detail": "Scarred faceplate, clan sigils burned into the armour",
+   "attributes": {
+    "agility": 10,
+    "brawn": 11,
+    "coordination": 10,
+    "insight": 9,
+    "reason": 8,
+    "will": 10
+   },
+   "skills": {
+    "combat": 3,
+    "command": 2,
+    "engineering": 1,
+    "exploration": 1,
+    "flight": 1,
+    "medical": 0
+   },
+   "maxStress": 10,
+   "armour": 1,
+   "weapon": {
+    "name": "Breaching cutter",
+    "stressRating": 3,
+    "range": "Reach",
+    "piercing": 1
+   },
+   "attackAttribute": "brawn",
+   "portrait": "/packs/dreadnought-arc/act-one/vaygr-boarder.webp"
+  },
+  "boarder": {
+   "id": "boarder",
+   "name": "Vaygr boarder",
+   "tier": "minor",
+   "detail": "Breaching armour, carbine up, no hesitation",
+   "attributes": {
+    "agility": 9,
+    "brawn": 10,
+    "coordination": 10,
+    "insight": 8,
+    "reason": 7,
+    "will": 9
+   },
+   "skills": {
+    "combat": 2,
+    "command": 0,
+    "engineering": 1,
+    "exploration": 1,
+    "flight": 0,
+    "medical": 0
+   },
+   "maxStress": 6,
+   "armour": 1,
+   "weapon": {
+    "name": "Vaygr boarding carbine",
+    "stressRating": 4,
+    "range": "Close"
+   },
+   "attackAttribute": "coordination",
+   "portrait": "/packs/dreadnought-arc/act-one/vaygr-boarder.webp"
+  }
+ }
+}

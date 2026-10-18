@@ -1,0 +1,481 @@
+{
+ "id": "the-berth",
+ "title": "The Berth",
+ "blurb": "Deep in the wreck of the Progenitor Mothership, the fleet has found a warship no Hiigaran built. Fleet Command wants your crew to wake her. She wants something too.",
+ "recommendedPlayers": "2-6 players, about two hours",
+ "art": "/packs/dreadnought-arc/act-two/berth-approach.webp",
+ "sequel": "the-keepers",
+ "music": "hiigara",
+ "clock": {
+  "id": "awakening",
+  "label": "Dreadnought awakening",
+  "max": 8
+ },
+ "voices": {
+  "Fleet Command": "bm_george",
+  "The Dreadnought": "am_onyx@0.82",
+  "Vash’Kora": "am_onyx@0.82",
+  "The Bentusi": "bf_alice@0.9",
+  "Bentusi adviser": "bf_alice@0.95"
+ },
+ "primer": [
+  "The Vaygr war is going badly. Makaan's fleets strike wherever the Hiigarans aren't, and the Pride of Hiigara can't be everywhere.",
+  "Your crew lost the Spear of Soban at Tanis and made their name in the dust lanes. Now Fleet Command has a stranger job: in the wreck of the ancient Progenitor Mothership, the fleet has found a Dreadnought, intact and asleep.",
+  "Wake her. Fly her. And keep an eye on the countdown on the table: something aboard is waking too."
+ ],
+ "startNode": "briefing",
+ "gmNotes": "Act Two, mission three of the Dreadnought arc, around Homeworld 2's Dreadnought Berth: the Hiigarans find a Progenitor Dreadnought in the old engineering section of the Progenitor Mothership.\nThe Dreadnought holds a dormant Progenitor mind, Vash’Kora, the Architect of Paths. The crew don't know its name yet; it speaks as 'The Dreadnought', in fragments.\nThe campaign countdown 'Dreadnought awakening' (0-8) starts here when the bridge is powered. It rises when the crew lean on her powers or keep her secrets, and falls when they learn true things or isolate her.\nFlags: toldFleet or keptQuiet (who knows about the voice). destroyer=retaken brings the Spear of Soban to help. intel=gehenna sped the fleet here.\nTone: awe, then unease. She is beautiful, and she is not entirely theirs.",
+ "nodes": {
+  "briefing": {
+   "id": "briefing",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"Soban crew, Fleet Command. The fleet has found something in the old engineering section of the Progenitor Mothership's wreck. Something intact, and very large. Fleet Intelligence wants a crew who has already lost a ship and kept their heads. That's you. Take a boarding shuttle in and wake it up.\"",
+   "next": "intel",
+   "scene": {
+    "title": "The Berth",
+    "location": "The Progenitor Mothership's wreck",
+    "art": "/packs/dreadnought-arc/act-two/berth-approach.webp",
+    "mood": "briefing"
+   }
+  },
+  "intel": {
+   "id": "intel",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "intel",
+      "equals": "gehenna"
+     },
+     "next": "intel-paid"
+    }
+   ],
+   "otherwise": "approach"
+  },
+  "intel-paid": {
+   "id": "intel-paid",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"One more thing. The Vaygr orders you pulled from that data core in the dust lanes led us here a week early. Whatever's in there, we found it before Makaan did. Thank you.\"",
+   "next": "approach",
+   "effects": {
+    "momentum": 2
+   }
+  },
+  "approach": {
+   "id": "approach",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "The wreck is the size of a moon, and the shuttle's lights barely touch it. Deep inside, in a berth built for something no Hiigaran shipwright ever imagined, she waits: a warship longer than the Pride of Hiigara is tall, dark, her hull cold as the void. The Dreadnought.",
+   "next": "corridors"
+  },
+  "corridors": {
+   "id": "corridors",
+   "type": "test",
+   "scene": {
+    "title": "Inside the Berth",
+    "location": "Progenitor engineering section",
+    "art": "/packs/dreadnought-arc/act-two/berth-corridors.webp",
+    "mood": "mystery",
+    "truths": [
+     {
+      "id": "alien-scale",
+      "label": "Built for something else",
+      "kind": "complication",
+      "strength": 1,
+      "scope": "location"
+     }
+    ]
+   },
+   "prompt": "The way to her bridge runs through corridors built at the wrong scale, with doors that open on nothing and gravity that changes direction halfway along.",
+   "reason": "Find the way to the Dreadnought's bridge",
+   "approaches": [
+    {
+     "label": "Map the corridors as you go",
+     "attribute": "reason",
+     "skill": "exploration",
+     "difficulty": 2
+    },
+    {
+     "label": "Trust the pattern in the architecture",
+     "attribute": "insight",
+     "skill": "exploration",
+     "difficulty": 2
+    }
+   ],
+   "focusHint": "Derelicts, Zero-g",
+   "pass": {
+    "text": "There's a logic to it after all, a beautiful, inhuman one. You reach the bridge with time and air to spare.",
+    "effects": {
+     "momentum": 1
+    },
+    "next": "wake"
+   },
+   "fail": {
+    "text": "It takes hours and two near-falls down shafts with no bottom you could see, but you reach the bridge.",
+    "effects": {
+     "stressParty": 1
+    },
+    "next": "wake"
+   }
+  },
+  "wake": {
+   "id": "wake",
+   "type": "extended",
+   "scene": {
+    "title": "The Bridge",
+    "location": "The Dreadnought, command deck",
+    "art": "/packs/dreadnought-arc/act-two/dreadnought-bridge.webp",
+    "mood": "mystery"
+   },
+   "prompt": "The bridge is a hall of dark glass and empty cradles where no Hiigaran was ever meant to stand. Bring her systems up one at a time, before the fleet's patience, and your air, run out.",
+   "label": "Wake the Dreadnought",
+   "work": 7,
+   "magnitude": 1,
+   "resistance": 0,
+   "attempts": 5,
+   "approaches": [
+    {
+     "label": "Splice Hiigaran controls into her systems",
+     "attribute": "reason",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Feel your way through the alien interfaces",
+     "attribute": "insight",
+     "skill": "engineering",
+     "difficulty": 2
+    },
+    {
+     "label": "Force the power couplings by hand",
+     "attribute": "brawn",
+     "skill": "engineering",
+     "difficulty": 2
+    }
+   ],
+   "pressure": [
+    "Lights flicker along the hull for a kilometre, then die.",
+    "Something in the deck hums, a note just below hearing. Everyone's teeth ache.",
+    "Air reserves: forty minutes. The shuttle pilot asks, politely, how much longer."
+   ],
+   "complete": {
+    "text": "Light runs the length of her like a heartbeat. Consoles bloom into life, every display in a script no one can read, and then, one by one, they rewrite themselves in Hiigaran.",
+    "effects": {
+     "clock": 1
+    },
+    "next": "answer"
+   },
+   "timeout": {
+    "text": "You're out of time and nearly out of air when she wakes on her own. Nobody touched anything. Every display turns to face you, and rewrites itself in Hiigaran.",
+    "effects": {
+     "clock": 2,
+     "stressParty": 1
+    },
+    "next": "answer"
+   }
+  },
+  "answer": {
+   "id": "answer",
+   "type": "narration",
+   "speaker": "The Dreadnought",
+   "tone": "npc",
+   "text": "A voice that isn't quite a voice, from everywhere at once: \"Crew. Present. Accepted.\" Then silence. The hatch you came through closes by itself, gently, the way a host closes a door behind a guest.",
+   "next": "tell",
+   "scene": {
+    "title": "Something Answers",
+    "location": "The Dreadnought, command deck",
+    "art": "/packs/dreadnought-arc/act-two/dreadnought-core.webp",
+    "mood": "mystery"
+   }
+  },
+  "tell": {
+   "id": "tell",
+   "type": "choice",
+   "prompt": "Fleet Command is asking for your report. How much do you tell them?",
+   "options": [
+    {
+     "id": "tell",
+     "label": "Everything, voice and all",
+     "hint": "Fleet will watch you closely, and may send help",
+     "next": "vaygr",
+     "effects": {
+      "setFlags": {
+       "toldFleet": true
+      }
+     }
+    },
+    {
+     "id": "quiet",
+     "label": "Systems online, nothing strange",
+     "hint": "No oversight. And she'll know you kept her secret.",
+     "next": "vaygr",
+     "effects": {
+      "setFlags": {
+       "keptQuiet": true
+      },
+      "clock": 1
+     }
+    }
+   ]
+  },
+  "vaygr": {
+   "id": "vaygr",
+   "type": "narration",
+   "speaker": "Fleet Command",
+   "tone": "fleet",
+   "text": "\"Dreadnought crew, Fleet Command. Vaygr signatures inbound, a destroyer and her escorts. They want her too. She's yours to fly, and the fleet can't reach you in time. Get her out of that berth.\"",
+   "next": "spear",
+   "scene": {
+    "title": "Out of the Berth",
+    "location": "Above the Progenitor wreck",
+    "art": "/packs/dreadnought-arc/act-two/berth-battle.webp",
+    "mood": "tension"
+   }
+  },
+  "spear": {
+   "id": "spear",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "destroyer",
+      "equals": "retaken"
+     },
+     "next": "spear-arrives"
+    }
+   ],
+   "otherwise": "unleash"
+  },
+  "spear-arrives": {
+   "id": "spear-arrives",
+   "type": "narration",
+   "speaker": "Narrator",
+   "tone": "gm",
+   "text": "A familiar silhouette drops out of hyperspace beside you, still scorched from Tanis: the Spear of Soban, back in Hiigaran colours, her new crew signalling the old Soban greeting. \"We heard you could use a hand.\"",
+   "next": "unleash",
+   "effects": {
+    "momentum": 2
+   }
+  },
+  "unleash": {
+   "id": "unleash",
+   "type": "choice",
+   "prompt": "Her weapons are waking faster than you can learn them. Something in the systems is offering you more: targeting you didn't ask for, power from somewhere you can't see.",
+   "options": [
+    {
+     "id": "unleash",
+     "label": "Let her guns wake",
+     "hint": "Overwhelming power. She'll remember you let her.",
+     "next": "battle",
+     "effects": {
+      "clock": 2,
+      "momentum": 3,
+      "addTruths": [
+       {
+        "id": "unleashed",
+        "label": "Progenitor targeting",
+        "kind": "advantage",
+        "strength": 1,
+        "scope": "situation"
+       }
+      ]
+     }
+    },
+    {
+     "id": "hiigaran",
+     "label": "Fight her as a Hiigaran ship",
+     "hint": "Only the systems you understand",
+     "next": "battle"
+    }
+   ]
+  },
+  "battle": {
+   "id": "battle",
+   "type": "space",
+   "scene": {
+    "title": "First Blood",
+    "location": "Above the Progenitor wreck",
+    "art": "/packs/dreadnought-arc/act-two/berth-battle.webp",
+    "mood": "combat"
+   },
+   "intro": "The Dreadnought clears the berth for the first time in an age, and the Vaygr destroyer opens fire as if it already knows how much she's worth. Every station, now.",
+   "ship": {
+    "id": "dreadnought",
+    "name": "the Dreadnought",
+    "className": "Progenitor Dreadnought",
+    "scale": 5,
+    "systems": {
+     "communications": 10,
+     "computers": 11,
+     "engines": 8,
+     "sensors": 11,
+     "structure": 13,
+     "weapons": 12
+    },
+    "maxHull": 18,
+    "armour": 3,
+    "weapons": [
+     {
+      "name": "Progenitor lance",
+      "cd": 6,
+      "range": "Long",
+      "piercing": 2
+     },
+     {
+      "name": "Point-defence batteries",
+      "cd": 3,
+      "range": "Close",
+      "vicious": 1
+     }
+    ],
+    "model": "hgn_dreadnaught"
+   },
+   "enemies": [
+    {
+     "id": "vgr-dd",
+     "name": "Vaygr destroyer",
+     "className": "Vaygr destroyer",
+     "scale": 4,
+     "systems": {
+      "communications": 9,
+      "computers": 9,
+      "engines": 8,
+      "sensors": 9,
+      "structure": 11,
+      "weapons": 11
+     },
+     "maxHull": 15,
+     "armour": 2,
+     "weapons": [
+      {
+       "name": "Missile batteries",
+       "cd": 5,
+       "range": "Long"
+      }
+     ],
+     "crew": {
+      "attribute": 10,
+      "skill": 3
+     },
+     "range": "Long",
+     "model": "vgr_destroyer"
+    },
+    {
+     "id": "vgr-f1",
+     "name": "Vaygr frigate",
+     "className": "Vaygr assault frigate",
+     "scale": 3,
+     "systems": {
+      "communications": 8,
+      "computers": 8,
+      "engines": 9,
+      "sensors": 8,
+      "structure": 9,
+      "weapons": 10
+     },
+     "maxHull": 12,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Plasma cannons",
+       "cd": 4,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_assaultfrigate",
+     "optional": true
+    },
+    {
+     "id": "vgr-f2",
+     "name": "Second Vaygr frigate",
+     "className": "Vaygr assault frigate",
+     "scale": 3,
+     "systems": {
+      "communications": 8,
+      "computers": 8,
+      "engines": 9,
+      "sensors": 8,
+      "structure": 9,
+      "weapons": 10
+     },
+     "maxHull": 12,
+     "armour": 1,
+     "weapons": [
+      {
+       "name": "Plasma cannons",
+       "cd": 4,
+       "range": "Medium"
+      }
+     ],
+     "crew": {
+      "attribute": 9,
+      "skill": 2
+     },
+     "range": "Medium",
+     "model": "vgr_assaultfrigate",
+     "optional": true
+    }
+   ],
+   "victory": {
+    "text": "The Vaygr destroyer breaks apart under the Progenitor lance and her escorts flee. On the bridge, the displays dim to a contented glow, and nobody says what everyone's thinking: she enjoyed that.",
+    "next": "after"
+   },
+   "defeat": {
+    "text": "The Vaygr hit her hard enough to buckle her hull. Then, with nobody at the helm, she jumps, and the Vaygr are gone, and so is the wreck. She's taken you somewhere safe, on her own.",
+    "effects": {
+     "clock": 1,
+     "stressParty": 2
+    },
+    "next": "after"
+   }
+  },
+  "after": {
+   "id": "after",
+   "type": "branch",
+   "cases": [
+    {
+     "when": {
+      "flag": "toldFleet"
+     },
+     "next": "end-watched"
+    }
+   ],
+   "otherwise": "end-quiet"
+  },
+  "end-watched": {
+   "id": "end-watched",
+   "type": "end",
+   "scene": {
+    "title": "Her Crew",
+    "location": "The Dreadnought, command deck",
+    "art": "/packs/dreadnought-arc/act-two/dreadnought-bridge.webp",
+    "mood": "victory"
+   },
+   "text": "\"Dreadnought, Fleet Command. Your report has gone higher than you'd believe. The Bentusi have asked to meet her. Bring her to the rendezvous, and keep a close eye on her.\"",
+   "ru": 3
+  },
+  "end-quiet": {
+   "id": "end-quiet",
+   "type": "end",
+   "scene": {
+    "title": "Her Crew",
+    "location": "The Dreadnought, command deck",
+    "art": "/packs/dreadnought-arc/act-two/dreadnought-bridge.webp",
+    "mood": "victory"
+   },
+   "text": "\"Dreadnought, Fleet Command. Well done. Bring her to the rendezvous.\" Later, alone on the bridge on the night watch, one of you hears the hum again, softly, almost like thanks.",
+   "ru": 3
+  }
+ },
+ "npcs": {}
+}

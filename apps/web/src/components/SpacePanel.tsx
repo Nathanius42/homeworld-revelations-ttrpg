@@ -27,7 +27,11 @@ const ACTIONS: ActionInfo[] = [
   { action: "repair", station: "Engineering", label: "Damage control", skill: "engineering", hint: "Clear a breach (Coordination + Engineering)." },
   { action: "rally", station: "Command", label: "Rally the crew", skill: "command", hint: "Will + Command: every success is Momentum." },
   { action: "breakaway", station: "Helm", label: "Break away", system: "engines", skill: "flight", hint: "Escape the fight. Harder with fighters on your tail." },
+  { action: "intercept", station: "Helm", label: "Intercept", system: "engines", skill: "flight", hint: "Put the ship in the missile's path: it bursts on your hull instead of its target.", needsTarget: true },
 ];
+
+/** Engineering's way back into a station the ship has locked the crew out of. */
+const OVERRIDE: ActionInfo = { action: "override", station: "Engineering", label: "Override", system: "computers", skill: "engineering", hint: "Reason + Engineering: take back a locked station." };
 
 const SYSTEM_SHORT: Record<ShipSystem, string> = {
   communications: "Comms",
@@ -95,21 +99,24 @@ function ShipCard({ ship, local, enemy, selected, onSelect }: { ship: ShipState;
           {enemy && ` · ${enemy.range}`}
           {enemy?.chargeEvery ? " · charging gun" : ""}
         </div>
-        <div className="nm">{destroyed ? `${ship.name} (destroyed)` : ship.name}</div>
+        <div className="nm">{enemy?.impacted ? `${ship.name} (struck home)` : destroyed ? `${ship.name} (destroyed)` : ship.name}</div>
         <div className={cx("bar", enemy && "red")} title={`Hull ${ship.maxHull - ship.hull}/${ship.maxHull}`}>
           <span style={{ width: `${Math.max(0, ((ship.maxHull - ship.hull) / ship.maxHull) * 100)}%` }} />
         </div>
-        <div className="systems">
-          {SHIP_SYSTEMS.map((k) => (
-            <span
-              key={k}
-              className={cx("sys", ship.breaches[k] >= ship.scale ? "offline" : ship.breaches[k] >= Math.ceil(ship.scale / 2) && ship.breaches[k] > 0 ? "damaged" : "")}
-              title={`${k}: ${ship.systems[k]}, ${ship.breaches[k]} breach${ship.breaches[k] === 1 ? "" : "es"}`}
-            >
-              {SYSTEM_SHORT[k]} {ship.systems[k]}
-            </span>
-          ))}
-        </div>
+        {enemy?.impact && !destroyed && <div className="strikes">Strikes at the end of round {enemy.impactRound}</div>}
+        {!enemy?.impact && (
+          <div className="systems">
+            {SHIP_SYSTEMS.map((k) => (
+              <span
+                key={k}
+                className={cx("sys", ship.breaches[k] >= ship.scale ? "offline" : ship.breaches[k] >= Math.ceil(ship.scale / 2) && ship.breaches[k] > 0 ? "damaged" : "")}
+                title={`${k}: ${ship.systems[k]}, ${ship.breaches[k]} breach${ship.breaches[k] === 1 ? "" : "es"}`}
+              >
+                {SYSTEM_SHORT[k]} {ship.systems[k]}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </button>
   );
@@ -127,7 +134,11 @@ export function SpacePanel({ state }: { state: TableState }) {
   const mine = me?.characterId ? state.sheets.find((s) => s.id === me.characterId) : undefined;
   const canAct = Boolean(mine && isStanding(state, mine.id) && !sp.acted.includes(mine.id) && !state.pendingRoll);
   const waitingOn = partyOf(state).filter((s) => isStanding(state, s.id) && !sp.acted.includes(s.id));
-  const effects = [sp.evasive && "Evasive action", sp.pattern && "Attack pattern", sp.jammed && "Their targeting jammed", sp.weakness && `Weakness found: ${sp.enemies.find((e) => e.id === sp.weakness)?.name}`].filter(Boolean);
+  const missiles = live.filter((e) => e.impact).sort((a, b) => (a.impactRound ?? 0) - (b.impactRound ?? 0));
+  // Intercept needs a missile: the chosen target if it is one, else the one closest to striking.
+  const missile = target?.impact ? target : missiles[0];
+  const locked = sp.locked ?? [];
+  const effects = [sp.rogue && "The ship has a will of its own", sp.evasive && "Evasive action", sp.pattern && "Attack pattern", sp.jammed && "Their targeting jammed", sp.weakness && `Weakness found: ${sp.enemies.find((e) => e.id === sp.weakness)?.name}`].filter(Boolean);
 
   return (
     <div className="frame danger space-panel">
@@ -157,27 +168,37 @@ export function SpacePanel({ state }: { state: TableState }) {
         )}
         {canAct && mine && (
           <div className="stations">
-            {ACTIONS.map((a) => {
+            {[
+              ...ACTIONS.filter((a) => (a.action !== "intercept" || missiles.length > 0) && (a.action !== "breakaway" || sp.canBreakaway)).map((a) => ({
+                a,
+                station: undefined as StationAction | undefined,
+              })),
+              ...locked.map((station) => ({ a: OVERRIDE, station })),
+            ].map(({ a, station }) => {
               const offline = a.system ? sp.ship.breaches[a.system] >= sp.ship.scale : false;
+              const isLocked = locked.includes(a.action);
               const used = sp.uses[a.action] ?? 0;
+              const aim = a.action === "intercept" ? missile : target;
               return (
                 <button
-                  key={a.action}
+                  key={station ? `override-${station}` : a.action}
                   className="station"
-                  disabled={offline || (a.needsTarget && !target)}
+                  disabled={offline || isLocked || (a.needsTarget && !aim)}
                   title={a.hint}
-                  onClick={() => send({ type: "stationAction", action: a.action, characterId: mine.id, targetId: a.needsTarget ? target?.id : undefined })}
+                  onClick={() => send({ type: "stationAction", action: a.action, characterId: mine.id, targetId: a.needsTarget ? aim?.id : undefined, station })}
                 >
                   <span className="st">{a.station}</span>
                   <span className="lbl">
                     {a.label}
-                    {a.needsTarget && target ? `: ${target.name}` : ""}
+                    {a.needsTarget && aim ? `: ${aim.name}` : ""}
+                    {station ? `: ${ACTIONS.find((x) => x.action === station)?.label ?? station}` : ""}
                   </span>
                   <span className="how">
                     {a.system ? `${a.system.charAt(0).toUpperCase()}${a.system.slice(1)} ${sp.ship.systems[a.system]}` : a.action === "rally" ? `Will ${mine.attributes.will}` : `Coordination ${mine.attributes.coordination}`} + {SKILL_LABELS[a.skill]}{" "}
                     {mine.skills[a.skill]}
                     {used > 0 && <span className="budget-off"> · +{used} (repeated)</span>}
                     {offline && <span className="budget-off"> · offline</span>}
+                    {isLocked && <span className="budget-off"> · locked</span>}
                   </span>
                 </button>
               );

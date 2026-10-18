@@ -68,7 +68,7 @@ Saves live in `apps/server/data/hwr.sqlite`. Tables survive restarts: rejoin wit
 
 **The story read aloud**: the TV view reads narration aloud. Click or tap the TV screen once first, because browsers only allow sound after that. Phones stay quiet unless you press **Voice** in the top bar; the switch is per device.
 
-- **With the Kokoro voices** in the private folder (see [Private folder](Private-Folder.md)), the game PC speaks every line itself, offline, with natural voices that sound the same on every device. George narrates, Emma speaks for Fleet Command, and each named character keeps a voice of their own: Mevath Sagald is Isabella and Ressa Vaal is Alice. A mission names its characters' voices in `voices`; anyone else gets a stable pick by name.
+- **With the Kokoro voices** in the private folder (see [Private folder](Private-Folder.md)), the game PC speaks every line itself, offline, with natural voices that sound the same on every device. George narrates, Emma speaks for Fleet Command, and each named character keeps a voice of their own: Mevath Sagald is Isabella and Ressa Vaal is Alice. A mission names its characters' voices in `voices`, optionally with a speed (`"bm_fable@0.82"` for someone who should sound slower or stranger than people do); anyone else gets a stable pick by name.
 - **Without them**, or if the voice engine fails, the browser's own voices take over, with a different voice and pitch per speaker. The best free ones on Windows are Edge's "Natural" voices.
 
 **Soundtrack**: with the soundtracks in the private folder (`python tools/music/build.py`, see [Private folder](Private-Folder.md)), the game plays Homeworld music to suit each scene: briefings, derelicts, danger, battles, and the ending. The Khar-Toba plays Deserts of Kharak's score instead. It plays on the TV view by default; press **Music** on any other device to hear it there. Without the music folder you hear the synthesised drone instead.
@@ -102,6 +102,7 @@ pnpm turbo run test typecheck              # unit tests, 150 simulated playthrou
 cd apps/server && npx tsx test/sim.ts      # balance: win rates by party size
 cd tests/e2e && npx playwright test        # full three-player game in real browsers
 cd apps/server && npx tsx test/virtual-table.ts --url http://localhost:8787   # the virtual family (below)
+cd apps/server && npx tsx test/play-mission.ts cold-harbour --runs 50   # bots play a mission: endings, flags, where crew go down (below)
 ```
 
 ### The virtual family
@@ -115,3 +116,25 @@ It reports how long each tap took to be answered, how the server responded, and 
 
 This is the test the laptop would have failed at the first family playtest, when the server was too busy making speech to answer taps. Run it on any new game PC before a game night: start HWR-App, then `npx tsx test/virtual-table.ts --url http://localhost:8787` from a copy of the repo, or from the desktop, pointing at the laptop's address.
 
+
+### Playing a mission's branches
+
+`apps/server/test/play-mission.ts` plays one mission many times with bots against the real engine, private missions included, and reports:
+- the endings reached and the story flags left behind;
+- how many crew were taken down per run, and at which node;
+- any run that stalled.
+
+Votes go to the first option unless `--choose node=option` picks one. `--flags key=value` seeds the story as a campaign would, to try a sequel's branches. `--path` lists the nodes each run passed through.
+
+```bash
+npx tsx test/play-mission.ts fall-of-tanis --runs 60 --choose fate=scuttle
+npx tsx test/play-mission.ts old-colours --flags destroyer=captured --choose answer=fight --choose her-fate=board
+```
+
+The bots don't assist, defend or spend Momentum, so they fare worse than real players. Use the numbers to compare missions with each other, not as the odds a family will face. As a guide, *Cold Harbour* takes down about 1.4 crew per run.
+
+`apps/server/test/play-campaign.ts` plays a whole campaign the same way: the first mission, then each sequel on the continued table, with the crew buying what refits they can afford between chapters. It reports how each chapter ended, the countdown after it, and the flags and refits the campaign finished with. That's how to check that sequels chain and that the story carries.
+
+```bash
+npx tsx test/play-campaign.ts fall-of-tanis --runs 20
+```

@@ -217,9 +217,19 @@ export interface EnemyShipState extends ShipState {
   chargeEvery?: number;
   /** Victory doesn't require destroying this ship. */
   optional?: boolean;
+  /**
+   * A missile or other weapon in flight rather than a ship: it never shoots, but strikes at the end
+   * of the round its countdown runs out unless it's destroyed first. Any hit that gets through its
+   * armour destroys it.
+   */
+  impact?: { rounds: number; text: string; /** Challenge Dice on the crew's ship when it strikes; an interception takes this many (default 5) with Piercing 3. */ cd?: number };
+  /** The round at whose end it strikes (set when the battle starts or it arrives). */
+  impactRound?: number;
+  /** It struck home rather than being shot down. */
+  impacted?: boolean;
 }
 
-export type StationAction = "fire" | "evasive" | "pattern" | "scan" | "repair" | "rally" | "jam" | "breakaway";
+export type StationAction = "fire" | "evasive" | "pattern" | "scan" | "repair" | "rally" | "jam" | "breakaway" | "intercept" | "override";
 
 export interface SpaceBattleState {
   ship: ShipState;
@@ -235,6 +245,14 @@ export interface SpaceBattleState {
   jammed?: boolean;
   /** Enemy whose weakness has been found: the next hit on it gains Piercing 2. */
   weakness?: string;
+  /** Helm can try to break away from this fight. */
+  canBreakaway?: boolean;
+  /** Stations the ship won't answer from until someone overrides them. */
+  locked?: StationAction[];
+  /** Phases of the battle that have happened (or been passed over). */
+  phasesDone?: string[];
+  /** The ship acts on its own at the end of each round. */
+  rogue?: boolean;
 }
 
 /** What a roll feeds back into once accepted. */
@@ -263,7 +281,7 @@ export interface RollRequest {
   /** Who asked for the roll, shown on the roll card. */
   askedBy?: string;
   /** A ship station action this roll resolves. */
-  station?: { action: StationAction; targetId?: string; weaponName?: string };
+  station?: { action: StationAction; targetId?: string; weaponName?: string; station?: StationAction };
 }
 
 export interface AssistOffer {
@@ -354,6 +372,25 @@ export interface CampaignChapter {
   at: number;
 }
 
+export type FlagValue = string | number | boolean;
+
+/**
+ * A campaign's countdown, such as "Dreadnought awakening 3/8": missions advance it, the crew
+ * see it between missions, and later missions branch on how far it has run.
+ */
+export interface StoryClock {
+  id: string;
+  label: string;
+  value: number;
+  max: number;
+}
+
+/** What the story remembers: choices made (flags) and the countdown. Carried from mission to mission. */
+export interface StoryState {
+  flags: Record<string, FlagValue>;
+  clock?: StoryClock;
+}
+
 /** A campaign as the host sees it in the list of saved campaigns: its latest table and how far it has got. */
 export interface CampaignSummary {
   id: string;
@@ -380,6 +417,12 @@ export interface CampaignState {
   advances: Record<string, number>;
   /** Lasting scars by character id, earned by being taken down on a mission. They never heal. */
   scars?: Record<string, string[]>;
+  /** The story so far as the missions see it: flags and the countdown, as the last chapter left them. */
+  story?: StoryState;
+  /** Refits bought for the crew's ship (ids from SHIP_REFITS), fitted to whatever ship they fly in a battle. */
+  refits?: string[];
+  /** Refits the story took away for good: the shipyard can't fit them again. */
+  lostRefits?: string[];
 }
 
 export interface TableState {
@@ -421,6 +464,8 @@ export interface TableState {
   awards?: { ru: number; reasons: string[] };
   /** Set when this table is part of a campaign. */
   campaign?: CampaignState;
+  /** Story flags and the countdown during this mission (from the campaign, plus what this mission has set). */
+  story?: StoryState;
   /** Set on a finished table once the campaign continues: everyone moves to this table. */
   nextTable?: string;
   stats?: Record<string, CrewStats>;
@@ -457,7 +502,7 @@ export type ClientMessage =
   | { type: "acceptRoll"; bonus?: number }
   | { type: "advance" }
   | { type: "combatAction"; action: "attack" | "parley"; characterId: string; targetNpcId?: string; weaponName?: string }
-  | { type: "stationAction"; action: StationAction; characterId: string; targetId?: string; weaponName?: string }
+  | { type: "stationAction"; action: StationAction; characterId: string; targetId?: string; weaponName?: string; /** For an override: the locked station to take back. */ station?: StationAction }
   | { type: "vote"; optionId: string }
   /** Between missions: spend an advance on +1 to a skill or a new focus. */
   | { type: "spendAdvance"; characterId: string; skill?: Skill; focus?: string }
@@ -465,6 +510,8 @@ export type ClientMessage =
   | { type: "requisition"; characterId: string; itemId: string }
   /** Between missions: the fleet infirmary treats a wound carried from the last mission, for 1 RU. */
   | { type: "treatWound"; characterId: string }
+  /** Between missions: refit the crew's ship with banked Requisition. */
+  | { type: "refit"; refitId: string }
   | { type: "gmNarrate"; text: string }
   | { type: "gmThreat"; delta: number; cause: string }
   | { type: "gmCallTest"; request: Pick<RollRequest, "characterId" | "attribute" | "skill" | "difficulty" | "reason" | "focusHint"> };

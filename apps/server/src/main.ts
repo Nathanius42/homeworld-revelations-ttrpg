@@ -5,7 +5,7 @@ import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import { WebSocketServer } from "ws";
 import type { ClientMessage } from "@hwr/protocol";
-import { MISSIONS, REQUISITION, designerOptions } from "@hwr/content";
+import { MISSIONS, REQUISITION, SHIP_REFITS, designerOptions } from "@hwr/content";
 import { checkClaudeKey, createAnthropicClient } from "./claude-gm.js";
 import { Hub } from "./hub.js";
 import { lanAddresses, networkProfiles } from "./network.js";
@@ -13,9 +13,10 @@ import { hasPrivate, privateDir, privateStatus } from "./private-assets.js";
 import { Devices, fromHost } from "./host.js";
 import { LOCAL_PORTRAITS_DIR, extraFamilyPortraits, gallerySlots, localPortraits } from "./local-portraits.js";
 import { loadPrivateMissions } from "./private-missions.js";
+import { loadMissionPacks } from "./mission-packs.js";
 import { Settings, keyHint, looksLikeClaudeKey } from "./settings.js";
 import { Store } from "./store.js";
-import { TtsSlowError, speak, ttsAvailable, ttsSlow, validRequest, warmUp } from "./tts.js";
+import { TtsSlowError, speak, stopSpeech, ttsAvailable, ttsSlow, validRequest, warmUp } from "./tts.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT ?? 8787);
@@ -27,7 +28,9 @@ const dataFile = process.env.HWR_DATA ?? resolve(here, "../data/hwr.sqlite");
 const localShips = privateDir("ships");
 const hasLocalShips = hasPrivate("ships");
 
-// Before the hub restores saved tables, which may be playing one of them.
+// Before the hub restores saved tables, which may be playing one of them. Packs first, so a
+// private copy of a pack's mission on this PC wins.
+const missionPacks = loadMissionPacks();
 const privateMissions = loadPrivateMissions();
 
 // The Claude key: from .env if there is one (it wins), otherwise whatever the host pasted into the host console.
@@ -82,6 +85,13 @@ if (hasPrivate("badges")) {
 
 if (hasLocalShips) {
   await app.register(fastifyStatic, { root: localShips, prefix: "/local/ships/", decorateReply: false });
+}
+
+for (const pack of missionPacks) {
+  for (const reason of pack.skipped) app.log.warn(`Mission pack ${pack.name}: skipped ${reason}`);
+  if (!pack.loaded.length) continue;
+  app.log.info(`Mission pack ${pack.name}: ${pack.loaded.join(", ")}`);
+  await app.register(fastifyStatic, { root: pack.dir, prefix: `/packs/${pack.name}/`, decorateReply: false });
 }
 
 for (const reason of privateMissions.skipped) app.log.warn(`Private mission skipped: ${reason}`);
@@ -207,6 +217,8 @@ app.post("/api/host/quit", async (req, reply) => {
 
 /** Kit the fleet issues between missions for banked RU. */
 app.get("/api/requisition", async () => REQUISITION);
+/** Refits the shipyard offers for the crew's ship between missions. */
+app.get("/api/refits", async () => SHIP_REFITS);
 
 app.get("/api/designer", async () => ({ ...designerOptions(), familyPortraits: extraFamilyPortraits() }));
 
@@ -307,20 +319,26 @@ app.server.on("upgrade", (req, socket, head) => {
 });
 
 const shutdown = async () => {
-  // A clean close waits on open connections; never let one keep the server alive after Quit.
-  setTimeout(() => {
-    app.log.warn("Clean shutdown took over 3 s: exiting anyway");
+  const exit = () => {
     try {
       store.close();
     } catch {
       // Already closed by the clean path.
     }
     process.exit(0);
-  }, 3000);
+  };
+  // A clean close waits on open connections; never let one keep the server alive after Quit.
+  // (Long enough for a line of speech in progress to finish: see stopSpeech.)
+  setTimeout(() => {
+    app.log.warn("Clean shutdown took over 12 s: exiting anyway");
+    exit();
+  }, 12_000);
+  // Speech first: its waiting requests end at once, and the voice worker must be stopped before
+  // the process exits (exiting mid-sentence crashes it).
+  await stopSpeech();
   wss.close();
   await app.close();
-  store.close();
-  process.exit(0);
+  exit();
 };
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);

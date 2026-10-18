@@ -1,5 +1,9 @@
 # Homeworld: Revelations, a digital table
 
+[![CI](https://github.com/Nathanius42/homeworld-revelations-ttrpg/actions/workflows/ci.yml/badge.svg)](https://github.com/Nathanius42/homeworld-revelations-ttrpg/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/Nathanius42/homeworld-revelations-ttrpg)](https://github.com/Nathanius42/homeworld-revelations-ttrpg/releases/latest)
+[![Licence: MIT](https://img.shields.io/github/license/Nathanius42/homeworld-revelations-ttrpg)](LICENSE)
+
 A browser-based digital table for **Homeworld: Revelations**, the tabletop role-playing game set in the Homeworld universe. Up to six people play the crew of a Kushan ship on their phones, with the story on a shared TV, and **nobody has to be the Game Master**. A scripted Director runs each mission, or an AI Game Master built on Claude improvises around the players.
 
 It began as campaigns played with Claude as the GM and grew into an app my family plays on game nights.
@@ -17,6 +21,15 @@ It began as campaigns played with Claude as the GM and grew into an app my famil
 - **Campaigns.** Finished missions become chapters. Crews carry their kit, advances, wounds and scars into the next mission, with a "previously…" recap.
 - **Local narration voices.** Kokoro text-to-speech runs on the host PC in a worker thread. Speech is made ahead of time, and the browser's own voices take over on slow machines.
 - **A Windows launcher.** A portable build with a tray icon puts the host console on the laptop and the story full screen on the TV.
+
+### The Dreadnought arc (preview)
+
+A six-mission Hiigaran campaign woven through the events of Homeworld 2, in [`packs/dreadnought-arc`](packs/dreadnought-arc):
+- **The setup:** the crew lose their destroyer, the *Spear of Soban*, at Tanis. Months later they're given command of the Progenitor Dreadnought. Its mind, Vash’Kora, the Architect of Paths, wakes a little more every time they lean on its power.
+- **What the crew decide carries through the campaign:** whether their old ship comes back as an enemy, what Fleet Command is told, and whether they learn the mind's name.
+- **The finale:** a countdown decides how hard the ship fights them at the defence of Hiigara. The Dreadnought survives or dies by their choices.
+
+Start a campaign with **The Fall of Tanis**. The missions have been played end to end by bots, but not yet by a human table. If you play any of it, I'd love to hear how it went: open an issue with the *Playtest report* template.
 
 | Phone | TV | Ship battle |
 |---|---|---|
@@ -43,7 +56,7 @@ A TypeScript monorepo (pnpm workspaces and Turborepo):
 
 Some design choices:
 - **The server owns the game.** Phones send intentions such as "roll", "vote" or "take the helm"; the server validates them against the rules and broadcasts state. A dropped phone rejoins its seat and character.
-- **Testing in layers.** About 130 unit tests (including 300 simulated playthroughs of every mission with 1 to 6 bots), 12 Playwright end-to-end tests, and a "virtual family". The virtual family is a timed whole-mission run over real WebSockets, with speech, against a live server. It was built after a real family playtest on a laptop found what desktop tests couldn't.
+- **Testing in layers.** About 150 unit tests (including 300 simulated playthroughs of every mission with 1 to 6 bots), 12 Playwright end-to-end tests, and a "virtual family". The virtual family is a timed whole-mission run over real WebSockets, with speech, against a live server. It was built after a real family playtest on a laptop found what desktop tests couldn't.
 - **Licensed material stays local.** The corebook, game models, music and sounds live in a git-ignored private folder that the app uses if it's there. The repository only holds code and generated art.
 
 The [docs](docs/Home.md) folder is the project wiki: design notes, decisions, iteration reviews and how each feature works.

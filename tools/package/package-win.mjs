@@ -10,6 +10,7 @@
  *   runtime/node.exe   this PC's Node 24 (node:sqlite needs 22.5+)
  *   app/server.mjs     the server and packages, bundled by esbuild
  *   app/web/           the built web client
+ *   app/packs/         mission packs from packs/, if the checkout has any (the public copy does)
  *   app/node_modules/  the Kokoro voice engine (native, so it can't be bundled)
  *   private/           ships, portraits, music, sfx, missions and tts from reference/ (unless --no-private)
  *   README.txt
@@ -82,6 +83,12 @@ step("Building the web client");
 // corepack is a .cmd shim on Windows, so run it through cmd rather than spawning it directly.
 execFileSync("cmd", ["/c", "corepack", "pnpm", "--filter", "@hwr/web", "build"], { cwd: root, stdio: "inherit" });
 cpSync(join(root, "apps", "web", "dist"), join(out, "app", "web"), { recursive: true });
+
+// Mission packs ship with every build, shared or not: the server finds them beside the web client.
+if (existsSync(join(root, "packs"))) {
+  step("Copying the mission packs");
+  cpSync(join(root, "packs"), join(out, "app", "packs"), { recursive: true });
+}
 
 step("Bundling the server");
 await build({

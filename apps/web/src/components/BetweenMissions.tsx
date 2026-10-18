@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { INFIRMARY_COST, type TableState } from "@hwr/protocol";
 import { SKILLS, SKILL_LABELS } from "@hwr/rules-engine";
 import { useMe, useStore } from "../store";
+import { Countdown } from "./TableView";
 
 interface RequisitionItem {
   id: string;
@@ -12,20 +13,32 @@ interface RequisitionItem {
   detail: string;
 }
 
+interface ShipRefit {
+  id: string;
+  name: string;
+  cost: number;
+  detail: string;
+}
+
 /**
- * Between missions in a campaign: the Requisition banked, kit to requisition for your character,
- * the advance they earned on the last mission (+1 to a skill, or a new focus), the infirmary for
- * a wound carried over, and their scars.
+ * Between missions in a campaign: the Requisition banked and the story's countdown, the advance
+ * your character earned on the last mission (+1 to a skill, or a new focus), the infirmary for a
+ * wound carried over, their scars, kit to requisition, and refits for the crew's ship.
  */
 export function BetweenMissions({ state }: { state: TableState }) {
   const me = useMe();
   const send = useStore((s) => s.send);
   const [catalogue, setCatalogue] = useState<RequisitionItem[]>([]);
+  const [refits, setRefits] = useState<ShipRefit[]>([]);
   const [focus, setFocus] = useState("");
   useEffect(() => {
     fetch("/api/requisition")
       .then((r) => r.json() as Promise<RequisitionItem[]>)
       .then(setCatalogue)
+      .catch(() => undefined);
+    fetch("/api/refits")
+      .then((r) => r.json() as Promise<ShipRefit[]>)
+      .then(setRefits)
       .catch(() => undefined);
   }, []);
 
@@ -41,6 +54,11 @@ export function BetweenMissions({ state }: { state: TableState }) {
     <section className="frame between-missions" aria-label="Between missions">
       <div className="panel-title">Between missions · {campaign.ru} RU banked</div>
       <div className="panel-body">
+        {campaign.story?.clock && (
+          <div className="pools" style={{ marginBottom: 10 }}>
+            <Countdown clock={campaign.story.clock} />
+          </div>
+        )}
         {!sheet ? (
           <p className="dim">Choose your crew member below to spend their advance and requisition kit.</p>
         ) : (
@@ -115,6 +133,24 @@ export function BetweenMissions({ state }: { state: TableState }) {
                   </span>
                 </li>
               ))}
+            </ul>
+            <div className="label" style={{ marginTop: 12 }}>
+              Ship refits (shared by the crew)
+            </div>
+            <ul className="list requisition">
+              {refits.map((r) => {
+                const fitted = campaign.refits?.includes(r.id);
+                const lost = campaign.lostRefits?.includes(r.id);
+                return (
+                  <li key={r.id}>
+                    <button className="btn small" disabled={fitted || lost || campaign.ru < r.cost} onClick={() => send({ type: "refit", refitId: r.id })}>
+                      {fitted ? "Fitted" : lost ? "Cut off" : `${r.cost} RU`}
+                    </button>{" "}
+                    <b>{r.name}</b>
+                    <span className="dim"> · {r.detail}</span>
+                  </li>
+                );
+              })}
             </ul>
           </>
         )}
